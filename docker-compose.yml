@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  repetitor_bot:
+    container_name: repetitor_bot_container
+    image: repetitor_bot_image
+    build:
+      context: bot
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env
