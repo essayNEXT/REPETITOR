@@ -2,10 +2,23 @@ version: '3.9'
 
 services:
   repetitor_bot:
-    container_name: repetitor_bot_container
+    container_name: repetitor_bot
     image: repetitor_bot_image
     build:
       context: bot
       dockerfile: Dockerfile
     env_file:
       - ./.env
+
+  repetitor_db:
+    container_name: repetitor_db
+    image: postgres:alpine3.17
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env
+volumes:
+  postgres_data:
+
