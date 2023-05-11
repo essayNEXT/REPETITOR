@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-05-11T20:47:55.372Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="pxATsiMv_0OkCoPswisK" version="21.2.9" type="github">
+<mxfile host="app.diagrams.net" modified="2023-05-11T20:55:45.327Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="ug2buAJHRmJWhOcFQzs_" version="21.2.9" type="github">
   <diagram name="Страница 1" id="HOyWcJGzsAJvnxjZpjYC">
     <mxGraphModel dx="2261" dy="796" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -776,7 +776,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <UserObject label="relation_type" tooltip="Що таке типи? Наприклад:&#xa;- one_question__one_fixed_rihght_answer_no_wrong_answe - &#xa;	тобто для одного питання є одна фіксована відповідь (як про слова)&#xa;&#xa;- one_question_one_fixed_right_answer_several_fixed_wrong_answer - &#xa;	для одного питання є одна фіксована вірна відповідь і декілька фіксованих невірних 	відповідей" id="mFnWeaV1e1XOrckJdKMl-4">
+        <UserObject label="relation_type" tooltip="Таблиця описує можливі типи відношень&#xa;Що таке типи? Наприклад:&#xa;- one_question__one_fixed_rihght_answer_no_wrong_answe - &#xa;	тобто для одного питання є одна фіксована відповідь (як про слова)&#xa;&#xa;- one_question_one_fixed_right_answer_several_fixed_wrong_answer - &#xa;	для одного питання є одна фіксована вірна відповідь і декілька фіксованих невірних 	відповідей" id="mFnWeaV1e1XOrckJdKMl-4">
           <mxCell style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;rounded=0;strokeWidth=3;" parent="1" vertex="1">
             <mxGeometry x="-503" y="380" width="180" height="145" as="geometry" />
           </mxCell>
