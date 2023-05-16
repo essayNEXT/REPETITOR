@@ -21,10 +21,13 @@ ENV VIRTUAL_ENV=/home/user/.venv
 ENV PATH="${VIRTUAL_ENV}/bin:/home/user/.local/bin:${PATH}"
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 
-
-
-COPY . .
+WORKDIR /home/user
+COPY ./poetry.lock .
+COPY ./pyproject.toml .
+COPY ./piccolo_conf.py .
 
 RUN poetry install
 
-CMD ["python3", "-m", "uvicorn", "repetitor_backend.main:app", "--host", "0.0.0.0", "--port", "80"]
+COPY ./repetitor_backend ./repetitor_backend
+
+CMD ["python3", "-m", "uvicorn", "repetitor_backend.app:app", "--host", "0.0.0.0", "--port", "80"]

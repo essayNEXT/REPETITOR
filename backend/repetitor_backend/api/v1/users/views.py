@@ -1,15 +1,19 @@
+import logging
+
 from typing import Union
-
-from fastapi import FastAPI
-
-app = FastAPI()
+from fastapi import APIRouter
 
 
-@app.get("/")
+logger = logging.getLogger()
+
+router = APIRouter()
+
+
+@router.get("/")
 def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/items/{item_id}")
+@router.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
