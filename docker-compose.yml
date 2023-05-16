@@ -1,6 +1,18 @@
-version: '3.9'
 
 services:
+  repetitor_backend:
+    container_name: repetitor_backend
+    image: repetitor_backend_image
+    build:
+      context: backend/
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+    env_file:
+      - .env
+    depends_on:
+      - repetitor_db
+
   repetitor_bot:
     container_name: repetitor_bot
     image: repetitor_bot_image
