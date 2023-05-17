@@ -1,4 +1,3 @@
-import os
 from aiogram import Bot, Dispatcher
 
 from settings import BOT_TOKEN
