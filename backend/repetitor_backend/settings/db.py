@@ -3,7 +3,7 @@ from pydantic import Field
 
 
 class ServiceDBSettings(AdvancedBaseSettings):
-    HOST: str = Field(default="repetitor_db")
+    HOST: str = Field(default="localhost")
     USER: str = Field(defaulf="repetitor_back")
     PASSWORD: str = Field(defaulf="__back")
     DB: str = Field(defaulf="REPETITOR")
