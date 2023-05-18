@@ -1,1 +1,3 @@
 In this file we collection all documentations about project/
+
+db diagramm link - https://app.diagrams.net/#HessayNEXT%2FREPETITOR%2Fmain%2Fdoc%2Fdb_structure.drawio

@@ -28,6 +28,6 @@ COPY ./piccolo_conf.py .
 
 RUN poetry install
 
-COPY ./repetitor_backend ./repetitor_backend
+COPY --chown=user ./repetitor_backend ./repetitor_backend
 
 CMD ["python3", "-m", "uvicorn", "repetitor_backend.app:app", "--host", "0.0.0.0", "--port", "80"]
