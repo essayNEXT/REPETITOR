@@ -4,7 +4,7 @@ from piccolo.columns import Varchar, UUID, Boolean, ForeignKey, BigInt
 
 class CustomerClass(Table):
     """Describe type of possible users:
-    
+
     for example:
     - 'regular user' - ordinary consumer of the service, registered and unprivileged
     - 'trusted user' - a user whose information entered can be used by other users without
@@ -13,6 +13,7 @@ class CustomerClass(Table):
     can be shown to individual users (if there is a mutual fixed consent)
     ...
     """
+
     id = UUID(primary_key=True)
     name = Varchar(length=50, null=False)
     describe = Varchar(length=200, null=False)
@@ -24,8 +25,12 @@ class Customer(Table):
 
     id = UUID(primary_key=True)
     customer_class = ForeignKey(references=CustomerClass)
-    telegram_user_id = BigInt(null=False)               # When we will add other frontend (not only Telegram,
-    telegram_language = Varchar(lenght=3, null=False)   # this fields transform to null=True)
+    telegram_user_id = BigInt(
+        null=False
+    )  # When we will add other frontend (not only Telegram,
+    telegram_language = Varchar(
+        lenght=3, null=False
+    )  # this fields transform to null=True)
     user_name = Varchar(length=50, null=True)
     first_name = Varchar(length=50, null=False)
     last_name = Varchar(length=50, null=True)

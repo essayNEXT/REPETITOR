@@ -9,11 +9,11 @@ DB = PostgresEngine(
         "user": app_settings.db.USER,
         "password": app_settings.db.PASSWORD,
         "host": app_settings.db.HOST,
-        "port": app_settings.db.PORT
+        "port": app_settings.db.PORT,
     }
 )
 
 
 # A list of paths to piccolo apps
 # e.g. ['blog.piccolo_app']
-APP_REGISTRY = AppRegistry(apps=['repetitor_backend.piccolo_app'])
+APP_REGISTRY = AppRegistry(apps=["repetitor_backend.piccolo_app"])

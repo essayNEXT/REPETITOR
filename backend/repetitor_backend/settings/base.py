@@ -1,9 +1,6 @@
 from pathlib import Path
 
 from pydantic import BaseSettings
-from dotenv import load_dotenv
-
-# load_dotenv()
 
 
 BASE_DIRECTORY = Path(__file__).absolute().parent.parent.parent

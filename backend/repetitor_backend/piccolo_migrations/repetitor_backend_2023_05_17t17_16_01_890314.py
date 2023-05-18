@@ -7,9 +7,7 @@ DESCRIPTION = ""
 
 
 async def forwards():
-    manager = MigrationManager(
-        migration_id=ID, app_name="", description=DESCRIPTION
-    )
+    manager = MigrationManager(migration_id=ID, app_name="", description=DESCRIPTION)
 
     def run():
         print(f"running {ID}")
