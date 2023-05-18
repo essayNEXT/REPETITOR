@@ -2,7 +2,7 @@ from piccolo.table import Table
 from piccolo.columns import Varchar, UUID, Boolean, ForeignKey, BigInt
 
 
-class CustomerClass(Table):
+class CustomerType(Table):
     """Describe type of possible users:
 
     for example:
@@ -24,7 +24,7 @@ class Customer(Table):
     """Describe user."""
 
     id = UUID(primary_key=True)
-    customer_class = ForeignKey(references=CustomerClass)
+    customer_class = ForeignKey(references=CustomerType)
     telegram_user_id = BigInt(
         null=False
     )  # When we will add other frontend (not only Telegram,

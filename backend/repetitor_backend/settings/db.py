@@ -1,18 +1,17 @@
 from .base import AdvancedBaseSettings
-from pydantic import Field
+import os
 
 
 class ServiceDBSettings(AdvancedBaseSettings):
-    HOST: str = Field(default="localhost")
-    USER: str = Field(defaulf="repetitor_back")
-    PASSWORD: str = Field(defaulf="__back")
-    DB: str = Field(defaulf="REPETITOR")
-    PORT: int = Field(default="5432")
+    HOST: str = os.environ.get("POSTGRES_HOST", default="localhost")
+    USER: str = os.environ.get("POSTGRES_USER", default="repetitor_back")
+    PASSWORD: str = os.environ.get("POSTGRES_PASSWORD", default="__back")
+    DB: str = os.environ.get("POSTGRES_DB", default="REPETITOR")
+    PORT: int = int(os.environ.get("POSTGRES_PORT", default=5432))
 
     class Config:
         env_prefix = "POSTGRES_"
         case_sensitive = True
-        env_file = ".env"
         env_file_encoding = "utf-8"
 
     @property

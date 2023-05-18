@@ -9,7 +9,7 @@ services:
     ports:
       - '80:80'
     volumes:
-      - "./repetitor_backend:/repetitor_backend"
+      - "/backend/repetitor_backend:/$(pwd)/repetitor_backend"
     env_file:
       - .env
     depends_on:
