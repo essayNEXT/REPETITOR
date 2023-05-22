@@ -15,8 +15,8 @@ class CustomerType(Table):
     """
 
     id = UUID(primary_key=True)
-    name = Varchar(length=50, null=False)
-    describe = Varchar(length=200, null=False)
+    name = Varchar(length=50, null=False, unique=True)
+    description = Varchar(length=200, null=False)
     is_active = Boolean(default=True, null=False)
 
 
