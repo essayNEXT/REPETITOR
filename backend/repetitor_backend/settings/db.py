@@ -11,7 +11,6 @@ class ServiceDBSettings(AdvancedBaseSettings):
 
     class Config:
         env_prefix = "POSTGRES_"
-        case_sensitive = True
         env_file_encoding = "utf-8"
 
     @property
