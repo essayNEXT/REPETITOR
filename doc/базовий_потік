@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-05-23T15:21:39.771Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="NsJGle0DPr2XH0np0iGS" version="21.3.2" type="github">
+<mxfile host="app.diagrams.net" modified="2023-05-24T10:26:46.069Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="908iYSFp00firpVxkY7I" version="21.3.3" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="1025" dy="1717" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1265" dy="2886" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -8,7 +8,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-3" value="отримали звернення" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="160" y="290" width="120" height="40" as="geometry" />
+          <mxGeometry x="160" y="-580" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-4" value="Yes" style="rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="WIyWlLk6GJQsqaUBKTNV-6" target="WIyWlLk6GJQsqaUBKTNV-10" edge="1">
           <mxGeometry y="20" relative="1" as="geometry">
@@ -21,10 +21,15 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-6" value="Чи є в БД?" style="rhombus;whiteSpace=wrap;html=1;shadow=0;fontFamily=Helvetica;fontSize=12;align=center;strokeWidth=1;spacing=6;spacingTop=-4;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="170" y="400" width="100" height="80" as="geometry" />
+          <mxGeometry x="170" y="-520" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="WIyWlLk6GJQsqaUBKTNV-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="820" y="-480" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-7" value="Процедури першого контакту (встановити базові налаштування)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="390" y="420" width="340" height="130" as="geometry" />
+          <mxGeometry x="320" y="-510" width="480" height="60" as="geometry" />
         </mxCell>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-8" value="No" style="rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="WIyWlLk6GJQsqaUBKTNV-10" target="WIyWlLk6GJQsqaUBKTNV-11" edge="1">
           <mxGeometry x="0.3333" y="20" relative="1" as="geometry">
@@ -36,17 +41,106 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="WIyWlLk6GJQsqaUBKTNV-10" value="Bulb&lt;br&gt;burned out?" style="rhombus;whiteSpace=wrap;html=1;shadow=0;fontFamily=Helvetica;fontSize=12;align=center;strokeWidth=1;spacing=6;spacingTop=-4;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="170" y="545" width="100" height="80" as="geometry" />
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-10" value="команда?" style="rhombus;whiteSpace=wrap;html=1;shadow=0;fontFamily=Helvetica;fontSize=12;align=center;strokeWidth=1;spacing=6;spacingTop=-4;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="170" y="-320" width="100" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="WIyWlLk6GJQsqaUBKTNV-11" value="Repair Lamp" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="160" y="680" width="120" height="40" as="geometry" />
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="WIyWlLk6GJQsqaUBKTNV-11" target="85ZIuKvcPr8dLuLHfZKv-0">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="WIyWlLk6GJQsqaUBKTNV-12" value="Replace Bulb" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="410" y="620" width="120" height="40" as="geometry" />
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-11" value="визначаємо актуальний контекст" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="60" y="-160" width="320" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="FXjzik-CF1iAAyUU5RUj-0" value="&lt;h1&gt;Про що це&lt;/h1&gt;&lt;div&gt;вважаємо що наш застосунок потрібен для тих, хто щось вивчає - програмування, навчається в школі, вивчає іноземну мову, готується до екзаменів. Потреба таких людей не часто замикається на одному предметі (як-то іноземна мова, python, C++, або математика). Як правило такі люди вивчають декілька предметів одночасно, як-то курс пайтона і англійська (ті хто намагаються перейти працювати в IT), в школі\вузі людина вивчає декілька предметів і т.д.&lt;/div&gt;&lt;div&gt;Якщо вивчають щось окремо - то це, як правило,&amp;nbsp; якась іноземна мова. І коли вивчають щось комплексно, то іноземна мова тако ж присутня.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Виходячи з цього застосунок повинен дати можливості допомогти вивчати&lt;/div&gt;&lt;div&gt;- іноземну мову (по перше - слова і їх використання), як додатковий інструмент.&lt;/div&gt;&lt;div&gt;- готуватись до тестів &quot;натаскуванням&quot; (заздалегідь залиті тести (ЗНО, TOEFL, сертифікація AWS, Google, Microsoft і т. інше))&lt;/div&gt;&lt;div&gt;- допомогти викладачам\репетиторам створити свої картки\тести\пояснення - учбові програми - і дати ними користуватися учням&lt;/div&gt;&lt;div&gt;- в межах кожного предмета навчання (або групи предметів - наприклад - група предметів &quot;мови&quot;) можуть створюватись якісь особливі фішки які допомагають вивченню предмета. Наприклад для мов - це може бути тематична історія на мові що вивчається яка складається із останніх вивчених слів, або можливість знайти співрозмовника для бесіди.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Якщо всі ці великі плани звести до конкретики, на першому етапі треба зробити застосунок який допомагає вивчати іноземні мови (будь-які). Основна модель використання:&lt;/div&gt;&lt;div&gt;- людина при першому контакті встановлює:&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;	&lt;/span&gt;- рідну мову (можемо прочитати&amp;nbsp; з налаштувань месенджера\браузера\ОС і т.д.)&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;	&lt;/span&gt;- мову яку вивчає (таких може бути декілька, це далі називаємо контексти. Їх людина може створювати, видаляти, переключатись між ними)&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;	&lt;/span&gt;- темп навчання (тут все може бути за замовченням, але повинна бути можливість все це змінювати - на власному досвіді усвідомив) - довжина тренування і графік&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;	&lt;/span&gt;- мінімальна базова інструкція з використання (коротка, яка дає просто базове розуміння як це використовувати і що робити коли не розумієш що робити)&lt;br&gt;&lt;/div&gt;&lt;div&gt;- при повторних контактах ми очікуємо:&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;	&lt;/span&gt;- команду, яка визначає що людина хоче робити зараз&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;	&lt;/span&gt;- ввод слова для перекладу&lt;br&gt;&lt;/div&gt;&lt;div&gt;- ми можемо нагадувати людині про необхідність тренування коли це відповідає її графіку (це треба якусь нагадувалку написати)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Для мене в повсякденному житті це виглядає так:&lt;/div&gt;&lt;div&gt;- я читаю документацію\ дивлюсь фільм\читаю книгу\іду по місту\займаюсь з &quot;живим&quot; репетитором - і зустрічаю незнайоме мені слово на вивчаємий мною мові. Я відправляю слово боту - отримую переклад (бот знає з яким контекстом я працював останній раз і вважає його актуальним. Доречи - я можу примусово переключати контексти і робити актуальним інший.)&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;	&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;	&lt;/span&gt;- коли я отримую переклад - я маю кнопки &quot;додати на вивчення&quot;, &quot;додати свій переклад&quot;. Якщо &quot;додати на вивчення&quot; - буде створена картка для вивчення цього слова (моя картка). Якщо &quot;додати свій переклад&quot; - також буде створена картка для вивчення, але переклад буде мій (для цього є поле &quot;автор&quot; і&amp;nbsp; правила відображення перекладів в залежності від авторів).&lt;br&gt;&lt;/div&gt;&lt;div&gt;- я можу отримувати нагадування що-до необхідності займатись, або самостійно запускати командою процес навчання - тоді ми переходимо до режиму вивчення слів на основі створених карток. При вивченні слів використовуємо алгоритм &quot;інтервального повторення&quot; - описаний психологами для збільшення ефективності навчання. Треба якось відстежувати ефективність вивчення слів (щось ми запам&#39;ятовуємо краще, щось гірше), регулярність тренувань і т.д.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;не закінчено, продовжу&amp;nbsp; пізніше&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="39" y="-530" width="750" height="800" as="geometry" />
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="WIyWlLk6GJQsqaUBKTNV-12">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="820" y="-280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-12" value="Обробка&amp;nbsp; команд" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="320" y="-310" width="480" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FXjzik-CF1iAAyUU5RUj-0" value="&lt;h1&gt;Про що це&lt;/h1&gt;&lt;div&gt;вважаємо що наш застосунок потрібен для тих, хто щось вивчає - програмування, навчається в школі, вивчає іноземну мову, готується до екзаменів. Потреба таких людей не часто замикається на одному предметі (як-то іноземна мова, python, C++, або математика). Як правило такі люди вивчають декілька предметів одночасно, як-то курс пайтона і англійська (ті хто намагаються перейти працювати в IT), в школі\вузі людина вивчає декілька предметів і т.д.&lt;/div&gt;&lt;div&gt;Якщо вивчають щось окремо - то це, як правило,&amp;nbsp; якась іноземна мова. І коли вивчають щось комплексно, то іноземна мова тако ж присутня.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Виходячи з цього застосунок повинен дати можливості допомогти вивчати&lt;/div&gt;&lt;div&gt;- іноземну мову (по перше - слова і їх використання), як додатковий інструмент.&lt;/div&gt;&lt;div&gt;- готуватись до тестів &quot;натаскуванням&quot; (заздалегідь залиті тести (ЗНО, TOEFL, сертифікація AWS, Google, Microsoft і т. інше))&lt;/div&gt;&lt;div&gt;- допомогти викладачам\репетиторам створити свої картки\тести\пояснення - учбові програми - і дати ними користуватися учням&lt;/div&gt;&lt;div&gt;- в межах кожного предмета навчання (або групи предметів - наприклад - група предметів &quot;мови&quot;) можуть створюватись якісь особливі фішки які допомагають вивченню предмета. Наприклад для мов - це може бути тематична історія на мові що вивчається яка складається із останніх вивчених слів, або можливість знайти співрозмовника для бесіди.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Якщо всі ці великі плани звести до конкретики, на першому етапі треба зробити застосунок який допомагає вивчати іноземні мови (будь-які). Основна модель використання:&lt;/div&gt;&lt;div&gt;- людина при першому контакті встановлює:&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;- рідну мову (можемо прочитати&amp;nbsp; з налаштувань месенджера\браузера\ОС і т.д.)&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;- мову яку вивчає (таких може бути декілька, це далі називаємо контексти. Їх людина може створювати, видаляти, переключатись між ними)&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;- темп навчання (тут все може бути за замовченням, але повинна бути можливість все це змінювати - на власному досвіді усвідомив) - довжина тренування і графік&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;- мінімальна базова інструкція з використання (коротка, яка дає просто базове розуміння як це використовувати і що робити коли не розумієш що робити)&lt;br&gt;&lt;/div&gt;&lt;div&gt;- при повторних контактах ми очікуємо:&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;- команду, яка визначає що людина хоче робити зараз&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;- ввод слова для перекладу&lt;br&gt;&lt;/div&gt;&lt;div&gt;- ми можемо нагадувати людині про необхідність тренування коли це відповідає її графіку (це треба якусь нагадувалку написати) з короткими кнопками переходу до дії (тобто, наприклад: повідомлення про &quot;час повторити слова&quot; і інлайн кнопки &quot;почати тренування&quot;, &quot;нагадати через 15 хвилин&quot;, &quot;змінити графік тренувань&quot;)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Для мене в повсякденному житті це виглядає так:&lt;/div&gt;&lt;div&gt;- я читаю документацію\ дивлюсь фільм\читаю книгу\іду по місту\займаюсь з &quot;живим&quot; репетитором - і зустрічаю незнайоме мені слово на вивчаємий мною мові. Я відправляю слово боту - отримую переклад (бот знає з яким контекстом я працював останній раз і вважає його актуальним. Доречи - я можу примусово переключати контексти і робити актуальним інший.). Переклад повинен супроводжуватись вимовою (можливо додати свою, можливо?).&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;- коли я отримую переклад - я маю кнопки &quot;додати на вивчення&quot;, &quot;додати свій переклад&quot;. Якщо &quot;додати на вивчення&quot; - буде створена картка для вивчення цього слова (моя картка). Якщо &quot;додати свій переклад&quot; - також буде створена картка для вивчення, але переклад буде мій (для цього є поле &quot;автор&quot; і&amp;nbsp; правила відображення перекладів в залежності від авторів).&lt;br&gt;&lt;/div&gt;&lt;div&gt;- я можу отримувати нагадування що-до необхідності займатись, або самостійно запускати командою процес навчання - тоді ми переходимо до режиму вивчення слів на основі створених карток. При вивченні слів використовуємо алгоритм &quot;інтервального повторення&quot; - описаний психологами для збільшення ефективності навчання. Треба якось відстежувати ефективність вивчення слів (щось ми запам&#39;ятовуємо краще, щось гірше), регулярність тренувань і т.д.&lt;/div&gt;&lt;div&gt;- коли у мене набралась якась кількість якісно вивчених слів (не знаю скільки - 10-20-30 - залежить від інтенсивності вивчення мови, необхідні експерименти), я отримую вітання і пропозицію закріпити ці слова отримавши текст з ними в обраному стилі (діалог, казка, наукова фантастика, любовний роман, і т д.). Це платна послуга - тому що AI не дурний працювати безкоштовно). Тому повинна бути можливість внести кошти на свій баланс. Отримана оповідь залишається десь якось доступна для цієї людини.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Конкретизація загальних вимог:&lt;/div&gt;&lt;div&gt;- людина повинна робити як можна менше &quot;натискань на кнопки&quot; - якщо щось можливо внести автоматично, воно вноситься автоматично&lt;/div&gt;&lt;div&gt;- ми повинні мати можливість налаштовувати ВСЕ і фіксувати все що можна (це допоможе потім підлаштовуватись на основі аналізу дій)&lt;/div&gt;&lt;div&gt;- налаштування повинні бути як в одному місті,(складне вкладене меню з можливість налаштувати все), так і &quot;поряд з проблемою&quot; - тобто там, де це налаштування може знадобиться існує коротка кнопа для його налаштування&lt;/div&gt;&lt;div&gt;- в будь-якому місті людина може запитати допомогу і отримати допомогу відповідно ситуації (стану) в якому вона знаходиться на мові яка визначена людиною як рідна. Тобто - допомога повинна описувати можливі дії саме в цій ситуації. І повинна давати можливість війти в &quot;загальну допомогу&quot; з можливостями пошуку.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Всі команди обробляються в режимі &quot;стану&quot; і &quot;інлайн-клавіатури&quot; в якості реакції. Це дозволяє &quot;зберігати фон&quot; - тобто будь-яке введене слово перекладати і будь-яку команду звичайну виконувати (якщо це в принципі можливо).&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="30" y="-1650" width="750" height="1020" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="85ZIuKvcPr8dLuLHfZKv-0" target="85ZIuKvcPr8dLuLHfZKv-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-0" value="шукаємо&amp;nbsp; слова в своїй БД в актуальному контексті&amp;nbsp; автор - цей кастомер і довірені кастомери" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="60" y="-90" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-2" value="є результат?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="180" y="10" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="85ZIuKvcPr8dLuLHfZKv-4" target="WIyWlLk6GJQsqaUBKTNV-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="820" y="50" />
+              <mxPoint x="820" y="-600" />
+              <mxPoint x="220" y="-600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-4" value="процедура відображення результата пошуку з можливістю додати свій варіант і&amp;nbsp; можливістю додати на вивчення" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="330" y="5" width="480" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-6" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="85ZIuKvcPr8dLuLHfZKv-2" target="85ZIuKvcPr8dLuLHfZKv-4">
+          <mxGeometry y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="280" y="40" as="sourcePoint" />
+            <mxPoint x="330" y="40" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="85ZIuKvcPr8dLuLHfZKv-7" target="85ZIuKvcPr8dLuLHfZKv-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-7" value="звертаємось до &quot;довірених користувачів&quot; за перекладом, озвучкою і зображенням(?)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="60" y="120" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-9" value="є результат?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="180" y="220" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-11" value="No" style="rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="0.3333" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="220" y="-240" as="sourcePoint" />
+            <mxPoint x="220" y="-160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-12" value="No" style="rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="85ZIuKvcPr8dLuLHfZKv-2" target="85ZIuKvcPr8dLuLHfZKv-7">
+          <mxGeometry x="0.3333" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="290" y="110" as="sourcePoint" />
+            <mxPoint x="290" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-13" value="No" style="rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="85ZIuKvcPr8dLuLHfZKv-9" target="85ZIuKvcPr8dLuLHfZKv-19">
+          <mxGeometry x="0.3333" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="240" y="330" as="sourcePoint" />
+            <mxPoint x="220" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-14" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="85ZIuKvcPr8dLuLHfZKv-9" target="85ZIuKvcPr8dLuLHfZKv-16">
+          <mxGeometry y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="340" y="260" as="sourcePoint" />
+            <mxPoint x="320" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="85ZIuKvcPr8dLuLHfZKv-16" target="85ZIuKvcPr8dLuLHfZKv-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-16" value="вносимо все в свою БД від імені довіреного автора від якого отримано переклад" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="330" y="215" width="480" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="85ZIuKvcPr8dLuLHfZKv-19" target="85ZIuKvcPr8dLuLHfZKv-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="425" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="85ZIuKvcPr8dLuLHfZKv-19" value="пишемо що для данного варіанта в рамках поточного контексту не можемо знайти переклад і пропонуємо надати свій варіант, якщо він є" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="100" y="380" width="240" height="90" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
