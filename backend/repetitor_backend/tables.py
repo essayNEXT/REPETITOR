@@ -26,11 +26,11 @@ class Customer(Table):
     id = UUID(primary_key=True)
     customer_class = ForeignKey(references=CustomerType)
     tlg_user_id = BigInt(null=False)  # When we will add other frontend (not only Telegram,
-    tlg_language = Varchar(lenght=20, null=False)  # this fields transform to null=True)
+    tlg_language = Varchar(lenght=10, null=False)  # this fields transform to null=True)
     tlg_user_name = Varchar(length=50, null=True)
     tlg_first_name = Varchar(length=50, null=False)
     tlg_last_name = Varchar(length=50, null=True)
-    native_language = Varchar(length=20, null=True)
+    native_language = Varchar(length=10, null=True)
     first_name = Varchar(lenght=50, null=True)
     last_name = Varchar(lenght=50, null=True)
     email = Email(null=True)
