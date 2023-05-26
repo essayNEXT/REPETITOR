@@ -1,5 +1,5 @@
 from piccolo.table import Table
-from piccolo.columns import Varchar, UUID, Boolean, ForeignKey, BigInt, Email, Text
+from piccolo.columns import Varchar, UUID, Boolean, ForeignKey, BigInt, Email, Text, Timestamptz
 
 
 class CustomerType(Table):
@@ -48,7 +48,7 @@ class ContentClass(Table):
     is_active = Boolean(default=True)
 
 
-class Content(Table):
+class Context(Table):
     """Describe existing contents."""
 
     id = UUID(primary_key=True)
@@ -56,4 +56,15 @@ class Content(Table):
     name = Varchar(length=50, null=False)
     name_short = Varchar(length=10, null=False)
     description = Text(null=False)
+    is_active = Boolean(default=True)
+
+
+class CustomerContext(Table):
+    """Describes all customer contexts."""
+
+    id = UUID(primary_key=True)
+    customer = ForeignKey(references=Customer)
+    context_1 = ForeignKey(references=Context)
+    context_2 = ForeignKey(references=Context)
+    last_date = Timestamptz()
     is_active = Boolean(default=True)
