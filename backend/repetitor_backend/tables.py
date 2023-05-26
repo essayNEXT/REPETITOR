@@ -25,7 +25,9 @@ class Customer(Table):
 
     id = UUID(primary_key=True)
     customer_class = ForeignKey(references=CustomerType)
-    tlg_user_id = BigInt(null=False)  # When we will add other frontend (not only Telegram,
+    tlg_user_id = BigInt(
+        null=False
+    )  # When we will add other frontend (not only Telegram,
     tlg_language = Varchar(lenght=10, null=False)  # this fields transform to null=True)
     tlg_user_name = Varchar(length=50, null=True)
     tlg_first_name = Varchar(length=50, null=False)
