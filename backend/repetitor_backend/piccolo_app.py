@@ -4,7 +4,7 @@ from piccolo.conf.apps import AppConfig
 from .tables import (
     CustomerType,
     Customer,
-    ContentClass,
+    ContentType,
     Context,
     CustomerContext,
 )
@@ -19,7 +19,7 @@ APP_CONFIG = AppConfig(
         CURRENT_DIRECTORY,
         'piccolo_migrations'
     ),
-    table_classes=[CustomerType, Customer, ContentClass, Context, CustomerContext],
+    table_classes=[CustomerType, Customer, ContentType, Context, CustomerContext],
     migration_dependencies=[],
     commands=[]
 )

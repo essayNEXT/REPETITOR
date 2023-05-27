@@ -63,3 +63,15 @@ async def get_customer_type(
         query = query.where(CustomerType.description.like("%" + description + "%"))
     result = await query
     return result
+
+
+async def create_new_context_type(name: str, description: str) -> UUID:
+    """Create new context type.
+    
+    parameters:
+    - name (Varchar(50), unique) - short name of customer type, required
+    - description (Varchar(200)) - description of customer type
+    result:
+    - primary key for new record - UUID type
+    """
+    pass

@@ -15,7 +15,7 @@ router = APIRouter()
 
 @router.post("/type/customer/")
 async def create_customer_type(new_customer_type: CustomerTypeCreateRequest) -> UUID:
-    """Create a new class of customer.
+    """Create a new type of customer.
 
     Parameters:
     - name: str, max lenght is 50 symbols, required
@@ -57,3 +57,14 @@ async def get_customer_type(
         id=id, name=name, description=description, is_active=is_active
     )
     return [CustomerTypeResponce.from_DB_model(db_model=result) for result in results]
+
+
+@router.post("/type/context/")
+async def create_context_type(new_context_type: ContextTypeCreateRequest) -> UUID:
+    """Create a new type of context.
+    
+    Parameters:
+    - name: str, max lenght is 50 symbols, required
+    - describe: str, max lenght is 200 symbols, required
+    """
+    pass
