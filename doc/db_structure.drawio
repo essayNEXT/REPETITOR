@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-05-26T11:55:36.566Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="W5kK9ge4QSx9p4duu8pM" version="21.3.4" type="github">
+<mxfile host="app.diagrams.net" modified="2023-05-27T12:25:18.816Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="M_DHjKhtxrG445o2d53A" version="21.3.4" type="github">
   <diagram name="Страница 1" id="HOyWcJGzsAJvnxjZpjYC">
-    <mxGraphModel dx="2092" dy="582" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2288" dy="689" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -163,7 +163,7 @@
             <mxRectangle width="190" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="customer_class" tooltip="class:&#xa;- student (ordinary user)&#xa;- teacher&#xa;- translation provider" id="xox8B6QIwZQnFtdCx0do-34">
+        <UserObject label="customer_type" tooltip="class:&#xa;- student (ordinary user)&#xa;- teacher&#xa;- translation provider" id="xox8B6QIwZQnFtdCx0do-34">
           <mxCell style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;strokeWidth=3;" parent="1" vertex="1">
             <mxGeometry x="-740" y="490" width="210" height="150" as="geometry" />
           </mxCell>
@@ -503,7 +503,7 @@
             <mxRectangle width="220" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="user_context" tooltip="context:&#xa;- english&#xa;- ukrainian&#xa;- last datetime" id="xox8B6QIwZQnFtdCx0do-142">
+        <UserObject label="customer_context" tooltip="context:&#xa;- english&#xa;- ukrainian&#xa;- last datetime" id="xox8B6QIwZQnFtdCx0do-142">
           <mxCell style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;strokeWidth=3;" parent="1" vertex="1">
             <mxGeometry x="120" y="5" width="230" height="210" as="geometry" />
           </mxCell>
@@ -612,7 +612,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xox8B6QIwZQnFtdCx0do-236" value="context_class (ref context_class)" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;fontStyle=5;overflow=hidden;" parent="xox8B6QIwZQnFtdCx0do-234" vertex="1">
+        <mxCell id="xox8B6QIwZQnFtdCx0do-236" value="context_class (ref context_type)" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;fontStyle=5;overflow=hidden;" parent="xox8B6QIwZQnFtdCx0do-234" vertex="1">
           <mxGeometry x="30" width="200" height="30" as="geometry">
             <mxRectangle width="200" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -638,7 +638,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xox8B6QIwZQnFtdCx0do-170" value="name_alfa2 (Varchar)" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;" parent="xox8B6QIwZQnFtdCx0do-168" vertex="1">
+        <mxCell id="xox8B6QIwZQnFtdCx0do-170" value="name_short (Varchar)" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;" parent="xox8B6QIwZQnFtdCx0do-168" vertex="1">
           <mxGeometry x="30" width="200" height="30" as="geometry">
             <mxRectangle width="200" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -669,7 +669,7 @@
             <mxRectangle width="200" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="context_class" tooltip="name:&#xa;- languages&#xa;- tests&#xa;- ..." id="xox8B6QIwZQnFtdCx0do-174">
+        <UserObject label="context_type" tooltip="name:&#xa;- languages&#xa;- tests&#xa;- ..." id="xox8B6QIwZQnFtdCx0do-174">
           <mxCell style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;rounded=0;strokeWidth=3;" parent="1" vertex="1">
             <mxGeometry x="420" y="625" width="180" height="145" as="geometry" />
           </mxCell>
