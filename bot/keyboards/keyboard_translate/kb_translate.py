@@ -10,6 +10,26 @@ translation = {"uk": {}, "en": {}, "ru": {}}
 single_translation = {"uk": {}, "en": {}, "ru": {}}
 
 
+def translate_buttons_list(
+        source_lng: str, target_lng: str, buttons_list: ButtonDictList
+) -> ButtonDictList:
+    """Функція перекладу списку списків словників кнопок клавіатури"""
+    if buttons_list is None:
+        return []
+    new_list = []
+    for item in buttons_list:
+        if isinstance(item, list):
+            new_list.append(translate_buttons_list(source_lng, target_lng, item))
+        elif isinstance(item, dict):
+            item["text"] = google_translate(source_lng, target_lng, item["text"])
+            if "message" in item.keys():
+                item["message"] = google_translate(
+                    source_lng, target_lng, item["message"]
+                )
+            new_list.append(item)
+    return new_list
+
+
 def translate_context(
     src_lng: str = None,
     trg_lng: str = None,
@@ -32,25 +52,6 @@ def translate_context(
             "bottom_buttons" - список списків нижніх кнопок
     Повертає відповідні об'єкти в залежності від варіанту введених вхідних даних.
     """
-
-    def translate_buttons_list(
-        source_lng: str, target_lng: str, buttons_list: ButtonDictList
-    ) -> ButtonDictList:
-        """Функція перекладу списку списків словників кнопок клавіатури"""
-        if buttons_list is None:
-            return []
-        new_list = []
-        for item in buttons_list:
-            if isinstance(item, list):
-                new_list.append(translate_buttons_list(source_lng, target_lng, item))
-            elif isinstance(item, dict):
-                item["text"] = google_translate(source_lng, target_lng, item["text"])
-                if "message" in item.keys():
-                    item["message"] = google_translate(
-                        source_lng, target_lng, item["message"]
-                    )
-                new_list.append(item)
-        return new_list
 
     try:
         if context_text and context_data:
