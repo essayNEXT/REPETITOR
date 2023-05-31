@@ -28,4 +28,6 @@ class NewUserMiddleware(BaseMiddleware):
     ) -> Any:
         if is_new_user(event):
             return await handler(event, data)
-        await event.answer(f"{create_new_user()}")  # Вставить функцию создания пользователя
+        await event.answer(
+            f"{create_new_user()}"
+        )  # Вставить функцию создания пользователя
