@@ -1,6 +1,6 @@
 from uuid import UUID
 from typing import Optional, List
-from repetitor_backend.tables import CustomerType, ContextType
+from repetitor_backend.tables import CustomerType
 
 
 async def create_new_customer_type(name: str, description: str) -> UUID:
@@ -63,8 +63,3 @@ async def get_customer_type(
         query = query.where(CustomerType.description.like("%" + description + "%"))
     result = await query
     return result
-
-
-if __name__ == "__main__":
-    # Test of creating new ContextType:
-    ...

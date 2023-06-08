@@ -1,5 +1,14 @@
 from piccolo.table import Table
-from piccolo.columns import Varchar, UUID, Boolean, ForeignKey, BigInt, Email, Text, Timestamptz
+from piccolo.columns import (
+    Varchar,
+    UUID,
+    Boolean,
+    ForeignKey,
+    BigInt,
+    Email,
+    Text,
+    Timestamptz,
+)
 
 
 class CustomerType(Table):

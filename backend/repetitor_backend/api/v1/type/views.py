@@ -4,7 +4,12 @@ from typing import List
 from uuid import UUID
 from fastapi import APIRouter
 
-from .serializers import CustomerTypeCreateRequest, CustomerTypeResponse, ContextTypeCreateRequest, ContextTypeResponse
+from .serializers import (
+    CustomerTypeCreateRequest,
+    CustomerTypeResponse,
+    ContextTypeCreateRequest,
+    ContextTypeResponse,
+)
 from repetitor_backend.db.crud import contexttype, customertype
 
 
@@ -103,5 +108,3 @@ async def get_context_type(
         id=id, name=name, description=description, is_active=is_active
     )
     return [ContextTypeResponse.from_DB_model(db_model=result) for result in results]
-
-
