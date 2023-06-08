@@ -1,6 +1,6 @@
 from uuid import UUID
 from typing import Optional, List
-from repetitor_backend.tables import CustomerType
+from repetitor_backend.tables import CustomerType, ContextType
 
 
 async def create_new_customer_type(name: str, description: str) -> UUID:
@@ -65,13 +65,6 @@ async def get_customer_type(
     return result
 
 
-async def create_new_context_type(name: str, description: str) -> UUID:
-    """Create new context type.
-    
-    parameters:
-    - name (Varchar(50), unique) - short name of customer type, required
-    - description (Varchar(200)) - description of customer type
-    result:
-    - primary key for new record - UUID type
-    """
-    pass
+if __name__ == "__main__":
+    # Test of creating new ContextType:
+    ...

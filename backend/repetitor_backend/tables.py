@@ -39,7 +39,7 @@ class Customer(Table):
     is_active = Boolean(default=True)
 
 
-class ContentType(Table):
+class ContextType(Table):
     """Describe content class."""
 
     id = UUID(primary_key=True)
@@ -52,7 +52,7 @@ class Context(Table):
     """Describe existing contents."""
 
     id = UUID(primary_key=True)
-    context_class = ForeignKey(references=ContentType)
+    context_class = ForeignKey(references=ContextType)
     name = Varchar(length=50, null=False)
     name_short = Varchar(length=10, null=False)
     description = Text(null=False)
