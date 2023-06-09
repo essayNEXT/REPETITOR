@@ -77,3 +77,83 @@ class CustomerContext(Table):
     context_2 = ForeignKey(references=Context)
     last_date = Timestamptz()
     is_active = Boolean(default=True)
+
+
+class Item(Table):
+    """Describe item class."""
+
+    id = UUID(primary_key=True)
+    author = ForeignKey(references=Customer)
+    context = ForeignKey(references=Context)
+    text = Text(null=False)
+    image = Varchar(length=255, null=False)
+    sound = Varchar(length=255, null=False)
+    is_active = Boolean(default=True)
+
+
+class RelationType(Table):
+    """Describe relation type class."""
+
+    id = UUID(primary_key=True)
+    name = Varchar(length=50, null=False)
+    description = Text(null=False)
+    is_active = Boolean(default=True)
+
+
+class Explanation(Table):
+    """Describe explanation class."""
+
+    id = UUID(primary_key=True)
+    description = Varchar(length=50, null=False)
+    explanation = Text(null=False)
+    is_active = Boolean(default=True)
+
+
+class ItemRelation(Table):
+    """Describe ItemRelation class."""
+
+    id = UUID(primary_key=True)
+    author = ForeignKey(references=Customer)
+    explanation = ForeignKey(references=Explanation)
+    type = ForeignKey(references=RelationType)
+    is_active = Boolean(default=True)
+
+
+class WrongAnswItem(Table):
+    """Describe WrongAnswItem class."""
+
+    id = UUID(primary_key=True)
+    relation = ForeignKey(references=ItemRelation)
+    item = ForeignKey(references=Item)
+    is_active = Boolean(default=True)
+
+
+class RightAnswItem(Table):
+    """Describe RightAnswItem class."""
+
+    id = UUID(primary_key=True)
+    relation = ForeignKey(references=ItemRelation)
+    item = ForeignKey(references=Item)
+    is_active = Boolean(default=True)
+
+
+class Question(Table):
+    """Describe question class."""
+
+    id = UUID(primary_key=True)
+    relation = ForeignKey(references=ItemRelation)
+    item = ForeignKey(references=Item)
+    is_active = Boolean(default=True)
+
+
+class Card(Table):
+    """Describe card class."""
+
+    id = UUID(primary_key=True)
+    user = ForeignKey(references=Customer)
+    author = ForeignKey(references=Customer)
+    relation = ForeignKey(references=ItemRelation)
+    repetition_level = BigInt(null=False)
+    last_data = Timestamptz(null=False)
+    memorization_stage = BigInt(null=False)
+    is_active = Boolean(default=True)
