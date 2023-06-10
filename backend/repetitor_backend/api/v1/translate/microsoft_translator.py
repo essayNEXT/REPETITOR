@@ -1,5 +1,9 @@
-import requests, uuid, json, os
+import requests
+import uuid
+import json
+import os
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -19,7 +23,8 @@ def ms_translate(source_lang: str, target_lang: str, text: str) -> str:
     endpoint = "https://api.cognitive.microsofttranslator.com"
 
     # location, also known as region.
-    # required if you"re using a multi-service or regional (not global) resource. It can be found in the Azure portal on the Keys and Endpoint page.
+    # required if you"re using a multi-service or regional (not global) resource.
+    # It can be found in the Azure portal on the Keys and Endpoint page.
     location = os.environ.get("LOCATION")
 
     path = "/translate"
@@ -47,14 +52,10 @@ def ms_translate(source_lang: str, target_lang: str, text: str) -> str:
     request = requests.post(constructed_url, params=params, headers=headers, json=body)
     response = request.json()
 
-    res = json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(",", ": "))
+    # res = json.dumps(response, sort_keys=True, ensure_ascii=False, indent=4, separators=(",", ": "))
     translate = response[0]["translations"][0]["text"]
     return translate
 
 
 if __name__ == "__main__":
-    print(ms_translate(
-                source_lang="en",
-                target_lang="uk",
-                text="duck"
-    ))
+    print(ms_translate(source_lang="en", target_lang="uk", text="duck"))
