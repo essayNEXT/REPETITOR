@@ -51,6 +51,7 @@ def ms_translate(source_lang: str, target_lang: str, text: str) -> str:
     translate = response[0]["translations"][0]["text"]
     return translate
 
+
 def ms_translate_auto(target_lang: str, text: str) -> str:
     """
     The function returns the translation of the entered text with autodetect source_lang,
@@ -82,13 +83,18 @@ def ms_translate_auto(target_lang: str, text: str) -> str:
 
     request = requests.post(constructed_url, params=params, headers=headers, json=body)
     response = request.json()
-    print('response: ', response)
-    translate = response[0]["detectedLanguage"]["language"], response[0]["translations"][0]["text"]
+    # print("response: ", response)
+
+    translate = (
+        response[0]["detectedLanguage"]["language"],
+        response[0]["translations"][0]["text"],
+        )
     return translate
 
 
 if __name__ == "__main__":
     print(ms_translate(source_lang="en", target_lang="uk", text="duck"))
-    print(ms_translate(source_lang="uk", target_lang="en", text="куче"))  # bg("куче") = en("dog")
+    # bg("куче") = en("dog")
+    print(ms_translate(source_lang="uk", target_lang="en", text="куче"))
 
-    print('translate: ', ms_translate_auto(target_lang="en", text="куче"))
+    print("translate: ", ms_translate_auto(target_lang="en", text="куче"))
