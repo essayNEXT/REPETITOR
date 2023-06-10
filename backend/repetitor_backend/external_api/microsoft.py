@@ -54,3 +54,4 @@ def ms_translate(source_lang: str, target_lang: str, text: str) -> str:
 
 if __name__ == "__main__":
     print(ms_translate(source_lang="en", target_lang="uk", text="duck"))
+    print(ms_translate(source_lang="uk", target_lang="en", text="куче"))  # bg("куче") = en("dog")
