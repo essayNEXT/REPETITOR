@@ -10,7 +10,8 @@ URL = "https://api.cognitive.microsofttranslator.com/translate"
 API_KEY = os.environ.get("KEY_MICROSOFT")
 LOCATION = os.environ.get("LOCATION")
 
-#session = aiohttp.ClientSession() - помилка, цей параметр треба задавати в асинхроній функції
+# session = aiohttp.ClientSession() - помилка, цей параметр треба задавати в асинхроній функції
+
 
 async def translate(
     source_lng: str,
@@ -18,8 +19,8 @@ async def translate(
     text: str,
     url: str = URL,
     api_key: str = API_KEY,
-    location: str = LOCATION
-    ) -> aiohttp.ClientResponse:
+    location: str = LOCATION,
+) -> aiohttp.ClientResponse:
 
     """
     The function returns the translation of the entered text, in addition,
@@ -48,23 +49,28 @@ async def translate(
     body = [{"text": text}]
 
     async with aiohttp.ClientSession() as session:
-        async with session.post(url, params=params, headers=headers, json=body) as response:
+        async with session.post(
+            url, params=params, headers=headers, json=body
+        ) as response:
             response_data = await response.json()
             response_data = source_lng, response_data[0]["translations"][0]["text"]
             print(response_data)
 
-        async with session.post(url, params=params_auto, headers=headers, json=body) as response:
+        async with session.post(
+            url, params=params_auto, headers=headers, json=body
+        ) as response:
             response_data_auto = await response.json()
             response_data_auto = (
-                             response_data_auto[0]["detectedLanguage"]["language"],
-                             response_data_auto[0]["translations"][0]["text"],
-                             )
+                response_data_auto[0]["detectedLanguage"]["language"],
+                response_data_auto[0]["translations"][0]["text"],
+            )
             print(response_data_auto)
             if response_data == response_data_auto:
                 print("The translation is correct")
                 return response_data[1]
             else:
                 print("Translation error")
+                return "Translation error"
 
 
 if __name__ == "__main__":
@@ -79,4 +85,3 @@ if __name__ == "__main__":
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(translate(source_lng, target_lng, text))
-
