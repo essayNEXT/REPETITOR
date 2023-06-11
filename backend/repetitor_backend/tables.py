@@ -154,8 +154,7 @@ class RightAnswItem(Table):
         references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
     item = ForeignKey(
-        references=Item,
-        on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+        references=Item, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
 
 
