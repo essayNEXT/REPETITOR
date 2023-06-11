@@ -35,7 +35,7 @@ APP_CONFIG = AppConfig(
         WrongAnswItem,
         RightAnswItem,
         Question,
-        Cards
+        Cards,
     ],
     migration_dependencies=[],
     commands=[],
