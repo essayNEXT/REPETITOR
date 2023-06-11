@@ -7,7 +7,7 @@ from repetitor_backend.external_api.google import translate
 
 
 async def test_translate() -> None:
-    # simply test: source 
+    # simply test: source
     result = await translate(target="EN", text="додати")
     print(result)
 

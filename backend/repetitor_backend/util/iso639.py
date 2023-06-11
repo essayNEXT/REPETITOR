@@ -3,6 +3,8 @@ from enum import Enum
 
 
 class Iso639(str, Enum):
+    """Describe constant for iso639_match target."""
+
     PART3 = "part3"
     PART2B = "part2b"
     PART2T = "part2t"
@@ -12,7 +14,7 @@ class Iso639(str, Enum):
 
 def iso639_match(lng: str, target: Iso639 = Iso639.PART1) -> str:
     """Translate language name (in the terminology of iso639) to Iso639.
-    
+
     input string are matching in next order:
         ISO 639-3 codes (among the active codes)
         ISO 639-2 (bibliographic) codes
@@ -21,7 +23,7 @@ def iso639_match(lng: str, target: Iso639 = Iso639.PART1) -> str:
         ISO 639-3 codes (among the retired codes)
         ISO 639-3 reference language names
         ISO 639-3 alternative language names (the "print" ones)
-        ISO 639-3 alternative language names (the "inverted" ones) 
+        ISO 639-3 alternative language names (the "inverted" ones)
 
     if lng no matches any language, return "no match"
     WARNING: returning value may be None

@@ -20,8 +20,6 @@ def translate_text(target: str, text: str) -> dict:
 
 
 async def translate(target: str, text: str) -> dict:
-    """Translate 'text' to language 'target' (ISO 639-1).
-    
-    """
+    """Translate 'text' to language 'target' (ISO 639-1)."""
     result = await asyncio.to_thread(translate_text, target, text)
     return result
