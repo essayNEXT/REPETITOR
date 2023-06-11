@@ -1,5 +1,4 @@
 import aiohttp
-import asyncio
 import uuid
 import os
 from dotenv import load_dotenv
@@ -21,7 +20,6 @@ async def translate(
     api_key: str = API_KEY,
     location: str = LOCATION,
 ) -> aiohttp.ClientResponse:
-
     """
     The function returns the translation of the entered text, in addition,
     it compares the received translation with the "auto-detect input language"
@@ -71,17 +69,3 @@ async def translate(
             else:
                 print("Translation error")
                 return "Translation error"
-
-
-if __name__ == "__main__":
-    source_lng = "en"
-    target_lng = "uk"
-    text = "dog"
-
-    # bg("куче") = en("dog") - провокуєм помилку
-    # source_lng = "uk"
-    # target_lng = "en"
-    # text = "куче"
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(translate(source_lng, target_lng, text))
