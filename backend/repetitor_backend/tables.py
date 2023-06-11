@@ -91,14 +91,10 @@ class Item(Table):
     sound = Varchar(null=True)
     is_active = Boolean(default=True)
     author = ForeignKey(
-        references=Customer,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=Customer, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
     context = ForeignKey(
-        references=Context,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=Context, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
 
 
@@ -126,19 +122,13 @@ class ItemRelation(Table):
     id = UUID(primary_key=True)
     is_active = Boolean(default=True)
     author = ForeignKey(
-        references=Customer,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=Customer, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
     explanation = ForeignKey(
-        references=Explanation,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=Explanation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
     type = ForeignKey(
-        references=RelationType,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=RelationType, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
 
 
@@ -148,14 +138,10 @@ class WrongAnswItem(Table):
     id = UUID(primary_key=True)
     is_active = Boolean(default=True)
     relation = ForeignKey(
-        references=ItemRelation,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
     item = ForeignKey(
-        references=Item,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=Item, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
 
 
@@ -165,14 +151,11 @@ class RightAnswItem(Table):
     id = UUID(primary_key=True)
     is_active = Boolean(default=True)
     relation = ForeignKey(
-        references=ItemRelation,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
     item = ForeignKey(
         references=Item,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
 
 
@@ -182,14 +165,10 @@ class Question(Table):
     id = UUID(primary_key=True)
     is_active = Boolean(default=True)
     relation = ForeignKey(
-        references=ItemRelation,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
     item = ForeignKey(
-        references=Item,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=Item, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
 
 
@@ -202,17 +181,11 @@ class Cards(Table):
     last_date = Timestamptz()
     is_active = Boolean(default=True)
     author = ForeignKey(
-        references=Customer,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=Customer, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
     user = ForeignKey(
-        references=Customer,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=Customer, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
     item_relation = ForeignKey(
-        references=ItemRelation,
-        on_delete=OnDelete.restrict,
-        on_update=OnUpdate.cascade
+        references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
