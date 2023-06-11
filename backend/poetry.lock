@@ -1274,6 +1274,21 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "python-iso639"
+version = "2023.4.13"
+description = "Look-up utilities for ISO 639 language codes and names"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "python-iso639-2023.4.13.tar.gz", hash = "sha256:909f1bbef03d82517b5c5b60837f16e61968ad7572d795b80b26ceacfab9a0ea"},
+    {file = "python_iso639-2023.4.13-py3-none-any.whl", hash = "sha256:ea72885d47d20117aeb1ed8c561b4690dd05ca4a5c74df285644b4d215a1b688"},
+]
+
+[package.extras]
+dev = ["black (==23.1.0)", "build (==0.10.0)", "flake8 (==6.0.0)", "pytest (==7.2.1)", "twine (==4.0.2)"]
+
+[[package]]
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
@@ -1684,4 +1699,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1f27df24015c2f7c5445ad2ffd76acf11d40174bb8c403b805435d5d68b3666d"
+content-hash = "50df12051c71cd0939873ed29892201c2a58d94ffabf138ddad5819f3493653a"
