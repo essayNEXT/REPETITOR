@@ -1,6 +1,5 @@
 from uuid import UUID
 from repetitor_backend.tables import Customer
-from typing import Optional
 
 
 async def get_customer(customer_id: UUID | int):
