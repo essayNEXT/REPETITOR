@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import ValidationError
 from starlette.responses import JSONResponse
 
+
 from repetitor_backend.settings.app import app_settings
 from repetitor_backend import api
 
@@ -9,6 +10,7 @@ from repetitor_backend import api
 def create_app(settings) -> FastAPI:
     """Create fastAPI app."""
     app = FastAPI(
+        title="Repetitor",
         docs_url=f"{app_settings.URL_API_PREFIX}/docs"
         if not app_settings.is_prod()
         else None,
