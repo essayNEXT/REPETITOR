@@ -11,10 +11,6 @@ router = APIRouter()
 
 
 @router.get("/customer")
-async def get_customer(
-        customer_id: UUID | int
-):
-    result = await customer.get_customer(
-        customer_id=customer_id
-    )
+async def get_customer(customer_id: UUID | int):
+    result = await customer.get_customer(customer_id=customer_id)
     return result
