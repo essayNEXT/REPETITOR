@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import ValidationError
 from starlette.responses import JSONResponse
 
+
 from repetitor_backend.settings.app import app_settings
 from repetitor_backend import api
 
