@@ -36,4 +36,3 @@ class CustomerCreateRequest(BaseModel):
     tlg_user_id: int
     tlg_language: str = Field(max_length=10)
     tlg_first_name: str = Field(max_length=50)
-
