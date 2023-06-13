@@ -22,5 +22,5 @@ async def create_customer(new_customer: CustomerCreateRequest):
         customer_class=new_customer.customer_class,
         tlg_user_id=new_customer.tlg_user_id,
         tlg_language=new_customer.tlg_language,
-        tlg_first_name=new_customer.tlg_first_name
+        tlg_first_name=new_customer.tlg_first_name,
     )

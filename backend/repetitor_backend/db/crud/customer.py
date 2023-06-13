@@ -37,8 +37,7 @@ async def create_new_customer(
     native_language: str = None,
     first_name: str = None,
     last_name: str = None,
-    email: EmailStr = None
-
+    email: EmailStr = None,
 ):
     customer_uuid = get_customer_type(name=customer_class)
     result = await Customer.insert(
