@@ -6,7 +6,6 @@ from repetitor_backend.tables import Customer
 from repetitor_backend.db.crud.customertype import get_customer_type
 
 
-
 async def get_customer(customer_id: UUID | int):
     """
     Get existing customer according to match conditions:
