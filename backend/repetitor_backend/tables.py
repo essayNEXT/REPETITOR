@@ -8,6 +8,9 @@ from piccolo.columns import (
     Email,
     Text,
     Timestamptz,
+    Integer,
+    OnDelete,
+    OnUpdate,
 )
 
 
@@ -77,3 +80,111 @@ class CustomerContext(Table):
     context_2 = ForeignKey(references=Context)
     last_date = Timestamptz()
     is_active = Boolean(default=True)
+
+
+class Item(Table):
+    """Describe item class."""
+
+    id = UUID(primary_key=True)
+    text = Text(null=False)
+    image = Varchar(null=True)
+    sound = Varchar(null=True)
+    is_active = Boolean(default=True)
+    author = ForeignKey(
+        references=Customer, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+    context = ForeignKey(
+        references=Context, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+
+
+class Explanation(Table):
+    """Describe explanation class."""
+
+    id = UUID(primary_key=True)
+    description = Varchar(null=False)
+    explanation = Text(null=True)
+    is_active = Boolean(default=True)
+
+
+class RelationType(Table):
+    """Describe relation type class."""
+
+    id = UUID(primary_key=True)
+    name = Varchar(length=30, null=False)
+    description = Text(null=True)
+    is_active = Boolean(default=True)
+
+
+class ItemRelation(Table):
+    """Describe item relation class."""
+
+    id = UUID(primary_key=True)
+    is_active = Boolean(default=True)
+    author = ForeignKey(
+        references=Customer, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+    explanation = ForeignKey(
+        references=Explanation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+    type = ForeignKey(
+        references=RelationType, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+
+
+class WrongAnswItem(Table):
+    """Describe WrongAnswItem class."""
+
+    id = UUID(primary_key=True)
+    is_active = Boolean(default=True)
+    relation = ForeignKey(
+        references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+    item = ForeignKey(
+        references=Item, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+
+
+class RightAnswItem(Table):
+    """Describe RightAnswItem class."""
+
+    id = UUID(primary_key=True)
+    is_active = Boolean(default=True)
+    relation = ForeignKey(
+        references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+    item = ForeignKey(
+        references=Item, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+
+
+class Question(Table):
+    """Describe question class."""
+
+    id = UUID(primary_key=True)
+    is_active = Boolean(default=True)
+    relation = ForeignKey(
+        references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+    item = ForeignKey(
+        references=Item, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+
+
+class Cards(Table):
+    """Describe cards class."""
+
+    id = UUID(primary_key=True)
+    repetition_level = Integer()
+    memorization_stage = Integer()
+    last_date = Timestamptz()
+    is_active = Boolean(default=True)
+    author = ForeignKey(
+        references=Customer, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+    user = ForeignKey(
+        references=Customer, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+    item_relation = ForeignKey(
+        references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
