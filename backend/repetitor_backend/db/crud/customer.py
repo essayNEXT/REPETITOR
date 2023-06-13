@@ -1,5 +1,10 @@
 from uuid import UUID
+
+from pydantic import EmailStr
+
 from repetitor_backend.tables import Customer
+from repetitor_backend.db.crud.customertype import get_customer_type
+
 
 
 async def get_customer(customer_id: UUID | int):
@@ -20,4 +25,33 @@ async def get_customer(customer_id: UUID | int):
     if isinstance(customer_id, UUID):
         qwery = Customer.objects().where(Customer.id == customer_id)
         result = await qwery
+    return result
+
+
+async def create_new_customer(
+        customer_class: str,
+        tlg_user_id: int,
+        tlg_language: str,
+        tlg_first_name: str,
+        tlg_user_name: str = None,
+        tlg_last_name: str = None,
+        native_language: str = None,
+        first_name: str = None,
+        last_name: str = None,
+        email: EmailStr = None
+
+):
+    customer_uuid = get_customer_type(name=customer_class)
+    result = await Customer.insert(Customer(
+        customer_class=customer_uuid[0].id,
+        tlg_user_id=tlg_user_id,
+        tlg_language=tlg_language,
+        tlg_user_name=tlg_user_name,
+        tlg_first_name=tlg_first_name,
+        tlg_last_name=tlg_last_name,
+        first_name=first_name,
+        native_language=native_language,
+        last_name=last_name,
+        email=email,
+    ))
     return result

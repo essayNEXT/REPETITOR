@@ -8,7 +8,7 @@ class CustomerResponse(BaseModel):
     id: UUID
     customer_class: UUID
     tlg_user_id: int
-    tlg_first_name = Field(max_length=50)
+    tlg_first_name: str = Field(max_length=50)
     is_active: bool
 
     @staticmethod
@@ -32,7 +32,7 @@ class CustomerResponse(BaseModel):
 
 
 class CustomerCreateRequest(BaseModel):
-    customer_class: UUID
+    customer_class: str
     tlg_user_id: int
     tlg_language: str = Field(max_length=10)
     tlg_first_name: str = Field(max_length=50)
