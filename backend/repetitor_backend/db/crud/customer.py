@@ -39,7 +39,7 @@ async def create_new_customer(
     last_name: str = None,
     email: EmailStr = None,
 ):
-    customer_uuid = get_customer_type(name=customer_class)
+    customer_uuid = await get_customer_type(name=customer_class)
     result = await Customer.insert(
         Customer(
             customer_class=customer_uuid[0].id,
