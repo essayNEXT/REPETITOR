@@ -41,16 +41,17 @@ async def create_new_customer(
 
 ):
     customer_uuid = get_customer_type(name=customer_class)
-    result = await Customer.insert(Customer(
-        customer_class=customer_uuid[0].id,
-        tlg_user_id=tlg_user_id,
-        tlg_language=tlg_language,
-        tlg_user_name=tlg_user_name,
-        tlg_first_name=tlg_first_name,
-        tlg_last_name=tlg_last_name,
-        first_name=first_name,
-        native_language=native_language,
-        last_name=last_name,
-        email=email,
-    ))
+    result = await Customer.insert(
+        Customer(
+            customer_class=customer_uuid[0].id,
+            tlg_user_id=tlg_user_id,
+            tlg_language=tlg_language,
+            tlg_user_name=tlg_user_name,
+            tlg_first_name=tlg_first_name,
+            tlg_last_name=tlg_last_name,
+            first_name=first_name,
+            native_language=native_language,
+            last_name=last_name,
+            email=email,
+        ))
     return result

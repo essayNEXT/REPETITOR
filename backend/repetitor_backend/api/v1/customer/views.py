@@ -2,7 +2,6 @@ import logging
 from uuid import UUID
 from .serializers import CustomerCreateRequest
 
-
 from fastapi import APIRouter
 from repetitor_backend.db.crud import customer
 
@@ -15,6 +14,7 @@ router = APIRouter()
 async def get_customer(customer_id: UUID | int):
     result = await customer.get_customer(customer_id=customer_id)
     return result
+
 
 @router.post("/customer")
 async def create_customer(new_customer: CustomerCreateRequest):
