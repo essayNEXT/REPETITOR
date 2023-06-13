@@ -28,16 +28,16 @@ async def get_customer(customer_id: UUID | int):
 
 
 async def create_new_customer(
-        customer_class: str,
-        tlg_user_id: int,
-        tlg_language: str,
-        tlg_first_name: str,
-        tlg_user_name: str = None,
-        tlg_last_name: str = None,
-        native_language: str = None,
-        first_name: str = None,
-        last_name: str = None,
-        email: EmailStr = None
+    customer_class: str,
+    tlg_user_id: int,
+    tlg_language: str,
+    tlg_first_name: str,
+    tlg_user_name: str = None,
+    tlg_last_name: str = None,
+    native_language: str = None,
+    first_name: str = None,
+    last_name: str = None,
+    email: EmailStr = None
 
 ):
     customer_uuid = get_customer_type(name=customer_class)
@@ -53,5 +53,6 @@ async def create_new_customer(
             native_language=native_language,
             last_name=last_name,
             email=email,
-        ))
+        )
+    )
     return result
