@@ -28,16 +28,16 @@ async def get_customer(customer_id: UUID | int = None):
 
 
 async def create_new_customer(
-        customer_class: str,
-        tlg_user_id: int,
-        tlg_language: str,
-        tlg_first_name: str,
-        tlg_user_name: str = None,
-        tlg_last_name: str = None,
-        native_language: str = None,
-        first_name: str = None,
-        last_name: str = None,
-        email: EmailStr = None,
+    customer_class: str,
+    tlg_user_id: int,
+    tlg_language: str,
+    tlg_first_name: str,
+    tlg_user_name: str = None,
+    tlg_last_name: str = None,
+    native_language: str = None,
+    first_name: str = None,
+    last_name: str = None,
+    email: EmailStr = None,
 ):
     try:
         customer_uuid = await get_customer_type(name=customer_class)
@@ -57,8 +57,6 @@ async def create_new_customer(
         )
         return result
     except UniqueViolationError:
-        return (f"A user with this ID ({tlg_user_id}) already exists")
+        return f"A user with this ID ({tlg_user_id}) already exists"
     except IndexError:
-        return (f"There is no such user type ({customer_class})")
-
-
+        return f"There is no such user type ({customer_class})"
