@@ -52,7 +52,6 @@ async def translate(
     # You can pass more than one object in body.
     body = [{"text": text}]
 
-
     async with aiohttp.ClientSession() as session:
         async with session.post(
             url, params=params, headers=headers, json=body
@@ -66,12 +65,12 @@ async def translate(
         time.sleep(1)
         body_rev = [{"text": res}]
         async with session.post(
-                url, params=params_reverse, headers=headers, json=body_rev
+            url, params=params_reverse, headers=headers, json=body_rev
         ) as response:
             response_data = await response.json()
             response_data = source_lng, response_data[0]["translations"][0]["text"]
             res_rev = response_data[1]
-            #print(text.lower(), res_rev.lower())
+            # print(text.lower(), res_rev.lower())
 
         return res if text.lower() == res_rev.lower() else "Translation error"
 
@@ -93,20 +92,24 @@ async def translate(
         #         # source_lng, target_lng = target_lng, source_lng
         #         print("Translation error")
 
+
 async def translate_lng(
-    interface_lng: str,   # accept_language
+    interface_lng: str,
     url: str = URL_lNG,
 ) -> aiohttp.ClientResponse:
-    """ Отримує набір мов, які зараз підтримуються іншими операціями Перекладача. """
+    """Отримує набір мов, які зараз підтримуються іншими операціями Перекладача."""
 
-    params = {"api-version": "3.0", "scope": "translation"}  # translation,transliteration,dictionary}
+    params = {
+        "api-version": "3.0",
+        "scope": "translation"
+    }  # translation,transliteration,dictionary
 
-    headers = {"Accept-Language": interface_lng, }
+    headers = {
+        "Accept-Language": interface_lng,
+    }
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-            url, params=params, headers=headers
-        ) as response:
+        async with session.get(url, params=params, headers=headers) as response:
             response_data = await response.json()
 
         return response_data["translation"]
