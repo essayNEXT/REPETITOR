@@ -9,7 +9,7 @@ async def test_microsoft_lng():
     # словник підтримуваних мов
     print(
         json.dumps(
-            result, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': ')
+            result, sort_keys=True, ensure_ascii=False, indent=4, separators=(",", ": ")
         )
     )
 

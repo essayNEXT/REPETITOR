@@ -101,7 +101,7 @@ async def translate_lng(
 
     params = {
         "api-version": "3.0",
-        "scope": "translation"
+        "scope": "translation",
     }  # translation,transliteration,dictionary
 
     headers = {
