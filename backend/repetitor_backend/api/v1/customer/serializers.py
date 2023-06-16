@@ -1,5 +1,6 @@
+from typing import Optional
 from uuid import UUID
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 
 from repetitor_backend import tables
 
@@ -36,3 +37,9 @@ class CustomerCreateRequest(BaseModel):
     tlg_user_id: int
     tlg_language: str = Field(max_length=10)
     tlg_first_name: str = Field(max_length=50)
+    tlg_user_name: Optional[str] = Field(max_length=50)
+    tlg_last_name: Optional[str] = Field(max_length=50)
+    native_language: Optional[str] = Field(max_length=10)
+    first_name: Optional[str] = Field(max_length=50)
+    last_name: Optional[str] = Field(max_length=50)
+    email: Optional[EmailStr]

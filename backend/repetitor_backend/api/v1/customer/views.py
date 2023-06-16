@@ -23,4 +23,10 @@ async def create_customer(new_customer: CustomerCreateRequest):
         tlg_user_id=new_customer.tlg_user_id,
         tlg_language=new_customer.tlg_language,
         tlg_first_name=new_customer.tlg_first_name,
+        tlg_user_name=new_customer.tlg_user_name,
+        tlg_last_name=new_customer.tlg_last_name,
+        native_language=new_customer.native_language,
+        first_name=new_customer.first_name,
+        last_name=new_customer.last_name,
+        email=new_customer.email,
     )
