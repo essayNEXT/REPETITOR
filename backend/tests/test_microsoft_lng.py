@@ -7,7 +7,10 @@ async def test_microsoft_lng():
     result = await translate_lng("uk")
 
     # словник підтримуваних мов
-    print(json.dumps(result, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': ')))
+    print(
+        json.dumps(result, sort_keys=True, ensure_ascii=False, indent=4, separators=(',', ': ')
+        )
+    )
 
     # список підтримуваних мов
     res = [key for key in result]
