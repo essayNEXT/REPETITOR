@@ -43,3 +43,19 @@ class CustomerCreateRequest(BaseModel):
     first_name: Optional[str] = Field(max_length=50)
     last_name: Optional[str] = Field(max_length=50)
     email: Optional[EmailStr]
+    is_active: Optional[bool]
+
+
+class CustomerUpdateRequest(BaseModel):
+    id: UUID
+    customer_class: Optional[str]
+    tlg_user_id: Optional[int]
+    tlg_language: Optional[str] = Field(max_length=10)
+    tlg_first_name: Optional[str] = Field(max_length=50)
+    tlg_user_name: Optional[str] = Field(max_length=50)
+    tlg_last_name: Optional[str] = Field(max_length=50)
+    native_language: Optional[str] = Field(max_length=10)
+    first_name: Optional[str] = Field(max_length=50)
+    last_name: Optional[str] = Field(max_length=50)
+    email: Optional[EmailStr]
+    is_active: Optional[bool]
