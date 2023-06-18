@@ -83,7 +83,7 @@ async def update_item(update_item: UpdateItemRequest) -> UUID | None:
 
 
 @router.delete("/items/")
-async def update_item(id: UUID) -> UUID | None:
+async def delete_item(id: UUID) -> UUID | None:
     """Update Item according of "query" parameter"""
 
     return await item.delete(id)
