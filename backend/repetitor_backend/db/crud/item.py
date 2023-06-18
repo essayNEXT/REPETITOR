@@ -83,36 +83,6 @@ async def update(
         raise TypeError(
             f"parameter 'id' for function update_item must be UUID-type, but got {type(id)}"
         )
-    # kwargs = {}
-    # if text is not None:
-    #     if not isinstance(text, str):
-    #         raise TypeError(
-    #             f"parameter 'text' for function update_item must be str-type, but got {type(text)}"
-    #         )
-    #     # if len(text) > 20:
-    #     #     raise ValueError(
-    #     #         f"the 'text' parameter must be no more than 20 characters long, received {len(text)}"
-    #     #     )
-    #     kwargs["text"] = text
-    #
-    # if image is not None:
-    #     if not isinstance(image, str):
-    #         raise TypeError(
-    #             f"parameter 'image' for function update_item must be str-type, but got {type(image)}"
-    #         )
-    #     kwargs["image"] = image
-    # if sound is not None:
-    #     if not isinstance(sound, str):
-    #         raise TypeError(
-    #             f"parameter 'image' for function update_item must be str-type, but got {type(sound)}"
-    #         )
-    #     kwargs["sound"] = sound
-    # if is_active is not None:
-    #     if not isinstance(is_active, bool):
-    #         raise TypeError(
-    #             f"parameter 'is_active' for function update_item must be bool-type, but got {type(is_active)}"
-    #         )
-    #     kwargs["is_active"] = is_active
     filtered_param = {k: v for k, v in update_param.items() if v is not None}
     result = (
         await tables.Item.update(filtered_param)
