@@ -9,7 +9,14 @@ class CustomerResponse(BaseModel):
     id: UUID
     customer_class: UUID
     tlg_user_id: int
-    tlg_first_name: str = Field(max_length=50)
+    tlg_language: str
+    tlg_first_name: str
+    tlg_user_name: str
+    tlg_last_name: str
+    native_language: str
+    first_name: str
+    last_name: str
+    email: str
     is_active: bool
 
     @staticmethod
@@ -24,11 +31,11 @@ class CustomerResponse(BaseModel):
             tlg_user_name=db_model.tlg_user_name,
             tlg_first_name=db_model.tlg_first_name,
             tlg_last_name=db_model.tlg_last_name,
-            is_active=db_model.is_active,
             native_language=db_model.native_language,
             first_name=db_model.first_name,
             last_name=db_model.last_name,
             email=db_model.email,
+            is_active=db_model.is_active,
         )
 
 
@@ -43,7 +50,6 @@ class CustomerCreateRequest(BaseModel):
     first_name: Optional[str] = Field(max_length=50)
     last_name: Optional[str] = Field(max_length=50)
     email: Optional[EmailStr]
-    is_active: Optional[bool]
 
 
 class CustomerUpdateRequest(BaseModel):
