@@ -4,7 +4,6 @@ from uuid import UUID
 from pydantic import EmailStr
 from asyncpg.exceptions import UniqueViolationError
 from repetitor_backend.tables import Customer
-from repetitor_backend.db.crud.customertype import get_customer_type
 
 
 async def get_customer(customer_id: UUID | int = None) -> List[Customer]:
@@ -42,7 +41,7 @@ async def get_customer(customer_id: UUID | int = None) -> List[Customer]:
 
 
 async def create_new_customer(
-    customer_class: str,
+    customer_class: UUID,
     tlg_user_id: int,
     tlg_language: str,
     tlg_first_name: str,
@@ -56,7 +55,7 @@ async def create_new_customer(
     """Created a new customer.
 
     parameters:
-    - customer_clas: str - name of customer class, used for get UUID for ForeignKey
+    - customer_clas: UUID of customer class, used for ForeignKey links with CustomerType
     - tlg_user_id: BigInt(null=False, unique=True) - telegram_id of new customer
     - tlg_language: Varchar(lenght=10, null=False) - language of Telegram interface
     - tlg_user_name: Varchar(length=50, null=True) - username of customer in Telegram
@@ -71,11 +70,9 @@ async def create_new_customer(
     - warning: str - in case of insert wrong data for create a new customer
     """
     try:
-        customer_uuid = await get_customer_type(name=customer_class)
-        customer_uuid = customer_uuid[0].id
         result = await Customer.insert(
             Customer(
-                customer_class=customer_uuid,
+                customer_class=customer_class,
                 tlg_user_id=tlg_user_id,
                 tlg_language=tlg_language,
                 tlg_user_name=tlg_user_name,
@@ -96,7 +93,7 @@ async def create_new_customer(
 
 async def update_customer(
     id: UUID,
-    customer_class: Optional[str] = None,
+    customer_class: Optional[UUID] = None,
     tlg_user_id: Optional[int] = None,
     tlg_language: Optional[str] = None,
     tlg_first_name: Optional[str] = None,
@@ -112,7 +109,7 @@ async def update_customer(
 
     parameters:
     - id: UUID - primary key of customer record
-    - customer_clas: str - name of customer class, used for get UUID for ForeignKey
+    - customer_clas: UUID of customer class, used for ForeignKey links with CustomerType
     - tlg_user_id: BigInt(null=False, unique=True) - telegram_id of new customer
     - tlg_language: Varchar(lenght=10, null=False) - language of Telegram interface
     - tlg_user_name: Varchar(length=50, null=True) - username of customer in Telegram

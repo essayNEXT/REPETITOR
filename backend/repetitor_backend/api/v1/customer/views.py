@@ -44,7 +44,7 @@ async def create_customer(new_customer: CustomerCreateRequest) -> UUID:
     Create a new customer.
 
     Parameters:
-    - customer_clas: str - name of customer class, used for get UUID for ForeignKey
+    - customer_clas: UUID of customer class, used for ForeignKey links with CustomerType
     - tlg_user_id: int - telegram_id of new customer, required
     - tlg_language: str, max lenght is 10 symbols - language of Telegram interface, required
     - tlg_user_name: str, max lenght is 50 symbols - username of customer in Telegram
@@ -79,7 +79,7 @@ async def update_customer(update_customer: CustomerUpdateRequest) -> None:
 
     Parameters:
     - id: UUID - primary key of customer record
-    - customer_clas: str - name of customer class, used for get UUID for ForeignKey
+    - customer_clas: UUID of customer class, used for ForeignKey links with CustomerType
     - tlg_user_id: int - telegram_id of new customer, required
     - tlg_language: str, max lenght is 10 symbols - language of Telegram interface, required
     - tlg_user_name: str, max lenght is 50 symbols - username of customer in Telegram

@@ -40,7 +40,7 @@ class CustomerResponse(BaseModel):
 
 
 class CustomerCreateRequest(BaseModel):
-    customer_class: str
+    customer_class: UUID
     tlg_user_id: int
     tlg_language: str = Field(max_length=10)
     tlg_first_name: str = Field(max_length=50)
@@ -54,7 +54,7 @@ class CustomerCreateRequest(BaseModel):
 
 class CustomerUpdateRequest(BaseModel):
     id: UUID
-    customer_class: Optional[str]
+    customer_class: Optional[UUID]
     tlg_user_id: Optional[int]
     tlg_language: Optional[str] = Field(max_length=10)
     tlg_first_name: Optional[str] = Field(max_length=50)
