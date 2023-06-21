@@ -73,7 +73,7 @@ async def create_customer(new_customer: CustomerCreateRequest) -> UUID:
 
 
 @router.put("/customer")
-async def update_customer(update_customer: CustomerUpdateRequest) -> UUID:
+async def update_customer(update_customer: CustomerUpdateRequest) -> UUID | None:
     """
     Update an existing customer record.
 
@@ -91,7 +91,8 @@ async def update_customer(update_customer: CustomerUpdateRequest) -> UUID:
     - email: str - email of customer
     - is_active: bool - activity state of customer
 
-    Return None.
+    Return:
+    -Customer.id: UUID - primary key for updated customer record - UUID type
     """
     return await customer.update_customer(
         id=update_customer.id,
@@ -110,7 +111,7 @@ async def update_customer(update_customer: CustomerUpdateRequest) -> UUID:
 
 
 @router.delete("/customer")
-async def delete_customer(id: UUID) -> UUID:
+async def delete_customer(id: UUID) -> UUID | None:
     """
     Delete an existing customer record.
 

@@ -121,7 +121,8 @@ async def update_customer(
     - email: Email(null=True) - email of customer
     - is_active: bool - activity state of customer
 
-    Return None.
+    Return:
+    -Customer.id: UUID - primary key for updated customer record - UUID type
     """
     if not isinstance(id, UUID):
         raise TypeError(
@@ -156,6 +157,9 @@ async def delete_customer(id: UUID) -> UUID | None:
 
     parameters:
     - id: UUID - primary key of customer record
+
+    Return:
+    -Customer.id: UUID - primary key for deleted customer record - UUID type
     """
     result = await update_customer(id=id, is_active=False)
     return result
