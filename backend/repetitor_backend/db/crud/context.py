@@ -9,7 +9,7 @@ from repetitor_backend.api.v1.context.serializers import (
 
 
 async def create(**kwargs: ContextCreateRequest) -> UUID:
-    """Create new item.
+    """Create new context.
 
     parameters:
 
@@ -21,7 +21,7 @@ async def create(**kwargs: ContextCreateRequest) -> UUID:
 
 
 async def get(**get_param: GetContextRequest) -> list[tables.Context]:
-    """Get a list of existing items according to match conditions:"""
+    """Get a list of existing contexts according to match conditions:"""
     query = (
         tables.Context.objects()
     )  # .where(tables.Context.is_active == get_param.is_active)
@@ -38,7 +38,7 @@ async def get(**get_param: GetContextRequest) -> list[tables.Context]:
 
 
 async def update(id: UUID, **update_param: UpdateContextRequest) -> UUID | None:
-    """Update existing record in item.
+    """Update existing record in context.
 
     parameters:
 
@@ -57,7 +57,7 @@ async def update(id: UUID, **update_param: UpdateContextRequest) -> UUID | None:
 
 
 async def delete(id: UUID) -> UUID | None:
-    """Delete context_type with context_type.id == id.
+    """Delete context with context.id == id.
 
     parameter:
     - id - UUID.
@@ -68,7 +68,7 @@ async def delete(id: UUID) -> UUID | None:
     """
     if not isinstance(id, UUID):
         raise TypeError(
-            f"parameter 'id' for function del_context_type must be UUID-type, but got {type(id)}"
+            f"parameter 'id' for function del_context must be UUID-type, but got {type(id)}"
         )
     result = await update(id=id, is_active=False)
     return result

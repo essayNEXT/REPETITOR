@@ -93,7 +93,7 @@ async def update(
 
 
 async def delete(id: UUID) -> UUID | None:
-    """Delete context_type with context_type.id == id.
+    """Delete item with item.id == id.
 
     parameter:
     - id - UUID.
@@ -104,7 +104,7 @@ async def delete(id: UUID) -> UUID | None:
     """
     if not isinstance(id, UUID):
         raise TypeError(
-            f"parameter 'id' for function del_context_type must be UUID-type, but got {type(id)}"
+            f"parameter 'id' for function del_item must be UUID-type, but got {type(id)}"
         )
     result = await update(id=id, is_active=False)
     return result

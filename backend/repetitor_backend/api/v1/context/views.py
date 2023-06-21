@@ -23,8 +23,6 @@ async def create_context(new_context: ContextCreateRequest) -> UUID:
     """Create a new type of customer.
 
     Parameters:
-    - name: str, max lenght is 50 symbols, required
-    - describe: str, max lenght is 200 symbols, required
     """
     return await context.create(**new_context.dict())
 
