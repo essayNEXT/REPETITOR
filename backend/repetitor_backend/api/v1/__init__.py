@@ -7,5 +7,5 @@ from repetitor_backend.api.v1.type.views import router as type_router
 
 router = APIRouter()
 
-router.include_router(customers_router, tags=["customers"])
-router.include_router(type_router, tags=["customers"])
+router.include_router(customers_router, tags=["Customers"])
+router.include_router(type_router, tags=["Type"])
