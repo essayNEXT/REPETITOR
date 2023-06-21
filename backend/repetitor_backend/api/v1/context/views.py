@@ -7,9 +7,9 @@ from fastapi import APIRouter, Query
 from repetitor_backend import tables
 from .serializers import (
     ContextCreateRequest,
-    ContextResponse,
     UpdateContextRequest,
     GetContextRequest,
+    GetContextResponse,
 )
 from repetitor_backend.db.crud import context
 
@@ -31,7 +31,7 @@ async def create_context(new_context: ContextCreateRequest) -> UUID:
 
 @router.get(
     "/context/",
-    response_model=List[ContextResponse],
+    response_model=List[GetContextResponse],
     response_model_exclude_none=True,
     response_model_exclude={"is_active"},
 )
@@ -54,7 +54,6 @@ async def get_context(  # get_param_context: GetContextRequest
         is_active=is_active,
     )
     results = await context.get(**get_param_context.dict())
-    1 == 1
     if is_key_only:
         fin_result = [
             {"id": result.id}
@@ -74,9 +73,7 @@ async def update_context(
 ) -> UUID | None:
     """Update Context according of "query" parameter"""
 
-    results = await context.update(id=id, **update_param_context.dict())
-    1 == 1
-    return results
+    return await context.update(id=id, **update_param_context.dict())
 
 
 @router.delete("/context/")

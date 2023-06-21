@@ -30,5 +30,10 @@ class UpdateContextRequest(BaseModel):
 class GetContextRequest(UpdateContextRequest):
     id: UUID | None
 
+
+class GetContextResponse(GetContextRequest):
+    is_active: bool | None
+
+
 class DeleteContextRequest(ContextResponse):
     pass

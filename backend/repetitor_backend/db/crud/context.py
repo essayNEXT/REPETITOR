@@ -1,8 +1,4 @@
 from uuid import UUID
-from typing import Optional, List, Annotated
-
-from fastapi import Query
-from pydantic import BaseModel
 
 from repetitor_backend import tables
 from repetitor_backend.api.v1.context.serializers import (
@@ -24,7 +20,7 @@ async def create(**kwargs: ContextCreateRequest) -> UUID:
     return result[0]["id"]
 
 
-async def get(**get_param: GetContextRequest) -> List[tables.Context]:
+async def get(**get_param: GetContextRequest) -> list[tables.Context]:
     """Get a list of existing items according to match conditions:"""
     query = (
         tables.Context.objects()
