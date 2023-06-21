@@ -73,7 +73,7 @@ async def create_customer(new_customer: CustomerCreateRequest) -> UUID:
 
 
 @router.put("/customer")
-async def update_customer(update_customer: CustomerUpdateRequest) -> None:
+async def update_customer(update_customer: CustomerUpdateRequest) -> UUID:
     """
     Update an existing customer record.
 
@@ -110,7 +110,7 @@ async def update_customer(update_customer: CustomerUpdateRequest) -> None:
 
 
 @router.delete("/customer")
-async def delete_customer(id: UUID) -> None:
+async def delete_customer(id: UUID) -> UUID:
     """
     Delete an existing customer record.
 

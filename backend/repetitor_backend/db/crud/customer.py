@@ -51,7 +51,7 @@ async def create_new_customer(
     first_name: str = None,
     last_name: str = None,
     email: EmailStr = None,
-) -> UUID | str:
+) -> UUID:
     """Created a new customer.
 
     parameters:
@@ -83,7 +83,7 @@ async def create_new_customer(
                 last_name=last_name,
                 email=email,
             )
-        )
+        ).returning(Customer.id)
         return result[0]["id"]
     except UniqueViolationError:
         return f"A user with this ID ({tlg_user_id}) already exists"
@@ -104,7 +104,7 @@ async def update_customer(
     last_name: Optional[str] = None,
     email: Optional[EmailStr] = None,
     is_active: Optional[bool] = None,
-) -> None:
+) -> UUID | None:
     """Update an existing customer.
 
     parameters:
@@ -144,11 +144,13 @@ async def update_customer(
     for value in update_values:
         if eval(value) is not None:
             kwargs[value] = eval(value)
-    result = await Customer.update(**kwargs).where(Customer.id == id)
-    return result if result else None
+    result = (
+        await Customer.update(**kwargs).where(Customer.id == id).returning(Customer.id)
+    )
+    return result[0]["id"] if result else None
 
 
-async def delete_customer(id: UUID) -> None:
+async def delete_customer(id: UUID) -> UUID | None:
     """
     Delete existing customer record.
 
