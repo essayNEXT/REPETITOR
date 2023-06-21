@@ -16,8 +16,7 @@ async def create(text: str, **kwargs) -> UUID:
 
     if not isinstance(text, str):
         raise TypeError(
-            f"paremeter 'text' and 'image' for context_type must be only\
-str-type, but type(text)={type(text)} "
+            f"paremeter 'text' for context_type must be only str-type, but type(text)={type(text)} "
         )
     elif not len(text) <= 20:
         raise ValueError(f"len(text) must be <= 20, but got len(text)={len(text)}")
@@ -28,8 +27,8 @@ str-type, but type(text)={type(text)} "
 
 
 async def get(
-    id: Optional[UUID] = None,
-    author: Optional[int] = None,
+    id: UUID | None = None,
+    author: UUID | None = None,
     text: Optional[str] = None,
     is_active: Optional[bool] = True,
     context: UUID | None = None,
@@ -42,6 +41,7 @@ async def get(
 ) -> List[tables.Item]:
     """Get a list of existing items according to match conditions:"""
     query = tables.Item.objects().where(tables.Item.is_active == is_active)
+    # filtered_param = {k: v for k, v in update_param.items() if v is not None}
     if id:
         query = query.where(tables.Item.id == id)
     if author:
