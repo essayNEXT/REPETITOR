@@ -24,9 +24,9 @@ class CustomerContextCreateRequest(BaseModel):
 
 
 class UpdateCustomerContextRequest(BaseModel):
-    customer_id: UUID | None
-    context_1_id: UUID | None
-    context_2_id: UUID | None
+    customer: UUID | None
+    context_1: UUID | None
+    context_2: UUID | None
     is_active: bool = True
     pass
 

@@ -20,7 +20,7 @@ router = APIRouter()
 
 @router.post("/context/")
 async def create_context(new_context: ContextCreateRequest) -> UUID:
-    """Create a new type of customer.
+    """Create a new type of context.
 
     Parameters:
     """
