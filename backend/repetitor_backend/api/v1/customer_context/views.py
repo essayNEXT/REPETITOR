@@ -37,7 +37,7 @@ async def create_customer_context(
     response_model_exclude_none=True,
     response_model_exclude={"is_active"},
 )
-async def get_customer_context(  # get_param_customer_context: GetCustomerContextRequest
+async def get_customer_context(
     id: UUID | None = None,
     customer: UUID = None,
     context_1: UUID = None,
