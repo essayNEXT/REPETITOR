@@ -36,7 +36,7 @@ async def create_item(new_item: ItemCreateRequest) -> UUID:
     response_model_exclude={"is_active"},
 )
 async def get_item(
-    text: str,
+    text: str | None = None,
     id: UUID | None = None,
     image: Annotated[
         str | None, Query(min_length=3, max_length=255, regex=REGEX_PATH)
@@ -61,7 +61,6 @@ async def get_item(
         image=image,
         is_active=is_active,
     )
-    1 == 1
     if is_key_only:
         fin_result = [
             {"id": result.id} for result in results if isinstance(result, tables.Item)
@@ -77,9 +76,7 @@ async def get_item(
 async def update_item(update_item: UpdateItemRequest) -> UUID | None:
     """Update Item according of "query" parameter"""
 
-    results = await item.update(**update_item.dict())
-    1 == 1
-    return results
+    return await item.update(**update_item.dict())
 
 
 @router.delete("/items/")
