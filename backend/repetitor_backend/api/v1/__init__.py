@@ -11,8 +11,8 @@ from repetitor_backend.api.v1.customer_context.views import (
 
 router = APIRouter()
 
-router.include_router(customers_router, tags=["customers"])
-router.include_router(type_router, tags=["customers"])
+router.include_router(customers_router, tags=["Customers"])
+router.include_router(type_router, tags=["Type"])
 router.include_router(item_router, tags=["Item"])
 router.include_router(context_router, tags=["Context"])
 router.include_router(customer_context_router, tags=["Customer context"])
