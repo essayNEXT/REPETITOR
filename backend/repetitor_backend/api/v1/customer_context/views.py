@@ -22,9 +22,10 @@ router = APIRouter()
 async def create_customer_context(
     new_customer_context: CustomerContextCreateRequest,
 ) -> UUID:
-    """Create a new customer context.
-
-    Parameters:
+    """creating a new user context or
+    updating the time provided that the combination of three foreign keys already exists in the database.
+    створення нового контексту користувача, або оновлення часу при умові, що комбінація трьох зовн.ключів уже є в БД
+        Parameters:
 
     """
     return await customer_context.create(**new_customer_context.dict())
