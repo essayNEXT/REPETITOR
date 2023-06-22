@@ -8,7 +8,7 @@ from create_bot import bot, dp
 
 async def main():
     logging.basicConfig(level=logging.INFO)
-    dp.message.middleware(new_user.NewUserMiddleware())
+    dp.message.outer_middleware(new_user.NewUserMiddleware())
     await set_commands(bot)
     dp.include_router(inline_kb_test.router)
     dp.include_router(echo.router)

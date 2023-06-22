@@ -1,22 +1,27 @@
 from typing import Callable, Dict, Awaitable, Any
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
-
-# Для проверки работы кода (начало)
-base = [
-    548019148,
-]
+import aiohttp
 
 
-def is_new_user(message: Message) -> bool:
-    return message.from_user.id in base
+async def get_user_id(message: Message) -> int:
+    user_id = message.from_user.id
+    return user_id
 
 
-def create_new_user():
-    return "Новый пользователь"
-
-
-# Для проверки работы кода (конец)
+async def is_new_user(user_id) -> bool:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(
+            f"http://repetitor_backend/api/v1/customer/{user_id}"
+        ) as response:
+            val = await response.json()
+            for item in val:
+                val_id = item["id"]
+                val_active = item["is_active"]
+                if val_id == user_id and val_active is True:
+                    return True
+                else:
+                    return False
 
 
 class NewUserMiddleware(BaseMiddleware):
@@ -26,8 +31,7 @@ class NewUserMiddleware(BaseMiddleware):
         event: Message,
         data: Dict[str, Any],
     ) -> Any:
-        if is_new_user(event):
+        user_id = await get_user_id(message=event)
+        if await is_new_user(user_id):
             return await handler(event, data)
-        await event.answer(
-            f"{create_new_user()}"
-        )  # Вставить функцию создания пользователя
+        await event.answer(f"Новый пользователь {user_id} {await is_new_user(user_id)}")
