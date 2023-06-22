@@ -7,7 +7,7 @@ class ServiceDBSettings(AdvancedBaseSettings):
     USER: str = os.environ.get("POSTGRES_USER", default="repetitor_back")
     PASSWORD: str = os.environ.get("POSTGRES_PASSWORD", default="__back")
     DB: str = os.environ.get("POSTGRES_DB", default="REPETITOR")
-    PORT: int = int(os.environ.get("POSTGRES_PORT", default=5432))
+    PORT: int = int(os.environ.get("POSTGRES_PORT", default=5433))
 
     class Config:
         env_prefix = "POSTGRES_"
