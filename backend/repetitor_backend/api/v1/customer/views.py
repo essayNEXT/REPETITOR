@@ -10,7 +10,7 @@ logger = logging.getLogger()
 router = APIRouter()
 
 
-@router.get("/customer")
+@router.get("/customer/{customer_id}")
 async def get_customer(customer_id: UUID | int) -> List[CustomerResponse]:
     """
     Get list of Customer according to "query" parameter.
