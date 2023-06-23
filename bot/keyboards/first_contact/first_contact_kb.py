@@ -1,6 +1,5 @@
 from ..inline_keyboard import KeyboardOfDict, ContextInlineKeyboardGenerator
 from ..keyboard_translate.kb_translate import translate_context
-from aiogram.types import CallbackQuery
 
 
 class RegisterKeyboard(ContextInlineKeyboardGenerator):

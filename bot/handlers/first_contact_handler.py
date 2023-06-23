@@ -1,6 +1,6 @@
 from aiogram import Router
 from aiogram.filters import Text
-from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
+from aiogram.types import CallbackQuery
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from utils.db.customer_type import get_customer_type
@@ -33,7 +33,7 @@ async def cmd_start(callback: CallbackQuery, state: FSMContext):
         "student"
     )  # Після визначення основних ролей змінимо на стандартний тип
     customer_class = customer_class["id"]
-    new_user_uuid = await create_user(callback, customer_class)
+    await create_user(callback, customer_class)
 
     await callback.message.answer(
         f"Чудове рішення, {callback.from_user.first_name}\nТепер необхідно доповнити інформацію про тебе)"
