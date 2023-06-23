@@ -20,11 +20,17 @@ router = APIRouter()
 
 @router.post("/items/")
 async def create_item(new_item: ItemCreateRequest) -> UUID:
-    """Create a new type of customer.
-
+    """Create new item.
     Parameters:
-    - name: str, max lenght is 50 symbols, required
-    - describe: str, max lenght is 200 symbols, required
+        - text: str, max lenght is 255 symbols - data description, required
+        - image: str, max lenght is 255 symbols - link to associative picture
+        - sound: str, max lenght is 255 symbols - link to associative sound
+        - author: UUID of customer, used for ForeignKey links with Customer, required
+        - context: UUID of context, used for ForeignKey links with Context, required
+        - is_active: bool  = True
+
+    Return:
+    - Item.id: UUID - primary key for new item record - UUID type
     """
     return await item.create(**new_item.dict())
 
@@ -51,7 +57,20 @@ async def get_item(
         bool, Query(description="if only 'id' is needed")
     ] = False,  # якщо потрібно тільки самі
 ) -> list:
-    """Get list of Item according of "query" parameter"""
+    """Get a list of existing item according to match conditions:
+        Parameters:
+        - id: UUID of item
+        - text: str, max lenght is 255 symbols - data description
+        - image: str, max lenght is 255 symbols - link to associative picture
+        - sound: str, max lenght is 255 symbols - link to associative sound
+        - author: UUID of customer, used for ForeignKey links with Customer
+        - context: UUID of context, used for ForeignKey links with Context
+        - is_key_only: bool - as a result, return:
+                - only the ID of the item object;
+                - return all object parameters
+    Return:
+    - List that contains the results of the query
+    """
     results = await item.get(
         id=id,
         author=author,
@@ -74,13 +93,34 @@ async def get_item(
 
 @router.patch("/items/")
 async def update_item(update_item: UpdateItemRequest) -> UUID | None:
-    """Update Item according of "query" parameter"""
+    """Update existing record in customer context.
+
+    parameters:
+    - id: UUID of customer context, required
+    - text: str, max lenght is 255 symbols - data description
+    - image: str, max lenght is 255 symbols - link to associative picture
+    - sound: str, max lenght is 255 symbols - link to associative sound
+    - author: UUID of customer, used for ForeignKey links with Customer
+    - context: UUID of context, used for ForeignKey links with Context
+    Return:
+    - CustomerContext.id: UUID - primary key for new customer context record - UUID type
+    - If there is no record with this id, it returns None
+    """
 
     return await item.update(**update_item.dict())
 
 
 @router.delete("/items/")
 async def delete_item(id: UUID) -> UUID | None:
-    """Update Item according of "query" parameter"""
+    """Delete item with item.id == id.
+
+    parameter:
+    - id - UUID.
+    result:
+    - primary key for deleted record - UUID type.
+    - If there is no record with this id, it returns None.
+
+    If parameter has wrong type - raise TypeError.
+    """
 
     return await item.delete(id)

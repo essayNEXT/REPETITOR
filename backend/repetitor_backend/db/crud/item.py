@@ -9,9 +9,16 @@ from repetitor_backend.api.v1.item.serializers import UpdateItemRequest
 
 async def create(text: str, **kwargs) -> UUID:
     """Create new item.
+    Parameters:
+        - text: str, max lenght is 255 symbols - data description, required
+        - image: str, max lenght is 255 symbols - link to associative picture
+        - sound: str, max lenght is 255 symbols - link to associative sound
+        - author: UUID of customer, used for ForeignKey links with Customer, required
+        - context: UUID of context, used for ForeignKey links with Context, required
+        - is_active: bool  = True
 
-    parameters:
-
+    Return:
+    - Item.id: UUID - primary key for new item record - UUID type
     """
 
     if not isinstance(text, str):
@@ -39,7 +46,18 @@ async def get(
         str | None, Query(min_length=3, max_length=255)  # , regex=REGEX_PATH)
     ] = None,
 ) -> List[tables.Item]:
-    """Get a list of existing items according to match conditions:"""
+    """Get a list of existing item according to match conditions:
+        Parameters:
+        - id: UUID of item
+        - text: str, max lenght is 255 symbols - data description
+        - image: str, max lenght is 255 symbols - link to associative picture
+        - sound: str, max lenght is 255 symbols - link to associative sound
+        - author: UUID of customer, used for ForeignKey links with Customer
+        - context: UUID of context, used for ForeignKey links with Context
+
+    Return:
+    - List that contains the results of the query
+    """
     query = tables.Item.objects().where(tables.Item.is_active == is_active)
     # filtered_param = {k: v for k, v in update_param.items() if v is not None}
     if id:
@@ -58,26 +76,19 @@ async def get(
     return result
 
 
-async def update(
-    id: UUID,
-    **update_param: UpdateItemRequest
-    # author: Optional[int] = None,
-    # is_active: Optional[bool] = True,
-    # context: UUID | None = None,
-    # text: Annotated[
-    #     str | None, Query(min_length=2, max_length=255)
-    # ] = None,
-    # image: Annotated[
-    #     str | None, Query(min_length=3, max_length=255)  # , regex=REGEX_PATH)
-    # ] = None,
-    # sound: Annotated[
-    #     str | None, Query(min_length=3, max_length=255)  # , regex=REGEX_PATH)
-    # ] = None,
-) -> UUID | None:
-    """Update existing record in item.
+async def update(id: UUID, **update_param: UpdateItemRequest) -> UUID | None:
+    """Update existing record in customer context.
 
     parameters:
-
+    - id: UUID of customer context, required
+    - text: str, max lenght is 255 symbols - data description
+    - image: str, max lenght is 255 symbols - link to associative picture
+    - sound: str, max lenght is 255 symbols - link to associative sound
+    - author: UUID of customer, used for ForeignKey links with Customer
+    - context: UUID of context, used for ForeignKey links with Context
+    Return:
+    - CustomerContext.id: UUID - primary key for new customer context record - UUID type
+    - If there is no record with this id, it returns None
     """
     if not isinstance(id, UUID):
         raise TypeError(
@@ -98,7 +109,8 @@ async def delete(id: UUID) -> UUID | None:
     parameter:
     - id - UUID.
     result:
-    - primary key for deleted record - UUID type. If there is no record with this id, it returns None.
+    - primary key for deleted record - UUID type.
+    - If there is no record with this id, it returns None.
 
     If parameter has wrong type - raise TypeError.
     """

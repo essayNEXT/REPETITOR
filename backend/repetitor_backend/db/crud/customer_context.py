@@ -11,15 +11,22 @@ from repetitor_backend.api.v1.customer_context.serializers import (
 
 async def create(**kwargs: CustomerContextCreateRequest | datetime) -> UUID:
     """Create new customer context.
+    Parameters:
+        - customer: UUID of customer, used for ForeignKey links with Customer, required
+        - context_1: UUID of context, used for ForeignKey links with Context, required
+        - context_2: UUID of context, used for ForeignKey links with Context, required
+        - last_date: customer context creation time, UTС zone
+        - is_active: bool = True
 
-    parameters:
-
+    Return:
+    - CustomerContext.id: UUID - primary key for new customer context record - UUID type
     """
-    kwargs["last_date"] = None
-    check_exists = await get(**kwargs)
+
+    # kwargs["last_date"] = None
+    # check_exists = await get(**kwargs)
     kwargs["last_date"] = datetime.utcnow()
-    if check_exists:  # якщо існує  такий запис
-        return await update(id=check_exists[0].id, **kwargs)
+    # if check_exists:  # якщо існує  такий запис
+    #     return await update(id=check_exists[0].id, **kwargs)
 
     result = await tables.CustomerContext.insert(
         tables.CustomerContext(**kwargs)
@@ -28,7 +35,19 @@ async def create(**kwargs: CustomerContextCreateRequest | datetime) -> UUID:
 
 
 async def get(**get_param: GetCustomerContextRequest) -> list[tables.CustomerContext]:
-    """Get a list of existing customer context according to match conditions:"""
+    """Get a list of existing customer context according to match conditions:
+        Parameters:
+        - id: UUID of customer context
+        - customer: UUID of customer, used for ForeignKey links with Customer
+        - context_1: UUID of context, used for ForeignKey links with Context
+        - context_2: UUID of context, used for ForeignKey links with Context
+        - last_date: customer context creation/update time, UTС zone
+        - is_active: bool = True
+
+    Return:
+    - List that contains the results of the query, serialized to
+    the CustomerContext type
+    """
     query = tables.CustomerContext.objects()
     for param, value in get_param.items():
         if value is not None:
@@ -41,6 +60,16 @@ async def update(id: UUID, **update_param: UpdateCustomerContextRequest) -> UUID
     """Update existing record in customer context.
 
     parameters:
+    - id: UUID of customer context, required
+    - customer: UUID of customer, used for ForeignKey links with Customer
+    - context_1: UUID of context, used for ForeignKey links with Context
+    - context_2: UUID of context, used for ForeignKey links with Context
+    - last_date: customer context creation/update time, UTС zone
+    - is_active: bool = True
+
+    Return:
+    - CustomerContext.id: UUID - primary key for new customer context record - UUID type
+    - If there is no record with this id, it returns None
 
     """
     if not isinstance(id, UUID):
@@ -62,7 +91,8 @@ async def delete(id: UUID) -> UUID | None:
     parameter:
     - id - UUID.
     result:
-    - primary key for deleted record - UUID type. If there is no record with this id, it returns None.
+    - primary key for deleted record - UUID type.
+    - If there is no record with this id, it returns None.
 
     If parameter has wrong type - raise TypeError.
     """

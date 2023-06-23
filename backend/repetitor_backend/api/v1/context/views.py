@@ -20,9 +20,15 @@ router = APIRouter()
 
 @router.post("/context/")
 async def create_context(new_context: ContextCreateRequest) -> UUID:
-    """Create a new type of context.
-
+    """Create new item.
     Parameters:
+        - name: str, max lenght is 50 symbols - the name of the context, required
+        - name_short: str, max lenght is 10 symbols - the short name of the context, required
+        - context_class: UUID of context, used for ForeignKey links with Context, required
+        - description: str, max lenght is 255 symbols - context description, required
+        - is_active: bool = True
+    Return:
+    - Item.id: UUID - primary key for new item record - UUID type
     """
     return await context.create(**new_context.dict())
 
@@ -33,7 +39,7 @@ async def create_context(new_context: ContextCreateRequest) -> UUID:
     response_model_exclude_none=True,
     response_model_exclude={"is_active"},
 )
-async def get_context(  # get_param_context: GetContextRequest
+async def get_context(
     id: UUID | None = None,
     name: Annotated[str, Query(min_length=1, max_length=50)] = None,
     name_short: Annotated[str, Query(min_length=1, max_length=10)] = None,
@@ -42,7 +48,20 @@ async def get_context(  # get_param_context: GetContextRequest
     is_active: bool = True,
     is_key_only: Annotated[bool, Query(description="if only 'id' is needed")] = False,
 ) -> list:
-    """Get list of Context according of "query" parameter"""
+    """Get a list of existing item according to match conditions:
+        Parameters:
+        - id: UUID of item
+        - name: str, max lenght is 50 symbols - the name of the context
+        - name_short: str, max lenght is 10 symbols - the short name of the context
+        - context_class: UUID of context, used for ForeignKey links with Context
+        - description: str, max lenght is 255 symbols - context description
+        - is_active: bool = True
+        - is_key_only: bool - as a result, return:
+            - only the ID of the item object;
+            - return all object parameters
+    Return:
+    - List that contains the results of the query
+    """
     get_param_context = GetContextRequest(
         id=id,
         name=name,
@@ -69,13 +88,34 @@ async def get_context(  # get_param_context: GetContextRequest
 async def update_context(
     id: UUID, update_param_context: UpdateContextRequest
 ) -> UUID | None:
-    """Update Context according of "query" parameter"""
+    """Update existing record in customer context.
+
+    parameters:
+        - id: UUID of item
+        - name: str, max lenght is 50 symbols - the name of the context
+        - name_short: str, max lenght is 10 symbols - the short name of the context
+        - context_class: UUID of context, used for ForeignKey links with Context
+        - description: str, max lenght is 255 symbols - context description
+        - is_active: bool = True
+    Return:
+    - CustomerContext.id: UUID - primary key for new customer context record - UUID type
+    - If there is no record with this id, it returns None
+    """
 
     return await context.update(id=id, **update_param_context.dict())
 
 
 @router.delete("/context/")
 async def delete_context(id_param: UUID) -> UUID | None:
-    """Update Context according of "query" parameter"""
+    """Delete context with context.id == id.
+
+    parameter:
+    - id - UUID.
+    result:
+    - primary key for deleted record - UUID type.
+    - If there is no record with this id, it returns None.
+
+    If parameter has wrong type - raise TypeError.
+    """
 
     return await context.delete(id_param)

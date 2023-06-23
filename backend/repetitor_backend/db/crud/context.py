@@ -9,10 +9,15 @@ from repetitor_backend.api.v1.context.serializers import (
 
 
 async def create(**kwargs: ContextCreateRequest) -> UUID:
-    """Create new context.
-
-    parameters:
-
+    """Create new item.
+    Parameters:
+        - name: str, max lenght is 50 symbols - the name of the context, required
+        - name_short: str, max lenght is 10 symbols - the short name of the context, required
+        - context_class: UUID of context, used for ForeignKey links with Context, required
+        - description: str, max lenght is 255 symbols - context description, required
+        - is_active: bool = True
+    Return:
+    - Item.id: UUID - primary key for new item record - UUID type
     """
     result = await tables.Context.insert(tables.Context(**kwargs)).returning(
         tables.Context.id
@@ -21,10 +26,18 @@ async def create(**kwargs: ContextCreateRequest) -> UUID:
 
 
 async def get(**get_param: GetContextRequest) -> list[tables.Context]:
-    """Get a list of existing contexts according to match conditions:"""
-    query = (
-        tables.Context.objects()
-    )  # .where(tables.Context.is_active == get_param.is_active)
+    """Get a list of existing item according to match conditions:
+        Parameters:
+        - id: UUID of item
+        - name: str, max lenght is 50 symbols - the name of the context
+        - name_short: str, max lenght is 10 symbols - the short name of the context
+        - context_class: UUID of context, used for ForeignKey links with Context
+        - description: str, max lenght is 255 symbols - context description
+        - is_active: bool = True
+    Return:
+    - List that contains the results of the query
+    """
+    query = tables.Context.objects()
     for param, value in get_param.items():
         if value is not None:
             if param == "description":
@@ -38,10 +51,18 @@ async def get(**get_param: GetContextRequest) -> list[tables.Context]:
 
 
 async def update(id: UUID, **update_param: UpdateContextRequest) -> UUID | None:
-    """Update existing record in context.
+    """Update existing record in customer context.
 
     parameters:
-
+        - id: UUID of item
+        - name: str, max lenght is 50 symbols - the name of the context
+        - name_short: str, max lenght is 10 symbols - the short name of the context
+        - context_class: UUID of context, used for ForeignKey links with Context
+        - description: str, max lenght is 255 symbols - context description
+        - is_active: bool = True
+    Return:
+    - CustomerContext.id: UUID - primary key for new customer context record - UUID type
+    - If there is no record with this id, it returns None
     """
     if not isinstance(id, UUID):
         raise TypeError(
@@ -62,7 +83,8 @@ async def delete(id: UUID) -> UUID | None:
     parameter:
     - id - UUID.
     result:
-    - primary key for deleted record - UUID type. If there is no record with this id, it returns None.
+    - primary key for deleted record - UUID type.
+    - If there is no record with this id, it returns None.
 
     If parameter has wrong type - raise TypeError.
     """

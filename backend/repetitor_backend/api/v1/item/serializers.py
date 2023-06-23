@@ -23,9 +23,9 @@ class ItemCreateRequest(BaseModel):
     text: Annotated[str, Query(min_length=2, max_length=255)]
     image: Annotated[str | None, Query(min_length=3, max_length=255, regex=REGEX_PATH)]
     sound: Annotated[str | None, Query(min_length=3, max_length=255, regex=REGEX_PATH)]
-    author: UUID | None
-    context: UUID | None
-    is_active: bool | None
+    author: UUID
+    context: UUID
+    is_active: bool | None = True
 
 
 class ItemResponse(ItemCreateRequest):
