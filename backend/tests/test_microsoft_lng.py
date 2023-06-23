@@ -1,10 +1,12 @@
 from repetitor_backend.external_api.microsoft import translate_lng
 import asyncio
+import aiohttp
 import json
 
 
 async def test_microsoft_lng():
-    result = await translate_lng("uk")
+    async with aiohttp.ClientSession() as session:
+        result = await translate_lng(session, "uk")
 
     # словник підтримуваних мов
     print(

@@ -1,9 +1,11 @@
-from repetitor_backend.external_api.microsoft import translate
+from repetitor_backend.external_api.microsoft_v2 import translate
 import asyncio
+import aiohttp
 
 
 async def test_microsoft():
-    result = await translate("uk", "en", "додати")
+    async with aiohttp.ClientSession() as session:
+        result = await translate(session, "uk", "en", "додати")
     print(result)
 
 

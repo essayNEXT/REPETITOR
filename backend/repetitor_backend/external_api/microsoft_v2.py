@@ -1,4 +1,5 @@
 import aiohttp
+import asyncio
 import os
 from dotenv import load_dotenv
 import time
@@ -11,6 +12,14 @@ URL_lNG = "https://api.cognitive.microsofttranslator.com/languages"
 API_KEY = os.environ.get("KEY_MICROSOFT")
 LOCATION = os.environ.get("LOCATION")
 
+# session = aiohttp.ClientSession()
+# async def main():
+#     async with session.get('http://httpbin.org/get') as resp:
+#         print(resp.status)
+    # print(await resp.text())
+
+# asyncio.run(main())
+# await session.close()
 
 async def translate(
     session,
@@ -39,20 +48,16 @@ async def translate(
     params = {"api-version": "3.0", "from": source_lng, "to": [target_lng]}
     params_reverse = {"api-version": "3.0", "from": target_lng, "to": [source_lng]}
 
-    # autodetect source language
-    # params_auto = {"api-version": "3.0", "to": [target_lng]}
-
     headers = {
         "Ocp-Apim-Subscription-Key": api_key,
         "Ocp-Apim-Subscription-Region": location,
         "Content-type": "application/json",
     }
-    # import uuid
-    # "X-ClientTraceId": str(uuid.uuid4()), - A client-generated GUID to uniquely identify the request.
 
     # You can pass more than one object in body.
     body = [{"text": text}]
 
+    # async with aiohttp.ClientSession() as session:
     async with session.post(
         url, params=params, headers=headers, json=body
     ) as response:
@@ -60,8 +65,9 @@ async def translate(
         response_data = source_lng, response_data[0]["translations"][0]["text"]
         # print(response_data)
         res = response_data[1]
+        # return res
 
-    # 1. We perform a reverse translation
+    # We perform a reverse translation
     time.sleep(1)
     body_rev = [{"text": res}]
     async with session.post(
@@ -74,42 +80,9 @@ async def translate(
 
     return res if text.lower() == res_rev.lower() else "Translation error"
 
-    # 2. Translation with the "auto-detect input language"
-    # async with session.post(
-    #     url, params=params_auto, headers=headers, json=body
-    # ) as response:
-    #     response_data_auto = await response.json()
-    #     response_data_auto = (
-    #         response_data_auto[0]["detectedLanguage"]["language"],
-    #         response_data_auto[0]["translations"][0]["text"],
-    #     )
-    #     print(response_data_auto)
-    #     if response_data == response_data_auto:
-    #         #print("The translation is correct")
-    #         return response_data[1]
-    #     else:
-    #         # res = response_data[1]
-    #         # source_lng, target_lng = target_lng, source_lng
-    #         print("Translation error")
 
+# async def main(source_lng, target_lng, text):
+#     async with aiohttp.ClientSession() as session:
+#         res = await translate(session, source_lng, target_lng, text)
+#         return res
 
-async def translate_lng(
-    session,
-    interface_lng: str,
-    url: str = URL_lNG,
-) -> aiohttp.ClientResponse:
-    """Отримує набір мов, які зараз підтримуються іншими операціями Перекладача."""
-
-    params = {
-        "api-version": "3.0",
-        "scope": "translation",
-    }  # translation,transliteration,dictionary
-
-    headers = {
-        "Accept-Language": interface_lng,
-    }
-
-    async with session.get(url, params=params, headers=headers) as response:
-        response_data = await response.json()
-
-    return response_data["translation"]
