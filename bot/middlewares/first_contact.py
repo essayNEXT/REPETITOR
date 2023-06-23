@@ -1,6 +1,7 @@
 from typing import Callable, Dict, Awaitable, Any
-from aiogram import BaseMiddleware
+from aiogram import BaseMiddleware, types
 from aiogram.types import TelegramObject, Message
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 import aiohttp
 
 
@@ -24,7 +25,7 @@ async def is_existing_user(tlg_user_id) -> bool:
                     return False
 
 
-class NewUserMiddleware(BaseMiddleware):
+class FirstContactMiddleware(BaseMiddleware):
     async def __call__(
         self,
         handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
@@ -34,6 +35,18 @@ class NewUserMiddleware(BaseMiddleware):
         user_id = await get_user_id(message=event)
         if await is_existing_user(user_id):
             return await handler(event, data)
-        await event.answer(
-            f"Новый пользователь {user_id} {await is_existing_user(user_id)}"
+
+        # Якщо користувача немає в базі даних, то опрацювання переривається. Пропонується реєстрація
+        builder = InlineKeyboardBuilder()
+        builder.add(
+            types.InlineKeyboardButton(
+                text="Зареєструватись", callback_data="registration"
+            )
         )
+
+        await event.answer(
+            f"Привіт, {event.from_user.full_name}!\n"
+            "Щоб скористатись моїми послугами потрібно зареєструватись.\n",
+            reply_markup=builder.as_markup(),
+        )
+        return
