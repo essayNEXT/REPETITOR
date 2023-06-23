@@ -53,9 +53,7 @@ async def translate(
     # You can pass more than one object in body.
     body = [{"text": text}]
 
-    async with session.post(
-        url, params=params, headers=headers, json=body
-    ) as response:
+    async with session.post(url, params=params, headers=headers, json=body) as response:
         response_data = await response.json()
         response_data = source_lng, response_data[0]["translations"][0]["text"]
         # print(response_data)
