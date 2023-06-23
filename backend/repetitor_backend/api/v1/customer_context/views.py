@@ -22,13 +22,15 @@ router = APIRouter()
 async def create_customer_context(
     new_customer_context: CustomerContextCreateRequest,
 ) -> UUID:
-    """Create new customer context.
+    """
+    Create new customer context.
+
     Parameters:
-        - customer: UUID of customer, used for ForeignKey links with Customer, required
-        - context_1: UUID of context, used for ForeignKey links with Context, required
-        - context_2: UUID of context, used for ForeignKey links with Context, required
-        - last_date: customer context creation time, UTС zone
-        - is_active: bool = True
+    - customer: UUID of customer, used for ForeignKey links with Customer, required
+    - context_1: UUID of context, used for ForeignKey links with Context, required
+    - context_2: UUID of context, used for ForeignKey links with Context, required
+    - last_date: customer context creation time, UTС zone
+    - is_active: bool = True
 
     Return:
     - CustomerContext.id: UUID - primary key for new customer context record - UUID type
@@ -50,18 +52,19 @@ async def get_customer_context(
     is_active: bool = True,
     is_key_only: Annotated[bool, Query(description="if only 'id' is needed")] = False,
 ) -> list:
-    """Get a list of existing customer context according to match conditions:
-        Parameters:
-        - id: UUID of customer context
-        - customer: UUID of customer, used for ForeignKey links with Customer
-        - context_1: UUID of context, used for ForeignKey links with Context
-        - context_2: UUID of context, used for ForeignKey links with Context
-        - last_date: customer context creation/update time, UTС zone
-        - is_active: bool = True
+    """
+    Get a list of existing customer context according to match conditions:
+
+    Parameters:
+    - id: UUID of customer context
+    - customer: UUID of customer, used for ForeignKey links with Customer
+    - context_1: UUID of context, used for ForeignKey links with Context
+    - context_2: UUID of context, used for ForeignKey links with Context
+    - last_date: customer context creation/update time, UTС zone
+    - is_active: bool = True
 
     Return:
-    - List that contains the results of the query, serialized to
-    the CustomerContext type
+    - List that contains the results of the query
     """
     get_param_customer_context = GetCustomerContextRequest(
         id=id,
@@ -90,9 +93,10 @@ async def get_customer_context(
 async def update_customer_context(
     id: UUID, update_param_customer_context: UpdateCustomerContextRequest
 ) -> UUID | None:
-    """Update existing record in customer context.
+    """
+    Update existing record in customer context.
 
-    parameters:
+    Parameters:
     - id: UUID of customer context, required
     - customer: UUID of customer, used for ForeignKey links with Customer
     - context_1: UUID of context, used for ForeignKey links with Context
@@ -103,7 +107,6 @@ async def update_customer_context(
     Return:
     - CustomerContext.id: UUID - primary key for new customer context record - UUID type
     - If there is no record with this id, it returns None
-
     """
 
     return await customer_context.update(id=id, **update_param_customer_context.dict())
@@ -111,10 +114,12 @@ async def update_customer_context(
 
 @router.delete("/customer_context/")
 async def delete_customer_context(id_param: UUID) -> UUID | None:
-    """Delete customer_context with customer_context.id == id.
+    """
+    Delete customer_context with customer_context.id == id.
 
-    parameter:
+    Parameter:
     - id - UUID.
+
     result:
     - primary key for deleted record - UUID type.
     - If there is no record with this id, it returns None.

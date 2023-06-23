@@ -20,13 +20,16 @@ router = APIRouter()
 
 @router.post("/context/")
 async def create_context(new_context: ContextCreateRequest) -> UUID:
-    """Create new item.
+    """
+    Create new item.
+
     Parameters:
-        - name: str, max lenght is 50 symbols - the name of the context, required
-        - name_short: str, max lenght is 10 symbols - the short name of the context, required
-        - context_class: UUID of context, used for ForeignKey links with Context, required
-        - description: str, max lenght is 255 symbols - context description, required
-        - is_active: bool = True
+    - name: str, max lenght is 50 symbols - the name of the context, required
+    - name_short: str, max lenght is 10 symbols - the short name of the context, required
+    - context_class: UUID of context, used for ForeignKey links with Context, required
+    - description: str, max lenght is 255 symbols - context description, required
+    - is_active: bool = True
+
     Return:
     - Item.id: UUID - primary key for new item record - UUID type
     """
@@ -48,17 +51,20 @@ async def get_context(
     is_active: bool = True,
     is_key_only: Annotated[bool, Query(description="if only 'id' is needed")] = False,
 ) -> list:
-    """Get a list of existing item according to match conditions:
-        Parameters:
-        - id: UUID of item
-        - name: str, max lenght is 50 symbols - the name of the context
-        - name_short: str, max lenght is 10 symbols - the short name of the context
-        - context_class: UUID of context, used for ForeignKey links with Context
-        - description: str, max lenght is 255 symbols - context description
-        - is_active: bool = True
-        - is_key_only: bool - as a result, return:
-            - only the ID of the item object;
-            - return all object parameters
+    """
+    Get a list of existing item according to match conditions:
+
+    Parameters:
+    - id: UUID of item
+    - name: str, max lenght is 50 symbols - the name of the context
+    - name_short: str, max lenght is 10 symbols - the short name of the context
+    - context_class: UUID of context, used for ForeignKey links with Context
+    - description: str, max lenght is 255 symbols - context description
+    - is_active: bool = True
+    - is_key_only: bool - as a result, return:
+        - only the ID of the item object;
+        - return all object parameters
+
     Return:
     - List that contains the results of the query
     """
@@ -88,15 +94,17 @@ async def get_context(
 async def update_context(
     id: UUID, update_param_context: UpdateContextRequest
 ) -> UUID | None:
-    """Update existing record in customer context.
+    """
+    Update existing record in customer context.
 
-    parameters:
-        - id: UUID of item
-        - name: str, max lenght is 50 symbols - the name of the context
-        - name_short: str, max lenght is 10 symbols - the short name of the context
-        - context_class: UUID of context, used for ForeignKey links with Context
-        - description: str, max lenght is 255 symbols - context description
-        - is_active: bool = True
+    Parameters:
+    - id: UUID of item
+    - name: str, max lenght is 50 symbols - the name of the context
+    - name_short: str, max lenght is 10 symbols - the short name of the context
+    - context_class: UUID of context, used for ForeignKey links with Context
+    - description: str, max lenght is 255 symbols - context description
+    - is_active: bool = True
+
     Return:
     - CustomerContext.id: UUID - primary key for new customer context record - UUID type
     - If there is no record with this id, it returns None
@@ -107,11 +115,13 @@ async def update_context(
 
 @router.delete("/context/")
 async def delete_context(id_param: UUID) -> UUID | None:
-    """Delete context with context.id == id.
+    """
+    Delete context with context.id == id.
 
-    parameter:
+    Parameter:
     - id - UUID.
-    result:
+
+    Result:
     - primary key for deleted record - UUID type.
     - If there is no record with this id, it returns None.
 
