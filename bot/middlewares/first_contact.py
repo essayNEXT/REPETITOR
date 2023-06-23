@@ -3,6 +3,8 @@ from aiogram import BaseMiddleware, types
 from aiogram.types import TelegramObject, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import aiohttp
+from keyboards.first_contact.first_contact_kb import RegisterKeyboard
+from create_bot import bot
 
 
 async def get_user_id(message: Message) -> int:
@@ -35,18 +37,15 @@ class FirstContactMiddleware(BaseMiddleware):
         user_id = await get_user_id(message=event)
         if await is_existing_user(user_id):
             return await handler(event, data)
-
-        # Якщо користувача немає в базі даних, то опрацювання переривається. Пропонується реєстрація
-        builder = InlineKeyboardBuilder()
-        builder.add(
-            types.InlineKeyboardButton(
-                text="Зареєструватись", callback_data="registration"
-            )
+        await bot.delete_message(event.chat.id, event.message_id - 1)
+        kb = RegisterKeyboard(
+            user_language=event.from_user.language_code, user_id=event.from_user.id
         )
 
+        # Якщо користувача немає в базі даних, то опрацювання переривається. Пропонується реєстрація
+
         await event.answer(
-            f"Привіт, {event.from_user.full_name}!\n"
-            "Щоб скористатись моїми послугами потрібно зареєструватись.\n",
-            reply_markup=builder.as_markup(),
+            kb.text.format(event.from_user.full_name),
+            reply_markup=kb.markup(),
         )
         return

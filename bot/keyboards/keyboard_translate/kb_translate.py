@@ -33,7 +33,9 @@ def translate_buttons_list(
         if isinstance(item, list):
             new_list.append(translate_buttons_list(source_lng, target_lng, item))
         elif isinstance(item, dict):
-            item["text"] = google_translate(source_lng, target_lng, item["text"])
+            item["text"] = google_translate(
+                source_lng, target_lng, item["text"]
+            ).capitalize()
             if "message" in item.keys():
                 item["message"] = google_translate(
                     source_lng, target_lng, item["message"]

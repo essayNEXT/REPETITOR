@@ -135,7 +135,9 @@ class ScrollInlineKeyboardGenerator:
         page_index_button = InlineKeyboardButton(
             text=f"{self.start_page + 1}/{len(self.pages)}", callback_data="pass"
         )
-        if len(self.pages) == 1:
+        if not self.pages:
+            return []
+        elif len(self.pages) == 1:
             return self.pages[0]
         elif self.start_page == len(self.pages) - 1:
             paginator_raw = [[self.fast_up_key, self.up_key, page_index_button]]

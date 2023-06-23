@@ -36,8 +36,6 @@ async def cmd_start(callback: CallbackQuery, state: FSMContext):
     new_user_uuid = await create_user(callback, customer_class)
 
     await callback.message.answer(
-        f"Чудове рішення, {callback.from_user.first_name} твій айді {new_user_uuid}!\n"
-        # "Тепер надішли мені свій контакт або можеш все скасувати.\n",
-        # reply_markup=get_contact_kb()
+        f"Чудове рішення, {callback.from_user.first_name}\nТепер необхідно доповнити інформацію про тебе)"
     )
     await state.set_state(StepsForm.INITIAL_DATA)
