@@ -1,11 +1,9 @@
 import logging
-from repetitor_backend.external_api.microsoft import translate, translate_lng
 from tests.test_ms_lng_list import get_lng_list
 from tests.test_microsoft import test_microsoft
 from typing import List
 from uuid import UUID
 from fastapi import APIRouter
-
 
 
 from .serializers import (
@@ -113,6 +111,7 @@ async def get_context_type(
     )
     return [ContextTypeResponse.from_DB_model(db_model=result) for result in results]
 
+
 @router.get("/type/ms_lng_list/")
 async def ms_lng_list() -> list:
     """Отримує список мов, які зараз підтримуються операціями Перекладача."""
@@ -122,21 +121,25 @@ async def ms_lng_list() -> list:
 
 
 @router.get("/type/ms_translate/")
-async def ms_translate(src_lng: str = "uk", trg_lng: str = "en", text: str = "додати") -> str:
+async def ms_translate(
+        src_lng: str = "uk", trg_lng: str = "en", text: str = "додати"
+) -> str:
     """
-        The function returns the translation of the entered text, in addition,
-        it compares the resulting translation with:
-        1. by reverse translation or
-        2. with the translation "auto-detecting input language"
-            (additional option, not used yet)
-           and decides on the correctness of the translation.
-        Used Microsoft Azure Cognitive Services Translator REST APIs
+    The function returns the translation of the entered text, in addition,
+    it compares the resulting translation with:
+    1. by reverse translation or
+    2. with the translation "auto-detecting input language"
+        (additional option, not used yet)
+       and decides on the correctness of the translation.
+    Used Microsoft Azure Cognitive Services Translator REST APIs
 
-        :param source_lang: language from which the translation is carried out
-        :param target_lang: language into which the translation is carried out
-        :param text: text to be translated
-        :return: if the translation is correct, then returns the translation of the input text
-        """
+    :param source_lang: language from which the translation is carried out
+    :param target_lang: language into which the translation is carried out
+    :param text: text to be translated
+    :return: if the translation is correct, then returns the translation of the input text
+    """
+
     from repetitor_backend.app import app
+
     result = await test_microsoft(app.session, src_lng, trg_lng, text)
     return result

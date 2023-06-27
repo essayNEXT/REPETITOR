@@ -40,10 +40,5 @@ def create_app(settings) -> FastAPI:
     app.add_exception_handler(ValidationError, http422_error_handler)
     return app
 
-# session = None
+
 app = create_app(app_settings)
-# app.session = session
-
-
-
-# app = FastAPI(lifespan=lifespan)
