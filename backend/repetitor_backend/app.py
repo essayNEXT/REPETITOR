@@ -12,7 +12,6 @@ from repetitor_backend import api
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the session: ClientSession
-    # global session
     print("Start Session")
     app.session = ClientSession()
     yield

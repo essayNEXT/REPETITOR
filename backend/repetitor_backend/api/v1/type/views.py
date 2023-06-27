@@ -116,13 +116,14 @@ async def get_context_type(
 async def ms_lng_list() -> list:
     """Отримує список мов, які зараз підтримуються операціями Перекладача."""
     from repetitor_backend.app import app
+
     result = await get_lng_list(app.session, "en")
     return result
 
 
 @router.get("/type/ms_translate/")
 async def ms_translate(
-        src_lng: str = "uk", trg_lng: str = "en", text: str = "додати"
+    src_lng: str = "uk", trg_lng: str = "en", text: str = "додати"
 ) -> str:
     """
     The function returns the translation of the entered text, in addition,
