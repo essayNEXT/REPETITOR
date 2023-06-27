@@ -1,6 +1,8 @@
 from datetime import datetime
 from uuid import UUID
 
+from asyncpg import ForeignKeyViolationError
+
 from repetitor_backend import tables
 from repetitor_backend.api.v1.customer_context.serializers import (
     GetCustomerContextRequest,
@@ -9,28 +11,33 @@ from repetitor_backend.api.v1.customer_context.serializers import (
 )
 
 
-async def create(**kwargs: CustomerContextCreateRequest | datetime) -> UUID:
+async def create(**kwargs: CustomerContextCreateRequest | datetime) -> UUID | str:
     """Create new customer context.
     Parameters:
         - customer: UUID of customer, used for ForeignKey links with Customer, required
         - context_1: UUID of context, used for ForeignKey links with Context, required
         - context_2: UUID of context, used for ForeignKey links with Context, required
-        - last_date: customer context creation time, UTС zone
-        - is_active: bool = True
 
     Return:
     - CustomerContext.id: UUID - primary key for new customer context record - UUID type
+    - str - error message in case of invalid foreign keys
     """
 
-    # kwargs["last_date"] = None
-    # check_exists = await get(**kwargs)
-    kwargs["last_date"] = datetime.utcnow()
-    # if check_exists:  # якщо існує  такий запис
-    #     return await update(id=check_exists[0].id, **kwargs)
+    # kwargs["is_active"] = None
+    check_exists = await get(**kwargs)
+    if check_exists:  # якщо існує  такий запис
+        return f"an object with such parameters already exists id={check_exists[0].id}  is_active={check_exists[0].is_active} "
+        raise TypeError(
+            f"an object with such parameters already exists {check_exists[0].id}"
+        )
 
-    result = await tables.CustomerContext.insert(
-        tables.CustomerContext(**kwargs)
-    ).returning(tables.CustomerContext.id)
+    kwargs["last_date"] = datetime.utcnow()
+    try:
+        result = await tables.CustomerContext.insert(
+            tables.CustomerContext(**kwargs)
+        ).returning(tables.CustomerContext.id)
+    except ForeignKeyViolationError as e:
+        return str(e)
     return result[0]["id"]
 
 
@@ -42,7 +49,7 @@ async def get(**get_param: GetCustomerContextRequest) -> list[tables.CustomerCon
         - context_1: UUID of context, used for ForeignKey links with Context
         - context_2: UUID of context, used for ForeignKey links with Context
         - last_date: customer context creation/update time, UTС zone
-        - is_active: bool = True
+        - is_active: bool | None
 
     Return:
     - List that contains the results of the query, serialized to
@@ -74,7 +81,7 @@ async def update(id: UUID, **update_param: UpdateCustomerContextRequest) -> UUID
     """
     if not isinstance(id, UUID):
         raise TypeError(
-            f"parameter 'id' for function update_item must be UUID-type, but got {type(id)}"
+            f"parameter 'id' for function update customer context must be UUID-type, but got {type(id)}"
         )
     filtered_param = {k: v for k, v in update_param.items() if v is not None}
     result = (

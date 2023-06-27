@@ -21,7 +21,7 @@ router = APIRouter()
 @router.post("/customer_context/")
 async def create_customer_context(
     new_customer_context: CustomerContextCreateRequest,
-) -> UUID:
+) -> UUID | str:
     """
     Create new customer context.
 
@@ -29,11 +29,10 @@ async def create_customer_context(
     - customer: UUID of customer, used for ForeignKey links with Customer, required
     - context_1: UUID of context, used for ForeignKey links with Context, required
     - context_2: UUID of context, used for ForeignKey links with Context, required
-    - last_date: customer context creation time, UTС zone
-    - is_active: bool = True
 
     Return:
     - CustomerContext.id: UUID - primary key for new customer context record - UUID type
+    - str - error message in case of invalid foreign keys
     """
     return await customer_context.create(**new_customer_context.dict())
 

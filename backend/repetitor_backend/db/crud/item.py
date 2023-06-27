@@ -1,13 +1,14 @@
 from uuid import UUID
 from typing import Optional, List, Annotated
 
+from asyncpg import ForeignKeyViolationError
 from fastapi import Query
 
 from repetitor_backend import tables
 from repetitor_backend.api.v1.item.serializers import UpdateItemRequest
 
 
-async def create(text: str, **kwargs) -> UUID:
+async def create(text: str, **kwargs) -> UUID | str:
     """Create new item.
     Parameters:
         - text: str, max lenght is 255 symbols - data description, required
@@ -15,10 +16,10 @@ async def create(text: str, **kwargs) -> UUID:
         - sound: str, max lenght is 255 symbols - link to associative sound
         - author: UUID of customer, used for ForeignKey links with Customer, required
         - context: UUID of context, used for ForeignKey links with Context, required
-        - is_active: bool  = True
 
     Return:
     - Item.id: UUID - primary key for new item record - UUID type
+    - str - error message in case of invalid foreign keys
     """
 
     if not isinstance(text, str):
@@ -27,9 +28,19 @@ async def create(text: str, **kwargs) -> UUID:
         )
     elif not len(text) <= 20:
         raise ValueError(f"len(text) must be <= 20, but got len(text)={len(text)}")
-    result = await tables.Item.insert(tables.Item(text=text, **kwargs)).returning(
-        tables.Item.id
-    )
+    kwargs["text"] = text
+    check_exists = await get(**kwargs)
+    if check_exists:  # якщо існує  такий запис
+        return f"an object with such parameters already exists id={check_exists[0].id}  is_active={check_exists[0].is_active} "
+        raise TypeError(
+            f"an object with such parameters already exists {check_exists[0].id}"
+        )
+    try:
+        result = await tables.Item.insert(tables.Item(**kwargs)).returning(
+            tables.Item.id
+        )
+    except ForeignKeyViolationError as e:
+        return str(e)
     return result[0]["id"]
 
 
@@ -37,7 +48,7 @@ async def get(
     id: UUID | None = None,
     author: UUID | None = None,
     text: Optional[str] = None,
-    is_active: Optional[bool] = True,
+    is_active: Optional[bool] = None,
     context: UUID | None = None,
     image: Annotated[
         str | None, Query(min_length=3, max_length=255)  # , regex=REGEX_PATH)
@@ -58,8 +69,9 @@ async def get(
     Return:
     - List that contains the results of the query
     """
-    query = tables.Item.objects().where(tables.Item.is_active == is_active)
-    # filtered_param = {k: v for k, v in update_param.items() if v is not None}
+    query = tables.Item.objects()
+    if is_active:
+        query = query.where(tables.Item.is_active == is_active)
     if id:
         query = query.where(tables.Item.id == id)
     if author:

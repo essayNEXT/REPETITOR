@@ -25,12 +25,12 @@ class ItemCreateRequest(BaseModel):
     sound: Annotated[str | None, Query(min_length=3, max_length=255, regex=REGEX_PATH)]
     author: UUID
     context: UUID
-    is_active: bool | None = True
 
 
 class ItemResponse(ItemCreateRequest):
     text: Annotated[str | None, Query(min_length=2, max_length=255)]
     id: UUID
+    is_active: bool | None
 
 
 class UpdateItemRequest(ItemResponse):

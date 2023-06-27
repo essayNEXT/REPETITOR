@@ -19,7 +19,7 @@ router = APIRouter()
 
 
 @router.post("/items/")
-async def create_item(new_item: ItemCreateRequest) -> UUID:
+async def create_item(new_item: ItemCreateRequest) -> UUID | str:
     """
     Create new item.
 
@@ -29,10 +29,10 @@ async def create_item(new_item: ItemCreateRequest) -> UUID:
     - sound: str, max lenght is 255 symbols - link to associative sound
     - author: UUID of customer, used for ForeignKey links with Customer, required
     - context: UUID of context, used for ForeignKey links with Context, required
-    - is_active: bool  = True
 
     Return:
     - Item.id: UUID - primary key for new item record - UUID type
+    - str - error message in case of invalid foreign keys
     """
     return await item.create(**new_item.dict())
 

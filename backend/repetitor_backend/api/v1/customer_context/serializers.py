@@ -9,8 +9,9 @@ class CustomerContextCreateRequest(BaseModel):
     customer: UUID
     context_1: UUID
     context_2: UUID
-    last_date: p_datetime = datetime.utcnow()
-    is_active: bool = True
+
+    # last_date: p_datetime = datetime.utcnow()
+    # is_active: bool = True
 
     @validator("context_2")
     def validate_context_2(cls, value, values):
@@ -34,6 +35,7 @@ class UpdateCustomerContextRequest(BaseModel):
 class GetCustomerContextRequest(UpdateCustomerContextRequest):
     id: UUID | None
     last_date: datetime | None
+    is_active: bool | None
 
 
 class GetCustomerContextResponse(GetCustomerContextRequest):
