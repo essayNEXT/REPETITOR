@@ -26,7 +26,10 @@ async def create(**kwargs: CustomerContextCreateRequest | datetime) -> UUID | st
     # kwargs["is_active"] = None
     check_exists = await get(**kwargs)
     if check_exists:  # якщо існує  такий запис
-        return f"an object with such parameters already exists id={check_exists[0].id}  is_active={check_exists[0].is_active} "
+        return (
+            f"an object with such parameters already exists id={check_exists[0].id}  "
+            f"is_active={check_exists[0].is_active} "
+        )
         raise TypeError(
             f"an object with such parameters already exists {check_exists[0].id}"
         )

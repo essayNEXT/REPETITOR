@@ -2,7 +2,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, validator
 from pydantic.validators import datetime as p_datetime
-from datetime import datetime
+# from datetime import datetime
 
 
 class CustomerContextCreateRequest(BaseModel):
@@ -34,7 +34,7 @@ class UpdateCustomerContextRequest(BaseModel):
 
 class GetCustomerContextRequest(UpdateCustomerContextRequest):
     id: UUID | None
-    last_date: datetime | None
+    last_date: p_datetime | None
     is_active: bool | None
 
 
