@@ -74,7 +74,7 @@ async def create_context_type(new_context_type: ContextTypeCreateRequest) -> UUI
     - name: str, max lenght is 50 symbols, required
     - describe: str, max lenght is 200 symbols, required
     """
-    return await contexttype.create_new_context_type(
+    return await contexttype.create(
         name=new_context_type.name, description=new_context_type.description
     )
 
@@ -106,7 +106,7 @@ async def get_context_type(
     if some parameter is None (as id, name, describe) - the corresponding line
     in the request is simply missing
     """
-    results = await customertype.get_context_type(
+    results = await contexttype.get(
         id=id, name=name, description=description, is_active=is_active
     )
     return [ContextTypeResponse.from_DB_model(db_model=result) for result in results]

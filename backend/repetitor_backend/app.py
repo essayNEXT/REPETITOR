@@ -24,6 +24,7 @@ def create_app(settings) -> FastAPI:
     """Create fastAPI app."""
     app = FastAPI(
         lifespan=lifespan,
+        title="Repetitor",
         docs_url=f"{app_settings.URL_API_PREFIX}/docs"
         if not app_settings.is_prod()
         else None,
