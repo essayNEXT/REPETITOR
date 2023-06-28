@@ -44,7 +44,7 @@ class FirstContactMiddleware(BaseMiddleware):
         # Якщо користувача немає в базі даних, то опрацювання переривається. Пропонується реєстрація
 
         await event.answer(
-            kb.text.format(event.from_user.full_name),
+            kb.text.format(event.from_user.first_name),
             reply_markup=kb.markup(),
         )
         return

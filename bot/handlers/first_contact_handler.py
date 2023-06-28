@@ -1,11 +1,11 @@
 from aiogram import Router
 from aiogram.filters import Text
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from utils.db.customer_type import get_customer_type
 from utils.db.customer import create_user
-
+from keyboards.first_contact.first_contact_kb import ConfirmKeyboard
 
 router = Router()
 
@@ -13,13 +13,7 @@ router = Router()
 class StepsForm(StatesGroup):
     """Клас, що описує стани проходження реєстрації користувача."""
 
-    INITIAL_DATA = State()
-    CHANGE_DATA = State()
     CONFIRM_DATA = State()
-    F_NAME_CHANGED = State()
-    L_NAME_CHANGED = State()
-    EMAIL_CHANGED = State()
-    PHONE_CHANGED = State()
 
 
 @router.callback_query(Text(text="registration"))
@@ -35,7 +29,20 @@ async def cmd_start(callback: CallbackQuery, state: FSMContext):
     customer_class = customer_class["id"]
     await create_user(callback, customer_class)
 
-    await callback.message.answer(
-        f"Чудове рішення, {callback.from_user.first_name}\nТепер необхідно доповнити інформацію про тебе)"
+    kb = ConfirmKeyboard(
+        user_language=callback.from_user.language_code, user_id=callback.from_user.id
     )
-    await state.set_state(StepsForm.INITIAL_DATA)
+    text = await kb.message_text()
+
+    await callback.message.answer(
+        text.format(callback.from_user.first_name),
+        reply_markup=kb.markup(),
+    )
+    await state.set_state(StepsForm.CONFIRM_DATA)
+
+
+@router.callback_query(StepsForm.CONFIRM_DATA)
+async def confirm_data(callback: CallbackQuery, state: FSMContext):
+    """Обробка кнопок підтвердження або зміни персональних даних"""
+    await callback.message.edit_text("Дякую! Попрацюємо!")
+    await state.clear()
