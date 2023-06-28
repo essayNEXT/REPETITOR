@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 import time
 
-
 load_dotenv()
 URL = "https://api.cognitive.microsofttranslator.com/translate"
 URL_lNG = "https://api.cognitive.microsofttranslator.com/languages"
@@ -95,7 +94,7 @@ async def translate_lng(
     session,
     interface_lng: str,
     url: str = URL_lNG,
-) -> aiohttp.ClientResponse:
+) -> dict:
     """Отримує набір мов, які зараз підтримуються іншими операціями Перекладача."""
 
     params = {
