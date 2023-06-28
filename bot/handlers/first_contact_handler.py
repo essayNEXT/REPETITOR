@@ -1,6 +1,6 @@
 from aiogram import Router
 from aiogram.filters import Text
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from utils.db.customer_type import get_customer_type
