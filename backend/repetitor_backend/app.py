@@ -1,15 +1,29 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 from pydantic import ValidationError
 from starlette.responses import JSONResponse
+from aiohttp import ClientSession
 
 
 from repetitor_backend.settings.app import app_settings
 from repetitor_backend import api
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load the session: ClientSession
+    print("Start Session")
+    app.session = ClientSession()
+    yield
+    # release the resources
+    await app.session.close()
+    print("The End Session")
+
+
 def create_app(settings) -> FastAPI:
     """Create fastAPI app."""
     app = FastAPI(
+        lifespan=lifespan,
         title="Repetitor",
         docs_url=f"{app_settings.URL_API_PREFIX}/docs"
         if not app_settings.is_prod()

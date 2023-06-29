@@ -1,5 +1,4 @@
 import logging
-
 from typing import List
 from uuid import UUID
 from fastapi import APIRouter
@@ -11,7 +10,6 @@ from .serializers import (
     ContextTypeResponse,
 )
 from repetitor_backend.db.crud import contexttype, customertype
-
 
 logger = logging.getLogger()
 
