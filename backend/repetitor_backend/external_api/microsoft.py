@@ -1,4 +1,3 @@
-import aiohttp
 import os
 from dotenv import load_dotenv
 import time
@@ -6,7 +5,6 @@ import time
 load_dotenv()
 URL = "https://api.cognitive.microsofttranslator.com/translate"
 URL_lNG = "https://api.cognitive.microsofttranslator.com/languages"
-# https://api-eur.cognitive.microsofttranslator.com Північна Європа, Західна Європа
 API_KEY = os.environ.get("KEY_MICROSOFT")
 LOCATION = os.environ.get("LOCATION")
 
@@ -19,7 +17,7 @@ async def translate(
     url: str = URL,
     api_key: str = API_KEY,
     location: str = LOCATION,
-) -> aiohttp.ClientResponse:
+) -> str:
     """
     The function returns the translation of the entered text, in addition,
     it compares the resulting translation with:
@@ -29,17 +27,18 @@ async def translate(
        and decides on the correctness of the translation.
     Used Microsoft Azure Cognitive Services Translator REST APIs
 
-    :param source_lang: language from which the translation is carried out
-    :param target_lang: language into which the translation is carried out
+    :param session: aiohttp.ClientSession
+    :param source_lng: language from which the translation is carried out
+    :param target_lng: language into which the translation is carried out
     :param text: text to be translated
+    :param url: address to request a text translation
+    :param api_key: access key
+    :param location: site location for the request
     :return: if the translation is correct, then returns the translation of the input text
     """
 
     params = {"api-version": "3.0", "from": source_lng, "to": [target_lng]}
     params_reverse = {"api-version": "3.0", "from": target_lng, "to": [source_lng]}
-
-    # autodetect source language
-    # params_auto = {"api-version": "3.0", "to": [target_lng]}
 
     headers = {
         "Ocp-Apim-Subscription-Key": api_key,
@@ -55,10 +54,9 @@ async def translate(
     async with session.post(url, params=params, headers=headers, json=body) as response:
         response_data = await response.json()
         response_data = source_lng, response_data[0]["translations"][0]["text"]
-        # print(response_data)
         res = response_data[1]
 
-    # 1. We perform a reverse translation
+    # We perform a reverse translation
     time.sleep(1)
     body_rev = [{"text": res}]
     async with session.post(
@@ -67,40 +65,30 @@ async def translate(
         response_data = await response.json()
         response_data = source_lng, response_data[0]["translations"][0]["text"]
         res_rev = response_data[1]
-        # print(text.lower(), res_rev.lower())
 
     return res if text.lower() == res_rev.lower() else "Translation error"
-
-    # 2. Translation with the "auto-detect input language"
-    # async with session.post(
-    #     url, params=params_auto, headers=headers, json=body
-    # ) as response:
-    #     response_data_auto = await response.json()
-    #     response_data_auto = (
-    #         response_data_auto[0]["detectedLanguage"]["language"],
-    #         response_data_auto[0]["translations"][0]["text"],
-    #     )
-    #     print(response_data_auto)
-    #     if response_data == response_data_auto:
-    #         #print("The translation is correct")
-    #         return response_data[1]
-    #     else:
-    #         # res = response_data[1]
-    #         # source_lng, target_lng = target_lng, source_lng
-    #         print("Translation error")
 
 
 async def translate_lng(
     session,
-    interface_lng: str,
+    interface_lng: str = "en",
     url: str = URL_lNG,
 ) -> dict:
-    """Отримує набір мов, які зараз підтримуються іншими операціями Перекладача."""
+    """
+    Gets the set of languages currently supported by other operations of the Translator.
+    https://learn.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-languages#response-body
+    Args:
+        session: aiohttp.ClientSession
+        interface_lng: full names of languages are displayed in the interface language
+        url: address for requesting languages supported by the translation
+
+    Returns: Dict of supported languages
+    """
 
     params = {
         "api-version": "3.0",
         "scope": "translation",
-    }  # translation,transliteration,dictionary
+    }  # scope = translation,transliteration,dictionary
 
     headers = {
         "Accept-Language": interface_lng,
