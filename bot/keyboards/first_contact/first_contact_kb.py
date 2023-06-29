@@ -1,6 +1,6 @@
 from ..inline_keyboard import KeyboardOfDict, ContextInlineKeyboardGenerator
 from ..keyboard_translate.kb_translate import translate_context
-from utils.db.customer import get_user
+from utils.db.customer import get_user, update_user
 
 
 class RegisterKeyboard(ContextInlineKeyboardGenerator):
@@ -58,12 +58,14 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
 
     @property
     def initial_text(self) -> str:
-        initial_text = "<b>Чудове рішення, {}</b>!\n\nНижче те, що ми про тебе знаємо.\nМожливо хочеш щось змінити?\n\n"
+        initial_text = (
+            "<b>{}</b>, here what we know about you.\nDo you want to change something?"
+        )
         return initial_text
 
     @property
     def kb_language(self) -> str:
-        kb_language = "uk"
+        kb_language = "en"
         return kb_language
 
     @property
@@ -85,15 +87,15 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
             [
                 {
                     "callback_data": "confirm_continue",
-                    "text": "Подовжити",
-                    "message": "Продовжити",
+                    "text": "Continue",
+                    "message": "Continue",
                 }
             ],
             [
                 {
                     "callback_data": "confirm_change_data",
-                    "text": "Змінити дані",
-                    "message": "Змінити дані",
+                    "text": "Change data",
+                    "message": "Change data",
                 }
             ],
         ]
@@ -110,7 +112,7 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
     async def __user_data(self):
         user_data = await get_user(self.user_id)
         user_data = user_data[0]
-        data_for_check = ["native_language", "first_name", "last_name", "email"]
+        data_for_check = ["first_name", "last_name", "native_language", "email"]
         out_data = "\n".join(
             [str(key) + " : " + str(user_data[key]) for key in data_for_check]
         )
@@ -118,4 +120,73 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
 
     async def message_text(self):
         data = await self.__user_data()
-        return self.text + data
+        return self.text + "\n\n" + data
+
+
+class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):
+    """Клавіатура зміни даних про користувача"""
+
+    @property
+    def initial_text(self) -> str:
+        initial_text = "<b>What do you want to change?</b>\n"
+        return initial_text
+
+    @property
+    def kb_language(self) -> str:
+        kb_language = "en"
+        return kb_language
+
+    @property
+    def callback_pattern(self) -> str:
+        callback_pattern = "change"
+        return callback_pattern
+
+    @property
+    def max_rows_number(self) -> None:
+        return None
+
+    @property
+    def translate_function(self):
+        return translate_context
+
+    @property
+    def top_buttons(self) -> KeyboardOfDict:
+        top_buttons = [
+            [
+                {
+                    "callback_data": "change_first_name",
+                    "text": "First name",
+                    "message": "Enter your <b>First name</b>:",
+                },
+                {
+                    "callback_data": "change_last_name",
+                    "text": "Last name",
+                    "message": "Enter your <b>Last name</b>:",
+                },
+            ],
+            [
+                {
+                    "callback_data": "change_native_language",
+                    "text": "Native language",
+                    "message": "Enter your <b>Native language</b>:",
+                },
+                {
+                    "callback_data": "change_email",
+                    "text": "Email",
+                    "message": "Enter your <b>Email</b>:",
+                },
+            ],
+        ]
+        return top_buttons
+
+    @property
+    def scroll_buttons(self) -> KeyboardOfDict | None:
+        return None
+
+    @property
+    def bottom_buttons(self) -> KeyboardOfDict | None:
+        return None
+
+    async def update_user_data(self, key, value):
+        data = {f"{key}": value}
+        await update_user(self.user_id, data)
