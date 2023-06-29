@@ -28,3 +28,16 @@ async def get_user(tlg_user_id):
         ) as response:
             val = await response.json()
             return val
+
+
+async def update_user(tlg_user_id: int, data: dict):
+    customer_id = await get_user(tlg_user_id)
+    customer_id = customer_id[0]["id"]
+    data["id"] = customer_id
+    async with aiohttp.ClientSession() as session:
+        url = "http://repetitor_backend/api/v1/customer"
+        async with session.put(url, json=data) as response:
+            print(response.status)
+            print(await response.json())
+            id_resp = await response.json()
+            return id_resp
