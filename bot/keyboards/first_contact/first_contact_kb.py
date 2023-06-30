@@ -88,7 +88,7 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
                 {
                     "callback_data": "confirm_continue",
                     "text": "Continue",
-                    "message": "Continue",
+                    "message": "Good! Now we need to define first user context for learning.",
                 }
             ],
             [
@@ -121,6 +121,9 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
     async def message_text(self):
         data = await self.__user_data()
         return self.text + "\n\n" + data
+
+    def confirm_data(self):
+        return self.messages["confirm_continue"]
 
 
 class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):

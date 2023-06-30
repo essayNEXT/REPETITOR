@@ -28,7 +28,9 @@ class StepsForm(StatesGroup):
 
 
 @router.callback_query(Text(text="registration"))
-async def registration(callback: CallbackQuery, state: FSMContext):
+async def registration(
+    callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
+):
     """Хендлер, що ловить колбек при натисканні кнопки 'Зареєструватись' від користувача."""
     # Видаляємо кнопку реєстрації, щоб користувач не міг натискати її безліч разів
     await callback.message.delete()
@@ -43,7 +45,17 @@ async def registration(callback: CallbackQuery, state: FSMContext):
     kb = ConfirmKeyboard(
         user_language=callback.from_user.language_code, user_id=callback.from_user.id
     )
+
+    key = KeyKeyboard(
+        bot_id=bot.id,
+        chat_id=callback.message.chat.id,
+        user_id=callback.from_user.id,
+        message_id=callback.message.message_id - 1,
+    )
+    tmp_storage[key] = kb
+
     text = await kb.message_text()
+    print("TEST 1", callback.message.message_id)
 
     await callback.message.answer(
         text.format(callback.from_user.first_name), reply_markup=kb.markup()
@@ -52,9 +64,21 @@ async def registration(callback: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_continue"))
-async def confirm_data(callback: CallbackQuery, state: FSMContext):
+async def confirm_data(
+    callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
+):
     """Обробка кнопки підтвердження персональних даних"""
-    await callback.message.edit_text("Lets go!!!")
+
+    key = KeyKeyboard(
+        bot_id=bot.id,
+        chat_id=callback.message.chat.id,
+        user_id=callback.from_user.id,
+        message_id=callback.message.message_id - 2,
+    )
+    kb = tmp_storage[key]
+
+    print("TEST 3", callback.message.message_id)
+    await callback.message.edit_text(kb.confirm_data())
     await state.clear()
 
 
@@ -94,7 +118,7 @@ async def choose_data_to_change(
         message_id=callback.message.message_id - 1,
     )
     kb = tmp_storage[key]
-    print("CHANGE_DATA ID message :", callback.message.message_id - 1)
+
     await callback.answer()
     # перевіряємо вхідний колбек згідно з параметрами, які необхідно змінити
     if callback.data == "change_first_name":
@@ -121,9 +145,7 @@ async def update_user_data(
     """Хендлер, що обробляє зміну даних отриманих від користувача.
     Виводить колбек-кнопки 'змінити' та 'продовжити'."""
     user_state = await state.get_state()
-    print("CHANGED_DATA ID message :", message.message_id)
     await message.answer("✅")
-    print("CHANGED_DATA ID message :", message.message_id)
     key = KeyKeyboard(
         bot_id=bot.id,
         chat_id=message.chat.id,
@@ -153,8 +175,17 @@ async def update_user_data(
     kb = ConfirmKeyboard(
         user_language=message.from_user.language_code, user_id=message.from_user.id
     )
-    text = await kb.message_text()
 
+    key = KeyKeyboard(
+        bot_id=bot.id,
+        chat_id=message.chat.id,
+        user_id=message.from_user.id,
+        message_id=message.message_id,
+    )
+    tmp_storage[key] = kb
+
+    text = await kb.message_text()
+    print("TEST 2", message.message_id)
     await message.answer(
         text.format(message.from_user.first_name), reply_markup=kb.markup()
     )
