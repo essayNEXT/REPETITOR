@@ -55,7 +55,6 @@ async def registration(
     tmp_storage[key] = kb
 
     text = await kb.message_text()
-    print("TEST 1", callback.message.message_id)
 
     await callback.message.answer(
         text.format(callback.from_user.first_name), reply_markup=kb.markup()
@@ -77,7 +76,6 @@ async def confirm_data(
     )
     kb = tmp_storage[key]
 
-    print("TEST 3", callback.message.message_id)
     await callback.message.edit_text(kb.confirm_data())
     await state.clear()
 
@@ -151,7 +149,7 @@ async def update_user_data(
         chat_id=message.chat.id,
         user_id=message.from_user.id,
         message_id=message.message_id
-        - 2,  # -2 оскільки клавіатура зберігається за номером попереднього повідомлення
+        - 2,  # -2 клавіатура зберігається за номером попереднього повідомлення
     )
     kb = tmp_storage[key]
 
@@ -185,7 +183,6 @@ async def update_user_data(
     tmp_storage[key] = kb
 
     text = await kb.message_text()
-    print("TEST 2", message.message_id)
     await message.answer(
         text.format(message.from_user.first_name), reply_markup=kb.markup()
     )
