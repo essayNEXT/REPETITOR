@@ -41,8 +41,6 @@ async def ms_translate(
     return result
 
 
-import logging
-
 from typing import List, Annotated
 from uuid import UUID
 from fastapi import APIRouter, Query
@@ -54,7 +52,7 @@ from .serializers import (
     REGEX_PATH,
     UpdateItemRequest,
 )
-from repetitor_backend.db.crud import item, question
+from repetitor_backend.db.crud import item, question, right_answ_item
 
 
 # logger = logging.getLogger()
@@ -88,28 +86,18 @@ async def create_item(new_item: ItemCreateRequest) -> UUID | str:
     # response_model_exclude={"is_active"},
 )
 async def get_item(
-    text: str | None = None,
-    id: UUID | None = None,
-    image: Annotated[
-        str | None, Query(min_length=3, max_length=255, regex=REGEX_PATH)
-    ] = None,
-    sound: Annotated[
-        str | None, Query(min_length=3, max_length=255, regex=REGEX_PATH)
-    ] = None,
-    author: UUID | None = None,
-    context: UUID | str | None = None,
-    context_2: UUID | str | None = None,
+    item__text: str,
+    item__author: UUID| None,
+    item__context__name_short: Annotated[str | None, Query(min_length=2, max_length=10)],
+    item__context__name_short_2: Annotated[str| None, Query(min_length=2, max_length=10)],
     is_active: bool = True,
-    is_key_only: Annotated[
-        bool, Query(description="if only 'id' is needed")
-    ] = False,  # якщо потрібно тільки самі
 ) -> list:
     """
     Get a list of existing item according to match conditions:
 
     Parameters:
     - id: UUID of item
-    - text: str, max lenght is 255 symbols - data description
+    - item__text: str, max lenght is 255 symbols - data description
     - image: str, max lenght is 255 symbols - link to associative picture
     - sound: str, max lenght is 255 symbols - link to associative sound
     - author: UUID of customer, used for ForeignKey links with Customer
@@ -121,28 +109,39 @@ async def get_item(
     Return:
     - List that contains the results of the query
     """
-    results = await question.get(
-        id=id,
-        author=author,
-        text=text,
-        context=context,
-        context_2=context_2,
-        sound=sound,
-        image=image,
+
+    result = await question.get(
+        item__author=item__author,
+        item__text=item__text,
+        item__context__name_short=item__context__name_short,
         is_active=is_active,
     )
-    # if is_key_only:
-    #     fin_result = [
-    #         {"id": result.id}
-    #         for result in results
-    #         if isinstance(result, tables.Question)
-    #     ]
-    # else:
-    #     fin_result = [
-    #         result.to_dict()
-    #         for result in results
-    #         if isinstance(result, tables.Question)
-    #     ]
+
+    if not result:
+        return [{"status": 404, "step": 1}]
+    uuid_relation: UUID | None = (
+        result[0].relation if result else None
+    )  # None = нема такого слова, треба створювати
+
+    result_2 = await right_answ_item.get(
+        item__author=item__author,
+        relation=uuid_relation,
+        item__context__name_short=item__context__name_short_2,
+    )
+    if not result_2:
+        return [{"status": 404, "step": 2}]
+
+    result_3 = await tables.Item.objects().where(tables.Item.id == result_2[0].item)
+    return [
+        {
+            "status": 200,
+            "source_context": item__context__name_short,
+            "source_word": item__text,
+            "target_context": item__context__name_short_2,
+            "target_word": result_3[0].text,
+        }
+    ]
+
     fin_result = results
     return fin_result
 

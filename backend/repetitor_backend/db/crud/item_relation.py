@@ -4,22 +4,22 @@ from uuid import UUID
 from asyncpg import ForeignKeyViolationError
 
 from repetitor_backend import tables
-from repetitor_backend.api.v1.question.serializers import (
-    GetQuestionRequest,
-    UpdateQuestionRequest,
-    QuestionCreateRequest,
+from repetitor_backend.api.v1.item_relation.serializers import (
+    GetItemRelationRequest,
+    UpdateItemRelationRequest,
+    ItemRelationCreateRequest,
 )
 
 
-async def create(**kwargs: QuestionCreateRequest | datetime) -> UUID | str:
-    """Create new customer context.
+async def create(**kwargs: ItemRelationCreateRequest) -> UUID | str:
+    """Create new item relation.
     Parameters:
         - customer: UUID of customer, used for ForeignKey links with Customer, required
         - context_1: UUID of context, used for ForeignKey links with Context, required
         - context_2: UUID of context, used for ForeignKey links with Context, required
 
     Return:
-    - Question.id: UUID - primary key for new customer context record - UUID type
+    - ItemRelation.id: UUID - primary key for new item relation record - UUID type
     - str - error message in case of invalid foreign keys
     """
     check_exists = await get(**kwargs)
@@ -33,30 +33,37 @@ async def create(**kwargs: QuestionCreateRequest | datetime) -> UUID | str:
         )
 
     try:
-        result = await tables.Question.insert(
-            tables.Question(**kwargs)
-        ).returning(tables.Question.id)
+        result = await tables.ItemRelation.insert(
+            tables.ItemRelation(**kwargs)
+        ).returning(tables.ItemRelation.id)
     except ForeignKeyViolationError as e:
         return str(e)
     return result[0]["id"]
 
 
-async def get(**get_param: GetQuestionRequest) -> list[tables.Question]:
-    """Get a list of existing customer context according to match conditions:
+async def get(**get_param: GetItemRelationRequest) -> list[tables.ItemRelation]:
+    """Get a list of existing item relation according to match conditions:
         Parameters:
-        - id: UUID of customer context
+        - id: UUID of item relation
         - customer: UUID of customer, used for ForeignKey links with Customer
         - context_1: UUID of context, used for ForeignKey links with Context
         - context_2: UUID of context, used for ForeignKey links with Context
-        - last_date: customer context creation/update time, UTС zone
+        - last_date: item relation creation/update time, UTС zone
         - is_active: bool | None
 
     Return:
     - List that contains the results of the query, serialized to
-    the Question type
+    the ItemRelation type
     """
 
-    query = tables.Question.objects()
+    # query = tables.ItemRelation.objects()
+    # for param, value in get_param.items():
+    #     if value is not None:
+    #         query = query.where(getattr(tables.ItemRelation, param, None) == value)
+    # result = await query
+    # return result
+
+    query = tables.ItemRelation.objects()
     for param, value in get_param.items():
         if value is not None:
             # Розбиваємо параметр на частини
@@ -65,10 +72,10 @@ async def get(**get_param: GetQuestionRequest) -> list[tables.Question]:
             # Перевіряємо кількість частин
             if len(parts) == 1:
                 # Якщо одна частина, просто використовуємо параметр
-                query = query.where(getattr(tables.Question, param, None) == value)
+                query = query.where(getattr(tables.ItemRelation, param, None) == value)
             elif len(parts) == 2:
                 # Якщо дві частини, використовуємо вкладений виклик
-                nested_attr = getattr(tables.Question, parts[0], None)
+                nested_attr = getattr(tables.ItemRelation, parts[0], None)
                 query = query.where(getattr(nested_attr, parts[1], None) == value)
 
     result = await query
@@ -78,37 +85,37 @@ async def get(**get_param: GetQuestionRequest) -> list[tables.Question]:
     return result
 
 
-async def update(id: UUID, **update_param: UpdateQuestionRequest) -> UUID | None:
-    """Update existing record in customer context.
+async def update(id: UUID, **update_param: UpdateItemRelationRequest) -> UUID | None:
+    """Update existing record in item relation.
 
     parameters:
-    - id: UUID of customer context, required
+    - id: UUID of item relation, required
     - customer: UUID of customer, used for ForeignKey links with Customer
     - context_1: UUID of context, used for ForeignKey links with Context
     - context_2: UUID of context, used for ForeignKey links with Context
-    - last_date: customer context creation/update time, UTС zone
+    - last_date: item relation creation/update time, UTС zone
     - is_active: bool = True
 
     Return:
-    - Question.id: UUID - primary key for new customer context record - UUID type
+    - ItemRelation.id: UUID - primary key for new item relation record - UUID type
     - If there is no record with this id, it returns None
 
     """
     if not isinstance(id, UUID):
         raise TypeError(
-            f"parameter 'id' for function update customer context must be UUID-type, but got {type(id)}"
+            f"parameter 'id' for function update item relation must be UUID-type, but got {type(id)}"
         )
     filtered_param = {k: v for k, v in update_param.items() if v is not None}
     result = (
-        await tables.Question.update(filtered_param)
-        .where(tables.Question.id == id)
-        .returning(tables.Question.id)
+        await tables.ItemRelation.update(filtered_param)
+        .where(tables.ItemRelation.id == id)
+        .returning(tables.ItemRelation.id)
     )
     return result[0]["id"] if result else None
 
 
 async def delete(id: UUID) -> UUID | None:
-    """Delete question with question.id == id.
+    """Delete right_answ_item with right_answ_item.id == id.
 
     parameter:
     - id - UUID.
@@ -120,7 +127,7 @@ async def delete(id: UUID) -> UUID | None:
     """
     if not isinstance(id, UUID):
         raise TypeError(
-            f"parameter 'id' for function del_question must be UUID-type, but got {type(id)}"
+            f"parameter 'id' for function del_right_answ_item must be UUID-type, but got {type(id)}"
         )
     result = await update(id=id, is_active=False)
     return result
