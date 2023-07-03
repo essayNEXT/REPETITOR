@@ -1,5 +1,6 @@
 from ..inline_keyboard import KeyboardOfDict, ContextInlineKeyboardGenerator
-from ..keyboard_translate.kb_translate import translate_context
+
+# from ..keyboard_translate.kb_translate import translate_context
 from utils.db.customer import get_user, update_user
 
 
@@ -29,7 +30,8 @@ class RegisterKeyboard(ContextInlineKeyboardGenerator):
 
     @property
     def translate_function(self):
-        return translate_context
+        # return translate_context  # на етапі розробки поки не перекладатимемо клавіатури
+        return None
 
     @property
     def top_buttons(self) -> KeyboardOfDict:
@@ -79,7 +81,8 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
 
     @property
     def translate_function(self):
-        return translate_context
+        # return translate_context  # на етапі розробки поки не перекладатимемо клавіатури
+        return None
 
     @property
     def top_buttons(self) -> KeyboardOfDict:
@@ -150,7 +153,8 @@ class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):
 
     @property
     def translate_function(self):
-        return translate_context
+        # return translate_context  # на етапі розробки поки не перекладатимемо клавіатури
+        return None
 
     @property
     def top_buttons(self) -> KeyboardOfDict:

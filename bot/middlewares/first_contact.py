@@ -37,7 +37,7 @@ class FirstContactMiddleware(BaseMiddleware):
         if await is_existing_user(user_id):
             return await handler(event, data)
         await bot.delete_message(event.chat.id, event.message_id - 1)
-        kb = RegisterKeyboard(
+        kb = await RegisterKeyboard(
             user_language=event.from_user.language_code, user_id=event.from_user.id
         )
 

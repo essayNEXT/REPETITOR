@@ -40,26 +40,33 @@ async def registration(
         "student"
     )  # Після визначення основних ролей змінимо на стандартний тип
     customer_class = customer_class["id"]
-    await create_user(callback, customer_class)
+    new_user_uuid = await create_user(callback, customer_class)
+    print("UUID створеного користувача: ", new_user_uuid)
 
-    kb = ConfirmKeyboard(
-        user_language=callback.from_user.language_code, user_id=callback.from_user.id
-    )
+    if new_user_uuid:
+        kb = await ConfirmKeyboard(
+            user_language=callback.from_user.language_code,
+            user_id=callback.from_user.id,
+        )
 
-    key = KeyKeyboard(
-        bot_id=bot.id,
-        chat_id=callback.message.chat.id,
-        user_id=callback.from_user.id,
-        message_id=callback.message.message_id - 1,
-    )
-    tmp_storage[key] = kb
+        key = KeyKeyboard(
+            bot_id=bot.id,
+            chat_id=callback.message.chat.id,
+            user_id=callback.from_user.id,
+            message_id=callback.message.message_id - 1,
+        )
+        tmp_storage[key] = kb
 
-    text = await kb.message_text()
+        text = await kb.message_text()
 
-    await callback.message.answer(
-        text.format(callback.from_user.first_name), reply_markup=kb.markup()
-    )
-    await state.set_state(StepsForm.CONFIRM_DATA)
+        await callback.message.answer(
+            text.format(callback.from_user.first_name), reply_markup=kb.markup()
+        )
+        await state.set_state(StepsForm.CONFIRM_DATA)
+    else:
+        await callback.message.delete(
+            chat_id=callback.message.chat.id, message_id=callback.message.message_id
+        )
 
 
 @router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_continue"))
@@ -86,7 +93,7 @@ async def change_data(
 ):
     """Обробка кнопки зміни персональних даних"""
 
-    kb = ChangeUserDataKeyboard(
+    kb = await ChangeUserDataKeyboard(
         user_language=callback.from_user.language_code, user_id=callback.from_user.id
     )
 
@@ -144,6 +151,7 @@ async def update_user_data(
     Виводить колбек-кнопки 'змінити' та 'продовжити'."""
     user_state = await state.get_state()
     await message.answer("✅")
+
     key = KeyKeyboard(
         bot_id=bot.id,
         chat_id=message.chat.id,
@@ -170,7 +178,7 @@ async def update_user_data(
     value = message.text
     await kb.update_user_data(key=key, value=value)
 
-    kb = ConfirmKeyboard(
+    kb = await ConfirmKeyboard(
         user_language=message.from_user.language_code, user_id=message.from_user.id
     )
 
