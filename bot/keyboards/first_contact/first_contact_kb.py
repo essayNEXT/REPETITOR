@@ -1,7 +1,7 @@
 from ..inline_keyboard import KeyboardOfDict, ContextInlineKeyboardGenerator
 
 # from ..keyboard_translate.kb_translate import translate_context
-from utils.db.customer import get_user, update_user
+from utils.db.customer import get_user
 
 
 class RegisterKeyboard(ContextInlineKeyboardGenerator):

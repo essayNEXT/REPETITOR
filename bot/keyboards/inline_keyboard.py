@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, Router
 from itertools import chain, islice
-from typing import List, Dict, Callable
+from typing import List, Dict
 from aiogram.utils.keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from dataclasses import dataclass
 from aiogram.types import CallbackQuery
