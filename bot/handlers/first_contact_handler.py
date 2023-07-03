@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from utils.db.customer_type import get_customer_type
-from utils.db.customer import create_user
+from utils.db.customer import create_user, update_user
 from utils.storages import TmpStorage
 from keyboards.first_contact.first_contact_kb import (
     ConfirmKeyboard,
@@ -25,6 +25,7 @@ class StepsForm(StatesGroup):
     L_NAME_CHANGED = State()
     NATIVE_LANGUAGE_CHANGED = State()
     EMAIL_CHANGED = State()
+    DATA_CONFIRMED = State()
 
 
 @router.callback_query(Text(text="registration"))
@@ -49,14 +50,6 @@ async def registration(
             user_id=callback.from_user.id,
         )
 
-        key = KeyKeyboard(
-            bot_id=bot.id,
-            chat_id=callback.message.chat.id,
-            user_id=callback.from_user.id,
-            message_id=callback.message.message_id - 1,
-        )
-        tmp_storage[key] = kb
-
         text = await kb.message_text()
 
         await callback.message.answer(
@@ -69,25 +62,17 @@ async def registration(
         )
 
 
-@router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_continue"))
-async def confirm_data(
-    callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
-):
+@router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_kb_continue"))
+async def confirm_data(callback: CallbackQuery, state: FSMContext):
     """Обробка кнопки підтвердження персональних даних"""
 
-    key = KeyKeyboard(
-        bot_id=bot.id,
-        chat_id=callback.message.chat.id,
-        user_id=callback.from_user.id,
-        message_id=callback.message.message_id - 2,
+    await callback.message.edit_text(
+        "Good! Now we need to define the first user_context for learning!"
     )
-    kb = tmp_storage[key]
-
-    await callback.message.edit_text(kb.confirm_data())
-    await state.clear()
+    await state.set_state(StepsForm.DATA_CONFIRMED)
 
 
-@router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_change_data"))
+@router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_kb_change_data"))
 async def change_data(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
 ):
@@ -124,19 +109,20 @@ async def choose_data_to_change(
     )
     kb = tmp_storage[key]
 
+    await callback.message.delete()
     await callback.answer()
     # перевіряємо вхідний колбек згідно з параметрами, які необхідно змінити
     if callback.data == "change_first_name":
-        await callback.message.edit_text(kb.messages["change_first_name"])
+        await callback.message.answer(kb.messages["change_first_name"])
         await state.set_state(StepsForm.F_NAME_CHANGED)
     elif callback.data == "change_last_name":
-        await callback.message.edit_text(kb.messages["change_last_name"])
+        await callback.message.answer(kb.messages["change_last_name"])
         await state.set_state(StepsForm.L_NAME_CHANGED)
     elif callback.data == "change_email":
-        await callback.message.edit_text(kb.messages["change_email"])
+        await callback.message.answer(kb.messages["change_email"])
         await state.set_state(StepsForm.EMAIL_CHANGED)
     elif callback.data == "change_native_language":
-        await callback.message.edit_text(kb.messages["change_native_language"])
+        await callback.message.answer(kb.messages["change_native_language"])
         await state.set_state(StepsForm.NATIVE_LANGUAGE_CHANGED)
 
 
@@ -144,51 +130,28 @@ async def choose_data_to_change(
 @router.message(StepsForm.L_NAME_CHANGED)
 @router.message(StepsForm.NATIVE_LANGUAGE_CHANGED)
 @router.message(StepsForm.EMAIL_CHANGED)
-async def update_user_data(
-    message: Message, state: FSMContext, tmp_storage: TmpStorage
-):
+async def update_user_data(message: Message, state: FSMContext):
     """Хендлер, що обробляє зміну даних отриманих від користувача.
     Виводить колбек-кнопки 'змінити' та 'продовжити'."""
     user_state = await state.get_state()
     await message.answer("✅")
 
-    key = KeyKeyboard(
-        bot_id=bot.id,
-        chat_id=message.chat.id,
-        user_id=message.from_user.id,
-        message_id=message.message_id
-        - 2,  # -2 клавіатура зберігається за номером попереднього повідомлення
-    )
-    kb = tmp_storage[key]
-
-    print(str(kb.__class__))
-
+    key = None
     if user_state == StepsForm.F_NAME_CHANGED:
         key = "first_name"
-
     elif user_state == StepsForm.L_NAME_CHANGED:
         key = "last_name"
-
     elif user_state == StepsForm.EMAIL_CHANGED:
         key = "email"
-
     elif user_state == StepsForm.NATIVE_LANGUAGE_CHANGED:
         key = "native_language"
 
-    value = message.text
-    await kb.update_user_data(key=key, value=value)
+    data = {key: message.text}
+    await update_user(message.from_user.id, data)
 
     kb = await ConfirmKeyboard(
         user_language=message.from_user.language_code, user_id=message.from_user.id
     )
-
-    key = KeyKeyboard(
-        bot_id=bot.id,
-        chat_id=message.chat.id,
-        user_id=message.from_user.id,
-        message_id=message.message_id,
-    )
-    tmp_storage[key] = kb
 
     text = await kb.message_text()
     await message.answer(

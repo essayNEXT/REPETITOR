@@ -72,7 +72,7 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
 
     @property
     def callback_pattern(self) -> str:
-        callback_pattern = "confirm"
+        callback_pattern = "confirm_kb_"
         return callback_pattern
 
     @property
@@ -89,14 +89,14 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
         top_buttons = [
             [
                 {
-                    "callback_data": "confirm_continue",
+                    "callback_data": "confirm_kb_continue",
                     "text": "Continue",
                     "message": "Good! Now we need to define first user context for learning.",
                 }
             ],
             [
                 {
-                    "callback_data": "confirm_change_data",
+                    "callback_data": "confirm_kb_change_data",
                     "text": "Change data",
                     "message": "Change data",
                 }
@@ -126,7 +126,7 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
         return self.text + "\n\n" + data
 
     def confirm_data(self):
-        return self.messages["confirm_continue"]
+        return self.messages["confirm_kb_continue"]
 
 
 class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):
@@ -193,7 +193,3 @@ class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):
     @property
     def bottom_buttons(self) -> KeyboardOfDict | None:
         return None
-
-    async def update_user_data(self, key, value):
-        data = {f"{key}": value}
-        await update_user(self.user_id, data)
