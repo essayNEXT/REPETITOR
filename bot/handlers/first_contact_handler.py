@@ -6,12 +6,16 @@ from aiogram.fsm.context import FSMContext
 from utils.db.customer_type import get_customer_type
 from utils.db.customer import create_user, update_user
 from utils.storages import TmpStorage
+
 from keyboards.first_contact.first_contact_kb import (
     ConfirmKeyboard,
     ChangeUserDataKeyboard,
 )
+from keyboards.user_context.user_context_kb import ChooseContextKeyboard
+
 from keyboards.inline_keyboard import KeyKeyboard
 from create_bot import bot
+from .customer_context_handler import CreateContextStepsForm
 
 router = Router()
 
@@ -25,7 +29,6 @@ class StepsForm(StatesGroup):
     L_NAME_CHANGED = State()
     NATIVE_LANGUAGE_CHANGED = State()
     EMAIL_CHANGED = State()
-    DATA_CONFIRMED = State()
 
 
 @router.callback_query(Text(text="registration"))
@@ -42,7 +45,7 @@ async def registration(
     )  # Після визначення основних ролей змінимо на стандартний тип
     customer_class = customer_class["id"]
     new_user_uuid = await create_user(callback, customer_class)
-    print("UUID створеного користувача: ", new_user_uuid)
+    print("New customer id: ", new_user_uuid)
 
     if new_user_uuid:
         kb = await ConfirmKeyboard(
@@ -63,13 +66,26 @@ async def registration(
 
 
 @router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_kb_continue"))
-async def confirm_data(callback: CallbackQuery, state: FSMContext):
+async def confirm_data(
+    callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
+):
     """Обробка кнопки підтвердження персональних даних"""
-
-    await callback.message.edit_text(
-        "Good! Now we need to define the first user_context for learning!"
+    kb = await ChooseContextKeyboard(
+        user_language=callback.from_user.language_code,
+        user_id=callback.from_user.id,
+        dp=router,
     )
-    await state.set_state(StepsForm.DATA_CONFIRMED)
+
+    key = KeyKeyboard(
+        bot_id=bot.id,
+        chat_id=callback.message.chat.id,
+        user_id=callback.from_user.id,
+        message_id=callback.message.message_id - 1,
+    )
+    tmp_storage[key] = kb
+
+    await callback.message.edit_text(kb.text, reply_markup=kb.markup())
+    await state.set_state(CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT)
 
 
 @router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_kb_change_data"))
