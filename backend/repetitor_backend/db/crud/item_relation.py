@@ -14,9 +14,7 @@ from repetitor_backend.api.v1.item_relation.serializers import (
 async def create(**kwargs: ItemRelationCreateRequest) -> UUID | str:
     """Create new item relation.
     Parameters:
-        - customer: UUID of customer, used for ForeignKey links with Customer, required
-        - context_1: UUID of context, used for ForeignKey links with Context, required
-        - context_2: UUID of context, used for ForeignKey links with Context, required
+        -
 
     Return:
     - ItemRelation.id: UUID - primary key for new item relation record - UUID type
@@ -24,6 +22,7 @@ async def create(**kwargs: ItemRelationCreateRequest) -> UUID | str:
     """
     check_exists = await get(**kwargs)
     if check_exists:  # якщо існує  такий запис
+        return check_exists[0]["id"]
         return (
             f"an object with such parameters already exists id={check_exists[0].id}  "
             f"is_active={check_exists[0].is_active} "
@@ -80,7 +79,7 @@ async def get(**get_param: GetItemRelationRequest) -> list[tables.ItemRelation]:
 
     result = await query
     if not result:
-        return [{"status": 404}]
+        return []
 
     return result
 

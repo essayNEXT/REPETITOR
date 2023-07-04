@@ -24,6 +24,7 @@ async def create(**kwargs: QuestionCreateRequest | datetime) -> UUID | str:
     """
     check_exists = await get(**kwargs)
     if check_exists:  # якщо існує  такий запис
+        return check_exists[0]["id"]
         return (
             f"an object with such parameters already exists id={check_exists[0].id}  "
             f"is_active={check_exists[0].is_active} "
@@ -73,7 +74,7 @@ async def get(**get_param: GetQuestionRequest) -> list[tables.Question]:
 
     result = await query
     if not result:
-        return [{"status": 404}]
+        return []
 
     return result
 

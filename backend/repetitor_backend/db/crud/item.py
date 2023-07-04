@@ -31,6 +31,7 @@ async def create(text: str, **kwargs) -> UUID | str:
     kwargs["text"] = text
     check_exists = await get(**kwargs)
     if check_exists:  # якщо існує  такий запис
+        return check_exists[0]["id"]
         return (
             f"an object with such parameters already exists id={check_exists[0].id} "
             f"is_active={check_exists[0].is_active} "
