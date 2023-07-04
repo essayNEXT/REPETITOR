@@ -15,8 +15,6 @@ async def create_user(event: CallbackQuery | Message, customer_class: UUID):
             "tlg_last_name": event.from_user.last_name,
         }
         async with session.post(url, json=data) as response:
-            print(response.status)
-            print(await response.json())
             id_resp = await response.json()
             return id_resp
 
@@ -37,7 +35,5 @@ async def update_user(tlg_user_id: int, data: dict):
     async with aiohttp.ClientSession() as session:
         url = "http://repetitor_backend/api/v1/customer"
         async with session.put(url, json=data) as response:
-            print(response.status)
-            print(await response.json())
             id_resp = await response.json()
             return id_resp
