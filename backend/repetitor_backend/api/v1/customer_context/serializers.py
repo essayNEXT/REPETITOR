@@ -36,6 +36,9 @@ class UpdateCustomerContextRequest(BaseModel):
 
 class GetCustomerContextRequest(UpdateCustomerContextRequest):
     id: UUID | None
+    customer: UUID | None
+    context_1: UUID | None
+    context_2: UUID | None
     last_date: p_datetime | None
     is_active: bool | None
 
