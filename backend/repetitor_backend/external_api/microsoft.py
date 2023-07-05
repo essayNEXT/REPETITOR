@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
 import time
+# from aiohttp import ClientSession
+# from repetitor_backend.app import app
 
 load_dotenv()
 URL = "https://api.cognitive.microsofttranslator.com/translate"
@@ -11,9 +13,9 @@ LOCATION = os.environ.get("LOCATION")
 
 async def translate(
     session,
-    source_lng: str,
-    target_lng: str,
-    text: str,
+    source_lng: str = 'en',
+    target_lng: str = 'uk',
+    text: str = 'add',
     url: str = URL,
     api_key: str = API_KEY,
     location: str = LOCATION,
@@ -49,12 +51,19 @@ async def translate(
     # "X-ClientTraceId": str(uuid.uuid4()), - A client-generated GUID to uniquely identify the request.
 
     # You can pass more than one object in body.
-    body = [{"text": text}]
-
+    body = [{"text": text.lower()}]
+    print('text = ', text.lower())
     async with session.post(url, params=params, headers=headers, json=body) as response:
         response_data = await response.json()
         response_data = source_lng, response_data[0]["translations"][0]["text"]
         res = response_data[1]
+        print('res = ', res)
+
+    async with session.post(url, params=params_reverse, headers=headers, json=body) as response:
+        response_data = await response.json()
+        response_data = source_lng, response_data[0]["translations"][0]["text"]
+        res_rev2 = response_data[1]
+        print('res_rev2 = ', res_rev2)
 
     # We perform a reverse translation
     time.sleep(1)
@@ -65,8 +74,16 @@ async def translate(
         response_data = await response.json()
         response_data = source_lng, response_data[0]["translations"][0]["text"]
         res_rev = response_data[1]
+        print('res_rev = ', res_rev)
 
-    return res if text.lower() == res_rev.lower() else "Translation error"
+    if res_rev2.lower() != text:
+        async with session.post(url, params=params, headers=headers, json=body) as response:
+            response_data = await response.json()
+            response_data = source_lng, response_data[0]["translations"][0]["text"]
+            res2 = response_data[1]
+            print('res2 = ', res2)
+
+    return res if text.lower() == res_rev.lower() else res_rev2
 
 
 async def translate_lng(
