@@ -13,9 +13,9 @@ LOCATION = os.environ.get("LOCATION")
 
 async def translate(
     session: ClientSession = None,
-    source_lng: str = 'en',
-    target_lng: str = 'uk',
-    text: str = 'add',
+    source_lng: str = "en",
+    target_lng: str = "uk",
+    text: str = "add",
     url: str = URL,
     api_key: str = API_KEY,
     location: str = LOCATION,
@@ -60,13 +60,14 @@ async def translate(
         res = response_data[1]
         # print('res = ', res)
 
-    async with session.post(url, params=params_reverse, headers=headers, json=body) as response:
+    async with session.post(
+        url, params=params_reverse, headers=headers, json=body
+    ) as response:
         response_data = await response.json()
         response_data = source_lng, response_data[0]["translations"][0]["text"]
         res_rev2 = response_data[1]
         # print('res_rev2 = ', res_rev2)
 
-    # We perform a reverse translation
     time.sleep(1)
     body_rev = [{"text": res}]
     if res.lower() != text:
@@ -81,7 +82,9 @@ async def translate(
             return res, target_lng
 
     if res_rev2.lower() != text:
-        async with session.post(url, params=params, headers=headers, json=body) as response:
+        async with session.post(
+            url, params=params, headers=headers, json=body
+        ) as response:
             response_data = await response.json()
             response_data = source_lng, response_data[0]["translations"][0]["text"]
             res2 = response_data[1]
@@ -91,7 +94,6 @@ async def translate(
             return res_rev2, source_lng
         else:
             "Translation error"
-
 
 
 async def translate_lng(
