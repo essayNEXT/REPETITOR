@@ -1,7 +1,6 @@
 from typing import Callable, Dict, Awaitable, Any
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
-import aiohttp
 from keyboards.first_contact.first_contact_kb import RegisterKeyboard
 from create_bot import bot, connections
 
