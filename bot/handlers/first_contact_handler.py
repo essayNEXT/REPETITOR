@@ -40,9 +40,7 @@ async def registration(
     await callback.message.delete()
 
     # Заносимо користувача в БД
-    customer_class = await get_customer_type(
-        "student"
-    )  # Після визначення основних ролей змінимо на стандартний тип
+    customer_class = await get_customer_type("regular user")
     customer_class = customer_class["id"]
     new_user_uuid = await create_user(callback, customer_class)
     print("New customer id: ", new_user_uuid)
