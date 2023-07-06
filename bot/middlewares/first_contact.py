@@ -3,7 +3,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
 import aiohttp
 from keyboards.first_contact.first_contact_kb import RegisterKeyboard
-from create_bot import bot
+from create_bot import bot, connections
 
 
 async def get_user_id(message: Message) -> int:
@@ -12,18 +12,18 @@ async def get_user_id(message: Message) -> int:
 
 
 async def is_existing_user(tlg_user_id) -> bool:
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-            f"http://repetitor_backend/api/v1/customer/{tlg_user_id}"
-        ) as response:
-            val = await response.json()
-            for item in val:
-                val_id = item["tlg_user_id"]
-                val_active = item["is_active"]
-                if val_id == tlg_user_id and val_active is True:
-                    return True
-                else:
-                    return False
+    con = await connections
+    async with await con.get(
+        f"http://repetitor_backend/api/v1/customer/{tlg_user_id}"
+    ) as response:
+        val = await response.json()
+        for item in val:
+            val_id = item["tlg_user_id"]
+            val_active = item["is_active"]
+            if val_id == tlg_user_id and val_active is True:
+                return True
+            else:
+                return False
 
 
 class FirstContactMiddleware(BaseMiddleware):
