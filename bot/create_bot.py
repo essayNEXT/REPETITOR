@@ -8,5 +8,5 @@ from settings import BOT_TOKEN
 storage = MemoryStorage()
 tmp_storage = TmpStorage()
 
-bot = Bot(token=BOT_TOKEN)
+bot = Bot(token=BOT_TOKEN, parse_mode="HTML")
 dp = Dispatcher(storage=storage, tmp_storage=tmp_storage)

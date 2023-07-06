@@ -10,7 +10,7 @@ translation = {"uk": {}, "en": {}, "ru": {}}
 single_translation = {"uk": {}, "en": {}, "ru": {}}
 
 
-def google_translate(src_lng: str, trg_lng: str, input_text: str) -> str:
+async def google_translate(src_lng: str, trg_lng: str, input_text: str) -> str:
     """Функція перекладу тексту за допомогою перекладача гугл.
     Приймає:
         - src_lng: str - мова об'єкту, що перекладається
@@ -21,7 +21,7 @@ def google_translate(src_lng: str, trg_lng: str, input_text: str) -> str:
     return tr
 
 
-def translate_buttons_list(
+async def translate_buttons_list(
     source_lng: str, target_lng: str, buttons_list: ButtonDictList
 ) -> ButtonDictList:
     """Функція перекладу списку списків словників кнопок клавіатури"""
@@ -31,18 +31,20 @@ def translate_buttons_list(
     new_list = []
     for item in buttons_list:
         if isinstance(item, list):
-            new_list.append(translate_buttons_list(source_lng, target_lng, item))
+            val = await translate_buttons_list(source_lng, target_lng, item)
+            new_list.append(val)
         elif isinstance(item, dict):
-            item["text"] = google_translate(source_lng, target_lng, item["text"])
+            val = await google_translate(source_lng, target_lng, item["text"])
+            item["text"] = val.capitalize()
             if "message" in item.keys():
-                item["message"] = google_translate(
+                item["message"] = await google_translate(
                     source_lng, target_lng, item["message"]
                 )
             new_list.append(item)
     return new_list
 
 
-def translate_text(src_lng, trg_lng, context_text) -> str:
+async def translate_text(src_lng, trg_lng, context_text) -> str:
     """
     Переклад тексту:
         - src_lng: str - мова об'єкту, що перекладається
@@ -62,7 +64,7 @@ def translate_text(src_lng, trg_lng, context_text) -> str:
             return single_translation[trg_lng][context_text]
         else:
             print(f"TRANSLATOR: {context_text} - is get from Google translate")
-            text = google_translate(src_lng, trg_lng, context_text)
+            text = await google_translate(src_lng, trg_lng, context_text)
 
             # імітація занесення перекладу до БД single_translation
             if trg_lng not in single_translation.keys():
@@ -71,7 +73,7 @@ def translate_text(src_lng, trg_lng, context_text) -> str:
             return text
 
 
-def translate_kb_dict(self_object, context_data) -> dict:
+async def translate_kb_dict(self_object, context_data) -> dict:
     """
     Переклад контекстних даних екземпляру клавіатури:
         - self_object - екземпляр класу клавіатури
@@ -100,16 +102,16 @@ def translate_kb_dict(self_object, context_data) -> dict:
         print(
             f"TRANSLATOR: Google translate every single element of context_data from {src_lng} to {trg_lng}!"
         )
-        context_data["initial_text"] = google_translate(
+        context_data["initial_text"] = await google_translate(
             src_lng, trg_lng, context_data["initial_text"]
         )
-        context_data["top_buttons"] = translate_buttons_list(
+        context_data["top_buttons"] = await translate_buttons_list(
             src_lng, trg_lng, context_data["top_buttons"]
         )
-        context_data["scroll_buttons"] = translate_buttons_list(
+        context_data["scroll_buttons"] = await translate_buttons_list(
             src_lng, trg_lng, context_data["scroll_buttons"]
         )
-        context_data["bottom_buttons"] = translate_buttons_list(
+        context_data["bottom_buttons"] = await translate_buttons_list(
             src_lng, trg_lng, context_data["bottom_buttons"]
         )
 
@@ -121,7 +123,7 @@ def translate_kb_dict(self_object, context_data) -> dict:
         return context_data
 
 
-def translate_context(
+async def translate_context(
     src_lng: str = None,
     trg_lng: str = None,
     context_text: str = None,
@@ -150,11 +152,11 @@ def translate_context(
 
         # Варіант 1
         elif context_text:
-            return translate_text(src_lng, trg_lng, context_text)
+            return await translate_text(src_lng, trg_lng, context_text)
 
         # Варіант 2
         elif self_object and context_data:
-            return translate_kb_dict(self_object, context_data)
+            return await translate_kb_dict(self_object, context_data)
         else:
             return None
     except KeyError as e:

@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, Router
 from itertools import chain, islice
-from typing import List, Dict, Callable
+from typing import List, Dict
 from aiogram.utils.keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from dataclasses import dataclass
 from aiogram.types import CallbackQuery
@@ -8,6 +8,8 @@ from aiogram.filters import Text
 
 # from enum import Enum
 from abc import ABC, abstractmethod
+
+from asyncinit import asyncinit
 
 # Оголошення типів для створення клавіатури
 ButtonDict = Dict[str, str]  # Словник з даними для формування InlineKeyboardButton
@@ -135,7 +137,9 @@ class ScrollInlineKeyboardGenerator:
         page_index_button = InlineKeyboardButton(
             text=f"{self.start_page + 1}/{len(self.pages)}", callback_data="pass"
         )
-        if len(self.pages) == 1:
+        if not self.pages:
+            return []
+        elif len(self.pages) == 1:
             return self.pages[0]
         elif self.start_page == len(self.pages) - 1:
             paginator_raw = [[self.fast_up_key, self.up_key, page_index_button]]
@@ -232,6 +236,7 @@ class CombineInlineKeyboardGenerator(ScrollInlineKeyboardGenerator):
         )
 
 
+@asyncinit
 class ContextInlineKeyboardGenerator(CombineInlineKeyboardGenerator, ABC):
     """
     Клас-шаблон для створення клавіатури.
@@ -248,12 +253,12 @@ class ContextInlineKeyboardGenerator(CombineInlineKeyboardGenerator, ABC):
         - dp: Dispatcher | Router | None = None - диспетчер або роутер для уловлювання колбеків
     """
 
-    def __init__(
+    async def __init__(
         self,
         user_language: str,
         user_id: int = None,
         dp: Dispatcher | Router | None = None,
-    ) -> None:
+    ):
         # Мова користувача, використовується як цільова мова перекладу
         self.user_language = user_language
 
@@ -278,21 +283,27 @@ class ContextInlineKeyboardGenerator(CombineInlineKeyboardGenerator, ABC):
             )
             self.translated_data = data_for_translate
         else:
-            self.translated_data = self.translate_function(
+            self.translated_data = await self.translate(
                 self_object=self, context_data=data_for_translate
             )
 
         self.text = self.translated_data["initial_text"]
 
-        scroll_keys = self._create_buttons_list(self.translated_data["scroll_buttons"])
-        top_static_keys = self._create_buttons_list(self.translated_data["top_buttons"])
-        bottom_static_keys = self._create_buttons_list(
+        scroll_keys = await self._create_buttons_list(
+            self.translated_data["scroll_buttons"]
+        )
+        top_static_keys = await self._create_buttons_list(
+            self.translated_data["top_buttons"]
+        )
+        bottom_static_keys = await self._create_buttons_list(
             self.translated_data["bottom_buttons"]
         )
 
         super().__init__(scroll_keys, top_static_keys, bottom_static_keys, dp)
 
-    def _create_buttons_list(self, dict_list: KeyboardOfDict) -> KeyboardOfInlineButton:
+    async def _create_buttons_list(
+        self, dict_list: KeyboardOfDict
+    ) -> KeyboardOfInlineButton:
         """
         Функція приймає dict_list:List[List[Dict[str, str]]] та повертає об'єкт списку списків з інлайн клавіатурами
         типу List[List[InlineKeyboardButton]], що необхідно для подальшого формування клавіатури.
@@ -304,7 +315,8 @@ class ContextInlineKeyboardGenerator(CombineInlineKeyboardGenerator, ABC):
         buttons_list = []
         for item in dict_list:
             if isinstance(item, list):
-                buttons_list.append(self._create_buttons_list(item))
+                val = await self._create_buttons_list(item)
+                buttons_list.append(val)
             elif isinstance(item, dict):
                 callback_data = item["callback_data"]
                 text = item["text"]
@@ -315,6 +327,14 @@ class ContextInlineKeyboardGenerator(CombineInlineKeyboardGenerator, ABC):
                     InlineKeyboardButton(text=text, callback_data=callback_data)
                 )
         return buttons_list
+
+    async def translate(self, *args, **kwargs):
+        """Функція перекладу тексту та об'єктів клавіатури"""
+        if self.translate_function:
+            result = await self.translate_function(*args, **kwargs)
+            return result
+        else:
+            return None
 
     @property
     def text(self) -> str:
@@ -352,7 +372,7 @@ class ContextInlineKeyboardGenerator(CombineInlineKeyboardGenerator, ABC):
 
     @property
     @abstractmethod
-    def translate_function(self) -> Callable:
+    def translate_function(self):
         """Абстрактний метод для визначення функції перекладу."""
         pass
 
