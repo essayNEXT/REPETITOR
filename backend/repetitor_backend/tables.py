@@ -188,3 +188,17 @@ class Cards(Table):
     item_relation = ForeignKey(
         references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
+
+
+class ItemRelationView(Table):
+    __tablename__ = 'item_relation_view_2_9'
+
+    irid = UUID(primary_key=True)
+    i1t = Varchar(length=255)
+    i1a = Varchar(length=255)
+    c1ns = Varchar(length=255)
+    q1id = UUID()
+    rai2id = UUID()
+    i2t = Varchar(length=255)
+    i2a = Varchar(length=255)
+    c2ns = Varchar(length=255)

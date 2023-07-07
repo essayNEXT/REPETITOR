@@ -32,25 +32,25 @@ router = APIRouter()
     # response_model_exclude={"is_active"},
 )
 async def creating_phrases(
-    source_text: str,
-    author: UUID | None,
-    context_1: UUID | None,
-    context_2: UUID | None,
-    explanation: UUID | None = "95dd33a8-a6f6-410e-8456-46a6b140f8cc",
-    type: UUID | None = "63442faf-9bb1-42ab-a8c8-320bb72d5d72",
-    is_active: bool = True,
-    # item__context__name_short: Annotated[
-    #     str | None, Query(min_length=2, max_length=10)
-    # ],
-    # item__context__name_short_2: Annotated[
-    #     str | None, Query(min_length=2, max_length=10)
-    # ],
+        source_text: str,
+        author: UUID | None,
+        context_1: UUID | None,
+        context_2: UUID | None,
+        explanation: UUID | None = "95dd33a8-a6f6-410e-8456-46a6b140f8cc",
+        type: UUID | None = "63442faf-9bb1-42ab-a8c8-320bb72d5d72",
+        is_active: bool = True,
+        # item__context__name_short: Annotated[
+        #     str | None, Query(min_length=2, max_length=10)
+        # ],
+        # item__context__name_short_2: Annotated[
+        #     str | None, Query(min_length=2, max_length=10)
+        # ],
 ) -> list:
     pass
-    from repetitor_backend.app import app
-    target_text = await translate(session=app.session, source_lng="en", target_lng="uk", text=source_text)
-    target_text_2 = await translate(session=app.session, source_lng="uk", target_lng="en", text=source_text)
-    return [dict(text=source_text, target_text=target_text, target_text_2=target_text_2)]
+    target_text = await translate(source_lng="en", target_lng="uk", text=source_text)
+    return [
+        dict(text=source_text, target_text=target_text[0], target_lang=target_text[1])
+    ]
     create_item_relation = await item_relation.create(
         author=author,
         explanation=explanation,
@@ -62,7 +62,10 @@ async def creating_phrases(
         text=source_text,
     )
     from repetitor_backend.app import app
-    target_text = await translate(session=app.session, source_lng="en", target_lng="uk", text=source_text)
+
+    target_text = await translate(
+        session=app.session, source_lng="en", target_lng="uk", text=source_text
+    )
     "function translate"  # !!!!!!!!!!!!!!!
 
     create_item_for_right_answ_item = await item.create(
@@ -100,11 +103,11 @@ async def creating_phrases(
     # response_model_exclude={"is_active"},
 )
 async def get_translate(
-    item__text: str,
-    item__author: UUID,
-    item__context__name_short: Annotated[str, Query(min_length=2, max_length=10)],
-    item__context__name_short_2: Annotated[str, Query(min_length=2, max_length=10)],
-    is_active: bool = True,
+        item__text: str,
+        item__author: UUID,
+        item__context__name_short: Annotated[str, Query(min_length=2, max_length=10)],
+        item__context__name_short_2: Annotated[str, Query(min_length=2, max_length=10)],
+        is_active: bool = True,
 ) -> list:
     """
     Get a list of existing item according to match conditions:
@@ -177,62 +180,81 @@ async def get_translate(
           ;
     """
 
-    result_4 = await tables.Item.raw(sql_query_2).run()
+    # result_4 = await tables.Item.raw(sql_query_2).run()
     1 == 1
 
+    # result_4 = await tables.ItemRelationView.select().run()#objects().run()#select("*")
     # блок аналізу  результату
     #
+    queue = tables.ItemRelationView.select()
+    queue = queue.where(
+        (tables.ItemRelationView.i1a == item__author)
+        & (  # <- тут end порівняння
+                (
+                        (tables.ItemRelationView.i1t == item__text)
+                        & (tables.ItemRelationView.c2ns.is_in([item__context__name_short, item__context__name_short_2])
+                           & tables.ItemRelationView.c1ns.is_in([item__context__name_short, item__context__name_short_2])
+                           )
+                ) |  # <- тут or порівняння
+                (
+                        (tables.ItemRelationView.i2t == item__text)
+                        & (tables.ItemRelationView.c2ns.is_in([item__context__name_short, item__context__name_short_2])
+                           & tables.ItemRelationView.c1ns.is_in([item__context__name_short, item__context__name_short_2])
+                           )
+                )
+        )
+    )
+    result_4 = await queue
     fin_result = [
         {
             "status": 200,
-            "result": "пошук не дав результату. Такого слова не має в БД",
+            "result": result_4,
         }
     ]
 
-    if len(result_4) == 1:
-        fin_result = [
-            {
-                "status": 200,
-                "result": "слово є, проте не має перекладу в даному контексті",
-            }
-        ]
-    else:
-        result_4 = [
-            item for item in result_4 if item.get("text") != item__text
-        ]  # видаляємо source-слово
-        if len(result_4) == 1:
-            fin_result = [
-                {
-                    "status": 200,
-                    "result": "слово є, має 1 переклад в даному контексті",
-                    "context": f"{item__context__name_short} & {item__context__name_short_2} ",
-                    "source_word": item__text,
-                    "target_word": result_4[0]["text"],
-                }
-            ]
-        if len(result_4) > 2:
-            fin_result = [
-                {
-                    "status": 200,
-                    "result": "ГЛЮК!!. слово є, має декілька перекладів в даному контексті",
-                    "context": f"{item__context__name_short} & {item__context__name_short_2} ",
-                    "source_word": item__text,
-                    "target_word": [item["text"] for item in result_4],
-                }
-            ]
+    # if len(result_4) == -1:
+    #     fin_result = [
+    #         {
+    #             "status": 200,
+    #             "result": "слово є, проте не має перекладу в даному контексті",
+    #         }
+    #     ]
+    # else:
+    #     # result_4 = [
+    #     #     item for item in result_4 if item.get("text") != item__text
+    #     # ]  # видаляємо source-слово
+    #     if len(result_4) == 1:
+    #         fin_result = [
+    #             {
+    #                 "status": 200,
+    #                 "result": "слово є, має 1 переклад в даному контексті",
+    #                 "context": f"{item__context__name_short} & {item__context__name_short_2} ",
+    #                 "source_word": item__text,
+    #                 "target_word": result_4[0]["text"],
+    #             }
+    #         ]
+    #     if len(result_4) > 2:
+    #         fin_result = [
+    #             {
+    #                 "status": 200,
+    #                 "result": "ГЛЮК!!. слово є, має декілька перекладів в даному контексті",
+    #                 "context": f"{item__context__name_short} & {item__context__name_short_2} ",
+    #                 "source_word": item__text,
+    #                 "target_word": [item["text"] for item in result_4],
+    #             }
+    #         ]
 
-        # return [
-        #     {
-        #         "status": 200,
-        #         "context": f"{item__context__name_short} & {item__context__name_short_2} ",
-        #         "source_word": item__text,
-        #         "target_word": result_4[0]["text"],
-        #     }
-        # ]
+    # return [
+    #     {
+    #         "status": 200,
+    #         "context": f"{item__context__name_short} & {item__context__name_short_2} ",
+    #         "source_word": item__text,
+    #         "target_word": result_4[0]["text"],
+    #     }
+    # ]
 
     # fin_result = results
     return fin_result
-
 
 #
 # @router.patch("/translate/")

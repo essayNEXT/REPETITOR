@@ -15,6 +15,7 @@ from .tables import (
     RightAnswItem,
     Question,
     Cards,
+    ItemRelationView,
 )
 
 CURRENT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
@@ -36,6 +37,7 @@ APP_CONFIG = AppConfig(
         RightAnswItem,
         Question,
         Cards,
+        ItemRelationView,
     ],
     migration_dependencies=[],
     commands=[],
