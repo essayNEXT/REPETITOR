@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-import time
 from aiohttp import ClientSession
 
 
@@ -53,12 +52,11 @@ async def translate(
 
     # You can pass more than one object in body.
     body = [{"text": text.lower()}]
-    # print('text = ', text.lower())
+
     async with session.post(url, params=params, headers=headers, json=body) as response:
         response_data = await response.json()
         response_data = source_lng, response_data[0]["translations"][0]["text"]
         res = response_data[1]
-        # print('res = ', res)
 
     async with session.post(
         url, params=params_reverse, headers=headers, json=body
@@ -66,9 +64,7 @@ async def translate(
         response_data = await response.json()
         response_data = source_lng, response_data[0]["translations"][0]["text"]
         res_rev2 = response_data[1]
-        # print('res_rev2 = ', res_rev2)
 
-    time.sleep(1)
     body_rev = [{"text": res}]
     if res.lower() != text:
         async with session.post(
@@ -77,7 +73,6 @@ async def translate(
             response_data = await response.json()
             response_data = source_lng, response_data[0]["translations"][0]["text"]
             res_rev = response_data[1]
-            # print('res_rev = ', res_rev)
         if text.lower() == res_rev.lower():
             return res, target_lng
 
@@ -88,7 +83,6 @@ async def translate(
             response_data = await response.json()
             response_data = source_lng, response_data[0]["translations"][0]["text"]
             res2 = response_data[1]
-            # print('res2 = ', res2)
 
         if text.lower() == res2.lower():
             return res_rev2, source_lng
@@ -97,7 +91,7 @@ async def translate(
 
 
 async def translate_lng(
-    session,
+    session: ClientSession,
     interface_lng: str = "en",
     url: str = URL_lNG,
 ) -> dict:
