@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from aiohttp import ClientSession
+from repetitor_backend.app import app
 
 
 load_dotenv()
@@ -11,7 +12,7 @@ LOCATION = os.environ.get("LOCATION")
 
 
 async def translate(
-    session: ClientSession = None,
+    session: ClientSession = app.session,
     source_lng: str = "en",
     target_lng: str = "uk",
     text: str = "add",
@@ -34,10 +35,6 @@ async def translate(
     :return: tuple(result, target language) - if the translation is correct,
              then returns the translation of the input text
     """
-    from repetitor_backend.app import app
-
-    if not session:
-        session = app.session
 
     params = {"api-version": "3.0", "from": source_lng, "to": [target_lng]}
     params_reverse = {"api-version": "3.0", "from": target_lng, "to": [source_lng]}
