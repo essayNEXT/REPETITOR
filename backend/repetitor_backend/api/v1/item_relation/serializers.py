@@ -1,7 +1,4 @@
-from typing import Annotated
 from uuid import UUID
-
-from fastapi import Query
 from pydantic import BaseModel
 
 
@@ -27,9 +24,6 @@ class GetItemRelationRequest(UpdateItemRelationRequest):
     explanation__description: str | None
     type__name: str | None
 
+
 class GetItemRelationResponse(GetItemRelationRequest):
     is_active: bool | None
-
-
-# class DeleteItemRelationRequest(ItemRelationResponse):
-#     pass

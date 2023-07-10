@@ -23,15 +23,15 @@ async def create_item_relation(
     new_item_relation: ItemRelationCreateRequest,
 ) -> UUID | str:
     """
-    Create new customer context.
+    Create new item relation.
 
     Parameters:
-    - customer: UUID of customer, used for ForeignKey links with Customer, required
-    - context_1: UUID of context, used for ForeignKey links with Context, required
-    - context_2: UUID of context, used for ForeignKey links with Context, required
+    - author: UUID of customer, used for ForeignKey links with Customer, required
+    - explanation: UUID of explanation item relation, used for ForeignKey links with Explanation, required
+    - type: UUID of type item relation, used for ForeignKey links with RelationType, required
 
     Return:
-    - ItemRelation.id: UUID - primary key for new customer context record - UUID type
+    - ItemRelation.id: UUID - primary key for new item relation record - UUID type
     - str - error message in case of invalid foreign keys
     """
     return await item_relation.create(**new_item_relation.dict())
@@ -53,15 +53,17 @@ async def get_item_relation(
     type__name: Annotated[str | None, Query(min_length=2, max_length=30)] = None,
 ) -> list:
     """
-    Get a list of existing customer context according to match conditions:
+    Get a list of existing item relation according to match conditions:
 
     Parameters:
-    - id: UUID of customer context
-    - customer: UUID of customer, used for ForeignKey links with Customer
-    - context_1: UUID of context, used for ForeignKey links with Context
-    - context_2: UUID of context, used for ForeignKey links with Context
-    - last_date: customer context creation/update time, UTС zone
+    - id: UUID of item relation
+    - author: UUID of customer, used for ForeignKey links with Customer
+    - explanation: UUID of explanation item relation, used for ForeignKey links with Explanation
+    - type: UUID of type item relation, used for ForeignKey links with RelationType
     - is_active: bool = True
+    - advanced options for filtering:
+        - explanation__description: description of explanation item relation, used for ForeignKey links with Explanation - str type
+        - type__name: name of type item relation, used for ForeignKey links with RelationType - str type
 
     Return:
     - List that contains the results of the query
@@ -89,18 +91,17 @@ async def update_item_relation(
     id: UUID, update_param_item_relation: UpdateItemRelationRequest
 ) -> UUID | None:
     """
-    Update existing record in customer context.
+    Update existing record in item relation.
 
     Parameters:
-    - id: UUID of customer context, required
-    - customer: UUID of customer, used for ForeignKey links with Customer
-    - context_1: UUID of context, used for ForeignKey links with Context
-    - context_2: UUID of context, used for ForeignKey links with Context
-    - last_date: customer context creation/update time, UTС zone
+    - id: UUID of item relation, required
+    - author: UUID of customer, used for ForeignKey links with Customer
+    - explanation: UUID of explanation item relation, used for ForeignKey links with Explanation
+    - type: UUID of type item relation, used for ForeignKey links with RelationType
     - is_active: bool = True
 
     Return:
-    - ItemRelation.id: UUID - primary key for new customer context record - UUID type
+    - ItemRelation.id: UUID - primary key foritem relation record - UUID type
     - If there is no record with this id, it returns None
     """
 
@@ -110,7 +111,7 @@ async def update_item_relation(
 @router.delete("/item_relation/")
 async def delete_item_relation(id_param: UUID) -> UUID | None:
     """
-    Delete item_relation with item_relation.id == id.
+    Delete item relation with item_relation.id == id.
 
     Parameter:
     - id - UUID.

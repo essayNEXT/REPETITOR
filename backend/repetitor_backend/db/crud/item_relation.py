@@ -12,24 +12,18 @@ from repetitor_backend.api.v1.item_relation.serializers import (
 
 
 async def create(**kwargs: ItemRelationCreateRequest) -> UUID | str:
-    """Create new item relation.
+    """
+    Create new item relation.
+
     Parameters:
-        -
+    - author: UUID of customer, used for ForeignKey links with Customer, required
+    - explanation: UUID of explanation item relation, used for ForeignKey links with Explanation, required
+    - type: UUID of type item relation, used for ForeignKey links with RelationType, required
 
     Return:
     - ItemRelation.id: UUID - primary key for new item relation record - UUID type
     - str - error message in case of invalid foreign keys
     """
-    check_exists = await get(**kwargs)
-    if check_exists:  # якщо існує  такий запис
-        return check_exists[0]["id"]
-        return (
-            f"an object with such parameters already exists id={check_exists[0].id}  "
-            f"is_active={check_exists[0].is_active} "
-        )
-        raise TypeError(
-            f"an object with such parameters already exists {check_exists[0].id}"
-        )
 
     try:
         result = await tables.ItemRelation.insert(
@@ -41,26 +35,22 @@ async def create(**kwargs: ItemRelationCreateRequest) -> UUID | str:
 
 
 async def get(**get_param: GetItemRelationRequest) -> list[tables.ItemRelation]:
-    """Get a list of existing item relation according to match conditions:
-        Parameters:
-        - id: UUID of item relation
-        - customer: UUID of customer, used for ForeignKey links with Customer
-        - context_1: UUID of context, used for ForeignKey links with Context
-        - context_2: UUID of context, used for ForeignKey links with Context
-        - last_date: item relation creation/update time, UTС zone
-        - is_active: bool | None
+    """
+    Get a list of existing item relation according to match conditions:
+
+    Parameters:
+    - id: UUID of item relation
+    - author: UUID of customer, used for ForeignKey links with Customer
+    - explanation: UUID of explanation item relation, used for ForeignKey links with Explanation
+    - type: UUID of type item relation, used for ForeignKey links with RelationType
+    - is_active: bool = True
+    - advanced options for filtering:
+        - explanation__description: description of explanation item relation, used for ForeignKey links with Explanation - str type
+        - type__name: name of type item relation, used for ForeignKey links with RelationType - str type
 
     Return:
-    - List that contains the results of the query, serialized to
-    the ItemRelation type
+    - List that contains the results of the query
     """
-
-    # query = tables.ItemRelation.objects()
-    # for param, value in get_param.items():
-    #     if value is not None:
-    #         query = query.where(getattr(tables.ItemRelation, param, None) == value)
-    # result = await query
-    # return result
 
     query = tables.ItemRelation.objects()
     for param, value in get_param.items():
@@ -73,6 +63,8 @@ async def get(**get_param: GetItemRelationRequest) -> list[tables.ItemRelation]:
                 # Якщо одна частина, просто використовуємо параметр
                 query = query.where(getattr(tables.ItemRelation, param, None) == value)
             elif len(parts) == 2:
+                # зробив трохи модифікований цикл обходу параметрів, щоб звертатися через підпараметри, а не через UUID
+                # tables.ItemRelation.type.name
                 # Якщо дві частини, використовуємо вкладений виклик
                 nested_attr = getattr(tables.ItemRelation, parts[0], None)
                 query = query.where(getattr(nested_attr, parts[1], None) == value)
@@ -85,20 +77,19 @@ async def get(**get_param: GetItemRelationRequest) -> list[tables.ItemRelation]:
 
 
 async def update(id: UUID, **update_param: UpdateItemRelationRequest) -> UUID | None:
-    """Update existing record in item relation.
+    """
+    Update existing record in item relation.
 
-    parameters:
-    - id: UUID of item relation, required
-    - customer: UUID of customer, used for ForeignKey links with Customer
-    - context_1: UUID of context, used for ForeignKey links with Context
-    - context_2: UUID of context, used for ForeignKey links with Context
-    - last_date: item relation creation/update time, UTС zone
+    Parameters:
+    - id: UUID of item relation
+    - author: UUID of customer, used for ForeignKey links with Customer
+    - explanation: UUID of explanation item relation, used for ForeignKey links with Explanation
+    - type: UUID of type item relation, used for ForeignKey links with RelationType
     - is_active: bool = True
 
     Return:
-    - ItemRelation.id: UUID - primary key for new item relation record - UUID type
+    - ItemRelation.id: UUID - primary key foritem relation record - UUID type
     - If there is no record with this id, it returns None
-
     """
     if not isinstance(id, UUID):
         raise TypeError(
@@ -114,10 +105,12 @@ async def update(id: UUID, **update_param: UpdateItemRelationRequest) -> UUID | 
 
 
 async def delete(id: UUID) -> UUID | None:
-    """Delete right_answ_item with right_answ_item.id == id.
+    """
+    Delete item relation with item_relation.id == id.
 
-    parameter:
+    Parameter:
     - id - UUID.
+
     result:
     - primary key for deleted record - UUID type.
     - If there is no record with this id, it returns None.

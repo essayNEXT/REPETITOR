@@ -23,15 +23,13 @@ async def create_question(
     new_question: QuestionCreateRequest,
 ) -> UUID | str:
     """
-    Create new customer context.
-
+    Create new question.
     Parameters:
-    - customer: UUID of customer, used for ForeignKey links with Customer, required
-    - context_1: UUID of context, used for ForeignKey links with Context, required
-    - context_2: UUID of context, used for ForeignKey links with Context, required
+    - relation: UUID of item relation, used for ForeignKey links with Item Relation, required
+    - item: UUID of item, used for ForeignKey links with Item, required
 
     Return:
-    - Question.id: UUID - primary key for new customer context record - UUID type
+    - Question.id: UUID - primary key for new question record - UUID type
     - str - error message in case of invalid foreign keys
     """
     return await question.create(**new_question.dict())
@@ -48,26 +46,36 @@ async def get_question(
     relation: UUID = None,
     item: UUID = None,
     is_active: bool = True,
+    item__author: UUID = None,
+    item__context__name_short: Annotated[
+        str | None, Query(min_length=2, max_length=10)
+    ] = None,
+    item__text: Annotated[str | None, Query(min_length=2, max_length=255)] = None,
 ) -> list:
     """
-    Get a list of existing customer context according to match conditions:
-
+    Get a list of existing question according to match conditions:
     Parameters:
-    - id: UUID of customer context
-    - customer: UUID of customer, used for ForeignKey links with Customer
-    - context_1: UUID of context, used for ForeignKey links with Context
-    - context_2: UUID of context, used for ForeignKey links with Context
-    - last_date: customer context creation/update time, UTС zone
-    - is_active: bool = True
+    - id: UUID of Question
+    - relation: UUID of item relation, used for ForeignKey links with Item Relation
+    - item: UUID of item, used for ForeignKey links with Item
+    - is_active: bool
+    - advanced options for filtering:
+        - item__author: author of item, used for ForeignKey links with Item
+        - item__context__name_short: the short name of the required items context, used for FK links with Item - str type len(2..10)
+        - item__text: the text of the required items, used for ForeignKey links with Item - str type len(2..255)
 
     Return:
-    - List that contains the results of the query
+    - List that contains the results of the query, serialized to
+    the Question type
     """
     get_param_question = GetQuestionRequest(
         id=id,
         relation=relation,
         item=item,
         is_active=is_active,
+        item__author=item__author,
+        item__context__name_short=item__context__name_short,
+        item__text=item__text,
     )
     results = await question.get(**get_param_question.dict())
     fin_result = [
@@ -81,18 +89,16 @@ async def update_question(
     id: UUID, update_param_question: UpdateQuestionRequest
 ) -> UUID | None:
     """
-    Update existing record in customer context.
+    Update existing record in question.
 
-    Parameters:
-    - id: UUID of customer context, required
-    - customer: UUID of customer, used for ForeignKey links with Customer
-    - context_1: UUID of context, used for ForeignKey links with Context
-    - context_2: UUID of context, used for ForeignKey links with Context
-    - last_date: customer context creation/update time, UTС zone
-    - is_active: bool = True
+    parameters:
+    - id: UUID of Question, required
+    - relation: UUID of item relation, used for ForeignKey links with Item Relation
+    - item: UUID of item, used for ForeignKey links with Item
+    - is_active: bool
 
     Return:
-    - Question.id: UUID - primary key for new customer context record - UUID type
+    - Question.id: UUID - primary key for question record - UUID type
     - If there is no record with this id, it returns None
     """
 

@@ -23,15 +23,13 @@ async def create_right_answ_item(
     new_right_answ_item: RightAnswItemCreateRequest,
 ) -> UUID | str:
     """
-    Create new customer context.
-
+    Create new RightAnswItem.
     Parameters:
-    - customer: UUID of customer, used for ForeignKey links with Customer, required
-    - context_1: UUID of context, used for ForeignKey links with Context, required
-    - context_2: UUID of context, used for ForeignKey links with Context, required
+    - relation: UUID of item relation, used for ForeignKey links with Item Relation, required
+    - item: UUID of item, used for ForeignKey links with Item, required
 
     Return:
-    - RightAnswItem.id: UUID - primary key for new customer context record - UUID type
+    - RightAnswItem.id: UUID - primary key for new RightAnswItem record - UUID type
     - str - error message in case of invalid foreign keys
     """
     return await right_answ_item.create(**new_right_answ_item.dict())
@@ -55,18 +53,20 @@ async def get_right_answ_item(
     item__text: Annotated[str | None, Query(min_length=2, max_length=255)] = None,
 ) -> list:
     """
-    Get a list of existing customer context according to match conditions:
-
+    Get a list of existing RightAnswItem according to match conditions:
     Parameters:
-    - id: UUID of customer context
-    - customer: UUID of customer, used for ForeignKey links with Customer
-    - context_1: UUID of context, used for ForeignKey links with Context
-    - context_2: UUID of context, used for ForeignKey links with Context
-    - last_date: customer context creation/update time, UTС zone
-    - is_active: bool = True
+    - id: UUID of RightAnswItem
+    - relation: UUID of item relation, used for ForeignKey links with Item Relation
+    - item: UUID of item, used for ForeignKey links with Item
+    - is_active: bool
+    - advanced options for filtering:
+        - item__author: author of item, used for ForeignKey links with Item
+        - item__context__name_short: the short name of the required items context, used for FK links with Item - str type len(2..10)
+        - item__text: the text of the required items, used for ForeignKey links with Item - str type len(2..255)
 
     Return:
-    - List that contains the results of the query
+    - List that contains the results of the query, serialized to
+    the RightAnswItem type
     """
     get_param_right_answ_item = GetRightAnswItemRequest(
         id=id,
@@ -91,19 +91,18 @@ async def update_right_answ_item(
     id: UUID, update_param_right_answ_item: UpdateRightAnswItemRequest
 ) -> UUID | None:
     """
-    Update existing record in customer context.
+    Update existing record in RightAnswItem.
 
-    Parameters:
-    - id: UUID of customer context, required
-    - customer: UUID of customer, used for ForeignKey links with Customer
-    - context_1: UUID of context, used for ForeignKey links with Context
-    - context_2: UUID of context, used for ForeignKey links with Context
-    - last_date: customer context creation/update time, UTС zone
-    - is_active: bool = True
+    parameters:
+    - id: UUID of RightAnswItem, required
+    - relation: UUID of item relation, used for ForeignKey links with Item Relation
+    - item: UUID of item, used for ForeignKey links with Item
+    - is_active: bool
 
     Return:
-    - RightAnswItem.id: UUID - primary key for new customer context record - UUID type
+    - RightAnswItem.id: UUID - primary key for question record - UUID type
     - If there is no record with this id, it returns None
+
     """
 
     return await right_answ_item.update(id=id, **update_param_right_answ_item.dict())
