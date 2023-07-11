@@ -9,7 +9,6 @@ from repetitor_backend.db.crud import (
     item_relation_view,
 )
 import logging
-from repetitor_backend.external_api.microsoft import translate
 
 logger = logging.getLogger()
 
@@ -84,4 +83,4 @@ async def delete_translate(id: UUID) -> UUID | None:
     If parameter has wrong type - raise TypeError.
     """
 
-    return await translate.delete(id)
+    return await item_relation_view.delete(id)
