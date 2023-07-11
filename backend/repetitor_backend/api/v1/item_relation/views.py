@@ -62,7 +62,7 @@ async def get_item_relation(
     - type: UUID of type item relation, used for ForeignKey links with RelationType
     - is_active: bool = True
     - advanced options for filtering:
-        - explanation__description: description of explanation item relation, used for ForeignKey links with Explanation - str type
+        - explanation__description: description of explanation item relation, used for ForeignKey links with Explanation
         - type__name: name of type item relation, used for ForeignKey links with RelationType - str type
 
     Return:

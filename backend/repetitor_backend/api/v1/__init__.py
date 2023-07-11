@@ -10,9 +10,10 @@ from repetitor_backend.api.v1.customer_context.views import (
 )
 from repetitor_backend.api.v1.translate.views import router as translate_router
 from repetitor_backend.api.v1.question.views import router as question_router
-from repetitor_backend.api.v1.right_answ_item.views import router as right_answ_item_router
+from repetitor_backend.api.v1.right_answ_item.views import (
+    router as right_answ_item_router,
+)
 from repetitor_backend.api.v1.item_relation.views import router as item_relation_router
-
 
 router = APIRouter()
 
