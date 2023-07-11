@@ -16,7 +16,7 @@ async def get(
     """
     Отримати список можливих перекладів у контексті(item_context_name_short_1, item_context_name_short_2)
     для слова(item_text) авторів (item_author), які мають сформований переклад
-    на основі зв'язку через таблиці Question\RightAnswItem і додаткову М2М таблицю ItemRelation.
+    на основі зв'язку через таблиці Question|RightAnswItem і додаткову М2М таблицю ItemRelation.
 
     Parameters:
     - item_text: str type, max lenght is 255 symbols - target word
