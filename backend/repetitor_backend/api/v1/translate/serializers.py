@@ -2,41 +2,38 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import Query
-from pydantic import BaseModel
-
-REGEX_PATH = r"^([a-zA-Z0-9_\\/]+)([a-zA-Z0-9_.]+)$"
+from pydantic import BaseModel, validator
 
 
-# У цьому виразі: ^ вказує на початок рядка.
-# ([a-zA-Z0-9_\\/]+) визначає групу, яка відповідає за розподіл директорій.
-# Вона може містити будь-яку комбінацію букв, цифр, символів підкреслення, косої риски.
-# ([a-zA-Z0-9_.]+) визначає групу, яка відповідає за назву файлу і розширення.
-# Вона може містити будь-яку комбінацію букв, цифр, символів підкреслення і крапки.
-# $ вказує на кінець рядка.
-# Цей вираз можна застосувати до шляху до файла і отримати відповідні групи,
-# які будуть містити розподіл директорій і назву файлу з розширенням.
-# Залежно від реалізації регулярних виразів, код може виглядати трохи інакше,
-# але загальна ідея залишиться такою ж.
-
-
-class ItemCreateRequest(BaseModel):
-    text: Annotated[str, Query(min_length=2, max_length=255)]
-    image: Annotated[str | None, Query(min_length=3, max_length=255, regex=REGEX_PATH)]
-    sound: Annotated[str | None, Query(min_length=3, max_length=255, regex=REGEX_PATH)]
-    author: UUID
-    context: UUID
-
-
-class ItemResponse(ItemCreateRequest):
-    text: Annotated[str | None, Query(min_length=2, max_length=255)]
-    id: UUID
+class GetItemRelationViewRequest(BaseModel):
+    item_text: Annotated[str, Query(min_length=2, max_length=255)]
+    item_author: UUID
+    item_context_name_short_1: Annotated[str, Query(min_length=2, max_length=10)]
+    item_context_name_short_2: Annotated[str, Query(min_length=2, max_length=10)]
     is_active: bool | None
 
+    @validator("item_context_name_short_2")
+    def validate_context_2(cls, value, values):
+        if "context_1" in values and value == values["item_context_name_short_1"]:
+            raise ValueError("context_2 must have a different value than context_1")
+        return value
 
-class UpdateItemRequest(ItemResponse):
-    #     text: Annotated[str | None, Query(min_length=2, max_length=255)] = None
-    pass
+
+item_relation: UUID
 
 
-class DeleteItemRequest(ItemResponse):
+class GetItemRelationViewResponse(BaseModel):
+    item_relation: UUID
+    item_text_1: Annotated[str, Query(min_length=2, max_length=255)]
+    item_author_1: UUID
+    item_context_name_short_1: Annotated[str, Query(min_length=2, max_length=10)]
+    question: UUID
+    right_answ_item: UUID
+    item_text_2: Annotated[str, Query(min_length=2, max_length=255)]
+    item_author_2: UUID
+    item_context_name_short_2: Annotated[str, Query(min_length=2, max_length=10)]
+    is_active: bool
+
+
+class UpdateItemRelationViewRequest(BaseModel):
     pass

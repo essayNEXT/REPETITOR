@@ -1,4 +1,3 @@
-from datetime import datetime
 from uuid import UUID
 
 from asyncpg import ForeignKeyViolationError
@@ -51,7 +50,7 @@ async def get(**get_param: GetQuestionRequest) -> list[tables.Question]:
         - is_active: bool
         - advanced options for filtering:
             - item__author: author of item, used for ForeignKey links with Item
-            - item__context__name_short: the short name of the required items context, used for FK links with Item - str type len(2..10)
+            - item__context__name_short: the short name of the required items context, used for FK links with Item - str
             - item__text: the text of the required items, used for ForeignKey links with Item - str type len(2..255)
 
     Return:

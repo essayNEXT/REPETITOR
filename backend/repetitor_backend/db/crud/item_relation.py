@@ -1,4 +1,3 @@
-from datetime import datetime
 from uuid import UUID
 
 from asyncpg import ForeignKeyViolationError
@@ -45,7 +44,7 @@ async def get(**get_param: GetItemRelationRequest) -> list[tables.ItemRelation]:
     - type: UUID of type item relation, used for ForeignKey links with RelationType
     - is_active: bool = True
     - advanced options for filtering:
-        - explanation__description: description of explanation item relation, used for ForeignKey links with Explanation - str type
+        - explanation__description: description of explanation item relation, used for ForeignKey links with Explanation
         - type__name: name of type item relation, used for ForeignKey links with RelationType - str type
 
     Return:

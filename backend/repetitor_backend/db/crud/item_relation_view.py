@@ -1,36 +1,19 @@
 from typing import Annotated
 from uuid import UUID
-from fastapi import APIRouter, Query
 
-from .serializers import (
-    GetItemRelationViewResponse,
-)
-from repetitor_backend.db.crud import (
-    item_relation_view,
-)
-import logging
-from repetitor_backend.external_api.microsoft import translate
+from fastapi import Query
 
-logger = logging.getLogger()
-
-router = APIRouter()
+from repetitor_backend import tables
 
 
-@router.get(
-    "/translate/",
-    response_model=list[GetItemRelationViewResponse],
-    response_model_exclude_none=True,
-    response_model_exclude={"is_active"},
-)
-async def get_translate(
+async def get(
     item_text: str,
-    item_author: UUID,
+    list_item_author: list[UUID],
     item_context_name_short_1: Annotated[str, Query(min_length=2, max_length=10)],
     item_context_name_short_2: Annotated[str, Query(min_length=2, max_length=10)],
     is_active: bool = True,
-) -> list:
+) -> list[tables.ItemRelationView]:
     """
-    Поки тільки 1 версія, пошук тільки слів у БД.
     Отримати список можливих перекладів у контексті(item_context_name_short_1, item_context_name_short_2)
     для слова(item_text) авторів (item_author), які мають сформований переклад
     на основі зв'язку через таблиці Question\RightAnswItem і додаткову М2М таблицю ItemRelation.
@@ -56,32 +39,60 @@ async def get_translate(
         - right_answ_item: UUID - запис через який відбуваються зв'язки слів у контекстні пари,
         - is_active: bool
     """
-    # заглушка, для додавання до авторів гугла та мікрософт у майбутньому
-    list_item_author = [item_author]
-    result = await item_relation_view.get(
-        item_text=item_text,
-        list_item_author=list_item_author,
-        item_context_name_short_1=item_context_name_short_1,
-        item_context_name_short_2=item_context_name_short_2,
-        is_active=is_active,
+
+    queue = tables.ItemRelationView.select()
+    queue = queue.where(
+        (tables.ItemRelationView.is_active == is_active)
+        & (  # <- тут end порівняння
+            (
+                (tables.ItemRelationView.item_text_1 == item_text)
+                & tables.ItemRelationView.item_author_1.is_in(list_item_author)
+                & (
+                    tables.ItemRelationView.item_context_name_short_1.is_in(
+                        [item_context_name_short_1, item_context_name_short_2]
+                    )
+                    & tables.ItemRelationView.item_context_name_short_2.is_in(
+                        [item_context_name_short_1, item_context_name_short_2]
+                    )
+                )
+            )
+            | (  # <- тут or порівняння
+                (tables.ItemRelationView.item_text_2 == item_text)
+                & tables.ItemRelationView.item_author_2.is_in(list_item_author)
+                & (
+                    tables.ItemRelationView.item_context_name_short_1.is_in(
+                        [item_context_name_short_1, item_context_name_short_2]
+                    )
+                    & tables.ItemRelationView.item_context_name_short_2.is_in(
+                        [item_context_name_short_1, item_context_name_short_2]
+                    )
+                )
+            )
+        )
     )
+    result = await queue
 
     return result
 
 
-@router.delete("/translate/")
-async def delete_translate(id: UUID) -> UUID | None:
-    """
-    Delete item relation with ItemRelation.id == id.
+async def delete(id: UUID) -> UUID | None:
+    """Delete item relation with item_relation_view.id == id.
 
-    Parameter:
+    parameter:
     - id - UUID.
-
-    Result:
+    result:
     - primary key for deleted record - UUID type.
     - If there is no record with this id, it returns None.
 
     If parameter has wrong type - raise TypeError.
     """
-
-    return await translate.delete(id)
+    if not isinstance(id, UUID):
+        raise TypeError(
+            f"parameter 'id' for function del_item_relation_view must be UUID-type, but got {type(id)}"
+        )
+    result = (
+        await tables.ItemRelation.update(is_active=False)
+        .where(tables.ItemRelation.id == id)
+        .returning(tables.ItemRelation.id)
+    )
+    return result[0]["id"] if result else None

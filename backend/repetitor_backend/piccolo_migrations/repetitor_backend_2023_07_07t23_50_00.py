@@ -1,8 +1,4 @@
 from piccolo.apps.migrations.auto.migration_manager import MigrationManager
-from piccolo.columns.column_types import ForeignKey
-from piccolo.columns.column_types import UUID
-from piccolo.columns.defaults.uuid import UUID4
-from piccolo.columns.indexes import IndexMethod
 from piccolo.table import Table
 
 

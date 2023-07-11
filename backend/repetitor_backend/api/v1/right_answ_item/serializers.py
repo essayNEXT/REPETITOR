@@ -29,6 +29,5 @@ class GetRightAnswItemRequest(UpdateRightAnswItemRequest):
 class GetRightAnswItemResponse(GetRightAnswItemRequest):
     is_active: bool | None
 
-
 # class DeleteRightAnswItemRequest(RightAnswItemResponse):
 #     pass
