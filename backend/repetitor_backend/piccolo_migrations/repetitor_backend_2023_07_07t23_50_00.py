@@ -22,17 +22,17 @@ async def forwards():
     async def run():
         await RawTable.raw(
             """
-        CREATE VIEW item_relation_view AS 
-        SELECT ir1.id as item_relation, i1."text" as item_text_1, i1.author as item_author_1, 
-                                        c1.name_short as item_context_name_short_1,  
-                                        i2."text" as item_text_2, i2.author as item_author_2, 
+        CREATE VIEW item_relation_view AS
+        SELECT ir1.id as item_relation, i1."text" as item_text_1, i1.author as item_author_1,
+                                        c1.name_short as item_context_name_short_1,
+                                        i2."text" as item_text_2, i2.author as item_author_2,
                                         c2.name_short as item_context_name_short_2,
                                         q1.id as question, rai2.id as right_answ_item, ir1.is_active  as is_active
         FROM item i1
-        JOIN context c1 ON i1.context = c1.id 
+        JOIN context c1 ON i1.context = c1.id
         JOIN question q1 ON q1.item = i1.id
-        JOIN item_relation ir1 ON ir1.id = q1.relation 
-        JOIN right_answ_item rai2 ON ir1.id =  rai2.relation 
+        JOIN item_relation ir1 ON ir1.id = q1.relation
+        JOIN right_answ_item rai2 ON ir1.id =  rai2.relation
         JOIN item i2 ON i2.id = rai2.item
         JOIN context c2 ON i2.context = c2.id
         ;
