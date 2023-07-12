@@ -4,9 +4,6 @@ from pydantic import BaseModel, validator
 from pydantic.validators import datetime as p_datetime
 
 
-# from datetime import datetime
-
-
 class CustomerContextCreateRequest(BaseModel):
     customer: UUID
     context_1: UUID

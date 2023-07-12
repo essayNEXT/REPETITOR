@@ -188,3 +188,18 @@ class Cards(Table):
     item_relation = ForeignKey(
         references=ItemRelation, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
+
+
+class ItemRelationView(Table):
+    __tablename__ = "item_relation_view"
+
+    item_relation = UUID(primary_key=True)
+    item_text_1 = Text(length=255)
+    item_author_1 = UUID()
+    item_context_name_short_1 = Varchar(length=10)
+    question = UUID()
+    right_answ_item = UUID()
+    item_text_2 = Text(length=255)
+    item_author_2 = UUID()
+    item_context_name_short_2 = Varchar(length=10)
+    is_active = Boolean(default=True)
