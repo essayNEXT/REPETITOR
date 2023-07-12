@@ -11,12 +11,12 @@ class CustomerResponse(BaseModel):
     tlg_user_id: int
     tlg_language: str
     tlg_first_name: str
-    tlg_user_name: str
-    tlg_last_name: str
-    native_language: str
-    first_name: str
-    last_name: str
-    email: str
+    tlg_user_name: str | None
+    tlg_last_name: str | None
+    native_language: str | None
+    first_name: str | None
+    last_name: str | None
+    email: EmailStr | None
     is_active: bool
 
     @staticmethod

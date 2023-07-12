@@ -30,7 +30,9 @@ async def get_test_kb(
         user_id = event.from_user.id
         # user_language = "uk"
 
-        kb = MyCustomKeyboard(user_language=user_language, user_id=user_id, dp=router)
+        kb = await MyCustomKeyboard(
+            user_language=user_language, user_id=user_id, dp=router
+        )
 
         key = KeyKeyboard(
             bot_id=bot.id,
@@ -72,7 +74,7 @@ async def get_test2_kb(
         user_id = event.from_user.id
         user_language = "uk"
 
-        kb = MyCustomKeyboard2(user_language=user_language, user_id=user_id)
+        kb = await MyCustomKeyboard2(user_language=user_language, user_id=user_id)
 
         key = KeyKeyboard(
             bot_id=bot.id,

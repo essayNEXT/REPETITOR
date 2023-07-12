@@ -45,10 +45,10 @@ async def create_customer_context(
 )
 async def get_customer_context(
     id: UUID | None = None,
-    customer: UUID = None,
-    context_1: UUID = None,
-    context_2: UUID = None,
-    is_active: bool = True,
+    customer: UUID | None = None,
+    context_1: UUID | None = None,
+    context_2: UUID | None = None,
+    is_active: bool | None = True,
     is_key_only: Annotated[bool, Query(description="if only 'id' is needed")] = False,
 ) -> list:
     """

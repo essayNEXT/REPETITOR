@@ -1,45 +1,43 @@
-import aiohttp
 import os
 from dotenv import load_dotenv
-import time
+from aiohttp import ClientSession
+from repetitor_backend.app import app
+
 
 load_dotenv()
 URL = "https://api.cognitive.microsofttranslator.com/translate"
 URL_lNG = "https://api.cognitive.microsofttranslator.com/languages"
-# https://api-eur.cognitive.microsofttranslator.com Північна Європа, Західна Європа
 API_KEY = os.environ.get("KEY_MICROSOFT")
 LOCATION = os.environ.get("LOCATION")
 
 
 async def translate(
-    session,
-    source_lng: str,
-    target_lng: str,
-    text: str,
+    session: ClientSession = app.session,
+    source_lng: str = "en",
+    target_lng: str = "uk",
+    text: str = "add",
     url: str = URL,
     api_key: str = API_KEY,
     location: str = LOCATION,
-) -> aiohttp.ClientResponse:
+) -> tuple:
     """
-    The function returns the translation of the entered text, in addition,
-    it compares the resulting translation with:
-    1. by reverse translation or
-    2. with the translation "auto-detecting input language"
-        (additional option, not used yet)
-       and decides on the correctness of the translation.
+    The function performs automatic translation of the word in the specified context
+    of the languages, the order of the languages does not matter
     Used Microsoft Azure Cognitive Services Translator REST APIs
 
-    :param source_lang: language from which the translation is carried out
-    :param target_lang: language into which the translation is carried out
+    :param session: aiohttp.ClientSession
+    :param source_lng: first language
+    :param target_lng: second language
     :param text: text to be translated
-    :return: if the translation is correct, then returns the translation of the input text
+    :param url: address to request a text translation
+    :param api_key: access key
+    :param location: site location for the request
+    :return: tuple(result, target language) - if the translation is correct,
+             then returns the translation of the input text
     """
 
     params = {"api-version": "3.0", "from": source_lng, "to": [target_lng]}
     params_reverse = {"api-version": "3.0", "from": target_lng, "to": [source_lng]}
-
-    # autodetect source language
-    # params_auto = {"api-version": "3.0", "to": [target_lng]}
 
     headers = {
         "Ocp-Apim-Subscription-Key": api_key,
@@ -50,57 +48,65 @@ async def translate(
     # "X-ClientTraceId": str(uuid.uuid4()), - A client-generated GUID to uniquely identify the request.
 
     # You can pass more than one object in body.
-    body = [{"text": text}]
+    body = [{"text": text.lower()}]
 
     async with session.post(url, params=params, headers=headers, json=body) as response:
         response_data = await response.json()
         response_data = source_lng, response_data[0]["translations"][0]["text"]
-        # print(response_data)
         res = response_data[1]
 
-    # 1. We perform a reverse translation
-    time.sleep(1)
-    body_rev = [{"text": res}]
     async with session.post(
-        url, params=params_reverse, headers=headers, json=body_rev
+        url, params=params_reverse, headers=headers, json=body
     ) as response:
         response_data = await response.json()
         response_data = source_lng, response_data[0]["translations"][0]["text"]
-        res_rev = response_data[1]
-        # print(text.lower(), res_rev.lower())
+        res_rev2 = response_data[1]
 
-    return res if text.lower() == res_rev.lower() else "Translation error"
+    body_rev = [{"text": res}]
+    if res.lower() != text:
+        async with session.post(
+            url, params=params_reverse, headers=headers, json=body_rev
+        ) as response:
+            response_data = await response.json()
+            response_data = source_lng, response_data[0]["translations"][0]["text"]
+            res_rev = response_data[1]
+        if text.lower() == res_rev.lower():
+            return res, target_lng
 
-    # 2. Translation with the "auto-detect input language"
-    # async with session.post(
-    #     url, params=params_auto, headers=headers, json=body
-    # ) as response:
-    #     response_data_auto = await response.json()
-    #     response_data_auto = (
-    #         response_data_auto[0]["detectedLanguage"]["language"],
-    #         response_data_auto[0]["translations"][0]["text"],
-    #     )
-    #     print(response_data_auto)
-    #     if response_data == response_data_auto:
-    #         #print("The translation is correct")
-    #         return response_data[1]
-    #     else:
-    #         # res = response_data[1]
-    #         # source_lng, target_lng = target_lng, source_lng
-    #         print("Translation error")
+    if res_rev2.lower() != text:
+        async with session.post(
+            url, params=params, headers=headers, json=body
+        ) as response:
+            response_data = await response.json()
+            response_data = source_lng, response_data[0]["translations"][0]["text"]
+            res2 = response_data[1]
+
+        if text.lower() == res2.lower():
+            return res_rev2, source_lng
+        else:
+            "Translation error"
 
 
 async def translate_lng(
-    session,
-    interface_lng: str,
+    session: ClientSession,
+    interface_lng: str = "en",
     url: str = URL_lNG,
 ) -> dict:
-    """Отримує набір мов, які зараз підтримуються іншими операціями Перекладача."""
+    """
+    Gets the set of languages currently supported by other operations of the Translator.
+    https://learn.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-languages#response-body
+    Args:
+        session: aiohttp.ClientSession
+        interface_lng: full names of languages are displayed in the interface language
+        url: address for requesting languages supported by the translation
+
+    Returns: Dict of supported languages
+    """
 
     params = {
         "api-version": "3.0",
         "scope": "translation",
-    }  # translation,transliteration,dictionary
+    }  # scope = translation,transliteration,dictionary
 
     headers = {
         "Accept-Language": interface_lng,

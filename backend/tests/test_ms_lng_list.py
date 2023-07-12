@@ -6,5 +6,4 @@ async def get_lng_list(session, lng: str = "en") -> list:
 
     # список підтримуваних мов
     res = [key for key in result]
-    # return {len(res): res} -> dict
-    return res  # list
+    return res
