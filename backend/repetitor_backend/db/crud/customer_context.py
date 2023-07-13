@@ -62,8 +62,12 @@ async def get(**get_param: GetCustomerContextRequest) -> list[tables.CustomerCon
     for param, value in get_param.items():
         if value is not None:
             query = query.where(getattr(tables.CustomerContext, param, None) == value)
-    result = await query
-    return result
+
+    result = query.order_by(tables.CustomerContext.last_date, ascending=False).f
+    result_all_fk = await result.prefetch(
+        tables.CustomerContext.context_1.all_related()
+    )
+    return result_all_fk
 
 
 async def update(id: UUID, **update_param: UpdateCustomerContextRequest) -> UUID | None:

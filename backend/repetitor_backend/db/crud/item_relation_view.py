@@ -1,17 +1,112 @@
+import uuid
 from typing import Annotated
 from uuid import UUID
 
 from fastapi import Query
 
 from repetitor_backend import tables
+from repetitor_backend.db.crud import item, question, right_answ_item, item_relation
+
+MICROSOFT_UUID = uuid.UUID("00000000-0000-0000-0000-000000000000")
 
 
-async def get(
-    item_text: str,
-    list_item_author: list[UUID],
-    item_context_name_short_1: Annotated[str, Query(min_length=2, max_length=10)],
-    item_context_name_short_2: Annotated[str, Query(min_length=2, max_length=10)],
-    is_active: bool = True,
+async def pre_processing(user_tg_id: UUID | int) -> dict:
+    query = tables.CustomerContext.objects().where(
+        tables.CustomerContext.is_active == True
+    )
+    if isinstance(user_tg_id, UUID):
+        query = query.where(tables.CustomerContext.customer == user_tg_id)
+    elif isinstance(user_tg_id, int):
+        query = query.where(tables.CustomerContext.customer.tlg_user_id == user_tg_id)
+    else:
+        raise TypeError(
+            f"argument function 'pre_processing' must be int or UUID, but gotten type {type(user_tg_id)}"
+        )
+
+    query = query.order_by(tables.CustomerContext.last_date, ascending=False).first()
+    result_all_fk = await query.prefetch(tables.CustomerContext.all_related())
+    return dict(
+        context_1_id_sn=(
+            result_all_fk.context_1.id,
+            result_all_fk.context_1.name_short,
+        ),
+        context_2_id_sn=(
+            result_all_fk.context_2.id,
+            result_all_fk.context_2.name_short,
+        ),
+        author=result_all_fk.customer.id,
+    )
+    pass
+
+
+async def creating_phrases(
+        source_text: str,
+        target_text: str,
+        context_1_id_sn: tuple[UUID, str],
+        context_2_id_sn: tuple[UUID, str],
+        author: UUID = MICROSOFT_UUID,
+        explanation: UUID = "00000000-0000-0000-0000-000000000010",
+        type: UUID = "00000000-0000-0000-0000-000000000020",
+        is_active: bool = True,
+) -> list:
+    1 == 1
+
+    create_item_relation = await item_relation.create(
+        author=author, explanation=explanation, type=type
+    )
+
+    # create_item_for_question = await item.create(
+    #     author=author,
+    #     context=context_1_id_sn[0],
+    #     text=source_text,
+    # )
+    create_item_for_question = await tables.Item.objects().get_or_create(
+        (tables.Item.context == context_1_id_sn[0])
+        & (tables.Item.text == source_text)
+        & (tables.Item.author == author),
+    )
+
+    # create_item_for_right_answ_item = await item.create(
+    #     author=author,
+    #     context=context_2_id_sn[0],
+    #     text=target_text,
+    # )
+    create_item_for_right_answ_item = await tables.Item.objects().get_or_create(
+        (tables.Item.context == context_2_id_sn[0])
+        & (tables.Item.text == target_text)
+        & (tables.Item.author == author),
+    )
+    create_question = await question.create(
+        relation=create_item_relation,
+        item=create_item_for_question,
+    )
+    create_right_answ_item = await right_answ_item.create(
+        relation=create_item_relation,
+        item=create_item_for_right_answ_item,
+    )
+
+    return [
+        dict(
+            item_relation=create_item_relation,
+            item_text_1=source_text,
+            item_author_1=author,
+            item_context_name_short_1=context_1_id_sn[1],
+            question=create_question,
+            right_answ_item=create_right_answ_item,
+            item_text_2=target_text,
+            item_author_2=author,
+            item_context_name_short_2=context_2_id_sn[1],
+            is_active=True,
+        )
+    ]
+
+
+async def get_words_from_the_db(
+        item_text: str,
+        list_item_author: list[UUID],
+        item_context_name_short_1: Annotated[str, Query(min_length=2, max_length=10)],
+        item_context_name_short_2: Annotated[str, Query(min_length=2, max_length=10)],
+        is_active: bool = True,
 ) -> list[tables.ItemRelationView]:
     """
     Отримати список можливих перекладів у контексті(item_context_name_short_1, item_context_name_short_2)
@@ -39,36 +134,40 @@ async def get(
         - right_answ_item: UUID - запис через який відбуваються зв'язки слів у контекстні пари,
         - is_active: bool
     """
-
+    list_item_author.append(MICROSOFT_UUID)
     queue = tables.ItemRelationView.select()
     queue = queue.where(
         (tables.ItemRelationView.is_active == is_active)
+        & tables.ItemRelationView.item_author_1.is_in(list_item_author)
+        & tables.ItemRelationView.item_author_2.is_in(list_item_author)
         & (  # <- тут end порівняння
-            (
-                (tables.ItemRelationView.item_text_1 == item_text)
-                & tables.ItemRelationView.item_author_1.is_in(list_item_author)
-                & (
-                    tables.ItemRelationView.item_context_name_short_1.is_in(
-                        [item_context_name_short_1, item_context_name_short_2]
-                    )
-                    & tables.ItemRelationView.item_context_name_short_2.is_in(
-                        [item_context_name_short_1, item_context_name_short_2]
-                    )
+                (
+                        (tables.ItemRelationView.item_text_1 == item_text)
+                        & (
+                                tables.ItemRelationView.item_context_name_short_1.is_in(
+                                    [item_context_name_short_1, item_context_name_short_2]
+                                )
+                                & tables.ItemRelationView.item_context_name_short_2.is_in(
+                            [item_context_name_short_1, item_context_name_short_2]
+                        )
+                        )
                 )
-            )
-            | (  # <- тут or порівняння
-                (tables.ItemRelationView.item_text_2 == item_text)
-                & tables.ItemRelationView.item_author_2.is_in(list_item_author)
-                & (
-                    tables.ItemRelationView.item_context_name_short_1.is_in(
-                        [item_context_name_short_1, item_context_name_short_2]
-                    )
-                    & tables.ItemRelationView.item_context_name_short_2.is_in(
-                        [item_context_name_short_1, item_context_name_short_2]
-                    )
+                | (  # <- тут or порівняння
+                        (tables.ItemRelationView.item_text_2 == item_text)
+                        & (
+                                tables.ItemRelationView.item_context_name_short_1.is_in(
+                                    [item_context_name_short_1, item_context_name_short_2]
+                                )
+                                & tables.ItemRelationView.item_context_name_short_2.is_in(
+                            [item_context_name_short_1, item_context_name_short_2]
+                        )
+                        )
                 )
-            )
         )
+    ).order_by(
+        tables.ItemRelationView.item_author_1,
+        tables.ItemRelationView.item_author_2,
+        ascending=False,
     )
     result = await queue
 

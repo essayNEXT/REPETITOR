@@ -2,17 +2,37 @@ from typing import Annotated
 from uuid import UUID
 from fastapi import APIRouter, Query
 
+from repetitor_backend.db.crud.item_relation_view import (
+    pre_processing,
+    creating_phrases,
+)
+from repetitor_backend.external_api.microsoft import translate
 from .serializers import (
     GetItemRelationViewResponse,
 )
 from repetitor_backend.db.crud import (
     item_relation_view,
+    item_relation,
+    item,
+    question,
+    right_answ_item,
 )
 import logging
 
 logger = logging.getLogger()
 
 router = APIRouter()
+
+
+# @router.get(
+#     "/creating_phrases/",
+#     # response_model=List[ItemRelationViewResponse],
+#     # response_model_exclude_none=True,
+#     # response_model_exclude={"is_active"},
+# )
+
+
+######################
 
 
 @router.get(
@@ -23,9 +43,11 @@ router = APIRouter()
 )
 async def get_translate(
     item_text: str,
-    item_author: UUID,
-    item_context_name_short_1: Annotated[str, Query(min_length=2, max_length=10)],
-    item_context_name_short_2: Annotated[str, Query(min_length=2, max_length=10)],
+    user_tg_id: UUID | int,
+    item_context_name_short_1: Annotated[str, Query(min_length=2, max_length=10)]
+    | None = None,
+    item_context_name_short_2: Annotated[str, Query(min_length=2, max_length=10)]
+    | None = None,
     is_active: bool = True,
 ) -> list:
     """
@@ -55,17 +77,54 @@ async def get_translate(
         - right_answ_item: UUID - запис через який відбуваються зв'язки слів у контекстні пари,
         - is_active: bool
     """
+
+    result_pre_processing: dict = await pre_processing(user_tg_id)
+    context_1_id_sn = result_pre_processing.get("context_1_id_sn", None)
+    context_2_id_sn = result_pre_processing.get("context_2_id_sn", None)
+    item_author = result_pre_processing.get("author", None)
+
     # заглушка, для додавання до авторів гугла та мікрософт у майбутньому
     list_item_author = [item_author]
-    result = await item_relation_view.get(
+
+    result_get_words_from_the_db = await item_relation_view.get_words_from_the_db(
         item_text=item_text,
         list_item_author=list_item_author,
-        item_context_name_short_1=item_context_name_short_1,
-        item_context_name_short_2=item_context_name_short_2,
+        item_context_name_short_1=context_1_id_sn[1],
+        item_context_name_short_2=context_2_id_sn[1],
         is_active=is_active,
     )
 
-    return result
+    if result_get_words_from_the_db:
+        print("result_get_words_from_the_db")
+        return result_get_words_from_the_db
+    #
+    # шукаємо переклади пари слів
+    source_text = item_text
+    result_translate = await translate(
+        source_lng=context_1_id_sn[1], target_lng=context_2_id_sn[1], text=source_text
+    )
+
+    if len(result_translate) < 2:
+        return (
+            f"пишемо що для данного варіанта в рамках поточного контексту не можемо знайти переклад "
+            f"і пропонуємо надати свій варіант, якщо він є"
+        )
+
+        # привожу до 1 правила, source=context1, target=cntxt2
+    if result_translate[1] == context_1_id_sn[1]:
+        context_1_id_sn, context_2_id_sn = context_2_id_sn, context_1_id_sn
+    target_text = result_translate[0]
+
+    #
+    # створення нової пари слів у БД на основі
+    result_creating_phrases = await creating_phrases(
+        source_text=source_text,
+        target_text=target_text,
+        context_1_id_sn=context_1_id_sn,
+        context_2_id_sn=context_2_id_sn,
+    )
+
+    return result_creating_phrases
 
 
 @router.delete("/translate/")
