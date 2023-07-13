@@ -41,7 +41,6 @@ async def creating_phrases(
     - target_text: str type, max lenght is 255 symbols - target word, required
     - context_1_id_sn: tuple[UUID, str] - UUID and the short name of the required items context, required
     - context_2_id_sn: tuple[UUID, str] - UUID and the short name of the required items context, required
-    - customer_tg_id: UUID|int, required
     - author: UUID - UUID, corresponds to the parameter tables.Customer.id
     - explanation: UUID, corresponds to the parameter tables.Explanation.id
     - type: UUID, corresponds to the parameter tables.RelationType.id
@@ -86,10 +85,6 @@ async def creating_phrases(
 async def get_translate(
     item_text: str,
     customer_tg_id: UUID | int,
-    item_context_name_short_1: Annotated[str, Query(min_length=2, max_length=10)]
-    | None = None,
-    item_context_name_short_2: Annotated[str, Query(min_length=2, max_length=10)]
-    | None = None,
     is_active: bool = True,
 ) -> list:
     """
@@ -103,8 +98,6 @@ async def get_translate(
     - customer_tg_id: UUID|int, required
         - if customer_tg_id == UUID, corresponds to the parameter tables.Customer.id
         - if customer_tg_id == int, corresponds to the parameter tables.Customer.tlg_user_id
-    - item_context_name_short_1: str type - the short name of the required items context, only for database search
-    - item_context_name_short_2: str type - the short name of the required items context, only for database search
     - is_active: bool = True
 
     Return:
@@ -137,8 +130,8 @@ async def get_translate(
     result_get_words_from_the_db = await item_relation_view.get_words_from_the_db(
         item_text=item_text,
         list_item_author=list_item_author,
-        item_context_name_short_1=item_context_name_short_1 or context_1_id_sn[1],
-        item_context_name_short_2=item_context_name_short_2 or context_2_id_sn[1],
+        item_context_name_short_1=context_1_id_sn[1],
+        item_context_name_short_2=context_2_id_sn[1],
         is_active=is_active,
     )
 

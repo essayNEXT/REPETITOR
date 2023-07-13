@@ -29,22 +29,12 @@ async def creating_phrases(
         author=author, explanation=explanation, type=type
     )
 
-    # create_item_for_question = await item.create(
-    #     author=author,
-    #     context=context_1_id_sn[0],
-    #     text=source_text,
-    # )
     create_item_for_question = await tables.Item.objects().get_or_create(
         (tables.Item.context == context_1_id_sn[0])
         & (tables.Item.text == source_text)
         & (tables.Item.author == author),
     )
 
-    # create_item_for_right_answ_item = await item.create(
-    #     author=author,
-    #     context=context_2_id_sn[0],
-    #     text=target_text,
-    # )
     create_item_for_right_answ_item = await tables.Item.objects().get_or_create(
         (tables.Item.context == context_2_id_sn[0])
         & (tables.Item.text == target_text)
@@ -150,7 +140,7 @@ async def get_words_from_the_db(
                 )
             )
         )
-    ).order_by(  # сортування за авторством, оскільки МС та гугл моють №0000 та № 0001, то їх переклади будуть вкінці
+    ).order_by(  # сортування за авторством, оскільки МС та гугл моють №0000 та № 0001, то їх переклади будуть y кінці
         tables.ItemRelationView.item_author_1,
         tables.ItemRelationView.item_author_2,
         ascending=False,

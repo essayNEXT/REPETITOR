@@ -93,7 +93,7 @@ async def get_the_latest_context_based_on_customer_tg_id(
         )
     else:
         raise TypeError(
-            f"argument function 'pre_processing' must be int or UUID, but gotten type {type(customer_tg_id)}"
+            f"argument function 'get_context_on_customer_id' must be int or UUID,but gotten type {type(customer_tg_id)}"
         )
 
     query = query.order_by(tables.CustomerContext.last_date, ascending=False).first()
