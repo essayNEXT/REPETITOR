@@ -1,6 +1,5 @@
-from typing import Annotated
 from uuid import UUID
-from fastapi import APIRouter, Query
+from fastapi import APIRouter
 
 from repetitor_backend.db.crud.item_relation_view import MICROSOFT_UUID
 from repetitor_backend.external_api.microsoft import translate
