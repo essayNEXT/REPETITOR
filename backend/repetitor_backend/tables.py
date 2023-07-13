@@ -195,11 +195,21 @@ class ItemRelationView(Table):
 
     item_relation = UUID(primary_key=True)
     item_text_1 = Text(length=255)
-    item_author_1 = UUID()
+    item_author_1 = ForeignKey(
+        references=Customer, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
     item_context_name_short_1 = Varchar(length=10)
-    question = UUID()
-    right_answ_item = UUID()
+    question = ForeignKey(
+        references=Question, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
+    right_answ_item = ForeignKey(
+        references=RightAnswItem,
+        on_delete=OnDelete.restrict,
+        on_update=OnUpdate.cascade,
+    )
     item_text_2 = Text(length=255)
-    item_author_2 = UUID()
+    item_author_2 = ForeignKey(
+        references=Customer, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
+    )
     item_context_name_short_2 = Varchar(length=10)
     is_active = Boolean(default=True)
