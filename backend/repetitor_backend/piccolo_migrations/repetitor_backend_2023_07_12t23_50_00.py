@@ -44,29 +44,6 @@ async def forwards():
     manager.add_raw(run)
 
     #############################################################
-    # If we want to run some code when reversing the migration,
-    # using `piccolo migrations backwards`:
-
-    async def run_backwards():
-        await RawTable.raw("""DROP VIEW item_relation_view;""")
-
-        await RawTable.raw(
-            """ALTER TABLE question DROP CONSTRAINT unique_combination_q;"""
-        )
-
-        await RawTable.raw(
-            """ALTER TABLE right_answ_item DROP CONSTRAINT unique_combination_rai;"""
-        )
-
-        await RawTable.raw("""ALTER TABLE item DROP CONSTRAINT unique_combination_i;""")
-
-        await RawTable.raw(
-            """ALTER TABLE customer_context DROP CONSTRAINT unique_combination_cc;"""
-        )
-
-    manager.add_raw_backwards(run_backwards)
-
-    #############################################################
     # We must always return the MigrationManager:
 
     return manager
