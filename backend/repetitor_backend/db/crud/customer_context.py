@@ -62,12 +62,53 @@ async def get(**get_param: GetCustomerContextRequest) -> list[tables.CustomerCon
     for param, value in get_param.items():
         if value is not None:
             query = query.where(getattr(tables.CustomerContext, param, None) == value)
+    result = await query
+    return result
 
-    result = query.order_by(tables.CustomerContext.last_date, ascending=False).f
-    result_all_fk = await result.prefetch(
-        tables.CustomerContext.context_1.all_related()
+
+async def get_the_latest_context_based_on_customer_tg_id(
+    customer_tg_id: UUID | int,
+) -> dict:
+    """
+    Get the latest context based on id or tg_id in extended format:
+        Parameters:
+        - customer_tg_id: UUID|int, required
+            - if customer_tg_id == UUID, corresponds to the parameter tables.Customer.id
+            - if customer_tg_id == int, corresponds to the parameter tables.Customer.tlg_user_id
+
+    Return:
+    - Dict that contains the results of the query:
+        context_1_id_sn: tuple(id, name_short)
+        context_2_id_sn: tuple(id, name_short),
+        author: UUID, corresponds to the parameter tables.Customer.id
+    """
+    query = tables.CustomerContext.objects().where(
+        tables.CustomerContext.is_active.eq(True)
     )
-    return result_all_fk
+    if isinstance(customer_tg_id, UUID):
+        query = query.where(tables.CustomerContext.customer == customer_tg_id)
+    elif isinstance(customer_tg_id, int):
+        query = query.where(
+            tables.CustomerContext.customer.tlg_user_id == customer_tg_id
+        )
+    else:
+        raise TypeError(
+            f"argument function 'pre_processing' must be int or UUID, but gotten type {type(customer_tg_id)}"
+        )
+
+    query = query.order_by(tables.CustomerContext.last_date, ascending=False).first()
+    result_all_fk = await query.prefetch(tables.CustomerContext.all_related())
+    return dict(
+        context_1_id_sn=(
+            result_all_fk.context_1.id,
+            result_all_fk.context_1.name_short,
+        ),
+        context_2_id_sn=(
+            result_all_fk.context_2.id,
+            result_all_fk.context_2.name_short,
+        ),
+        author=result_all_fk.customer.id,
+    )
 
 
 async def update(id: UUID, **update_param: UpdateCustomerContextRequest) -> UUID | None:
