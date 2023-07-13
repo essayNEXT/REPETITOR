@@ -25,11 +25,9 @@ async def forwards():
             VALUES
         ('00000000-0000-0000-0000-000000000000', 'translator', '0', 'microsoft_translate', 'en', true),
         ('00000000-0000-0000-0000-000000000001', 'translator', '1', 'google_translate', 'en', true);
-        
         insert into explanation(id, description, is_active)
         VALUES
         ('00000000-0000-0000-0000-000000000010','word translation', true);
-        
         insert into relation_type (id, name, is_active)
         VALUES
         ('00000000-0000-0000-0000-000000000020','word translation', true);        
