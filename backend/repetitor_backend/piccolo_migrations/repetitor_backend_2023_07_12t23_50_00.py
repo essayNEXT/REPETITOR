@@ -30,7 +30,7 @@ async def forwards():
         ('00000000-0000-0000-0000-000000000010','word translation', true);
         insert into relation_type (id, name, is_active)
         VALUES
-        ('00000000-0000-0000-0000-000000000020','word translation', true);        
+        ('00000000-0000-0000-0000-000000000020','word translation', true);
         """
         )
 
