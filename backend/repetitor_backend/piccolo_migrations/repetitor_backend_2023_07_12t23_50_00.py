@@ -21,14 +21,42 @@ async def forwards():
 
     async def run():
         await RawTable.raw(
+            """ insert into customer_type (id, name, description, is_active)
+            VALUES
+        ('10000000-0000-0000-0000-000000000000', 'translator', 'trusted translate customer', true)
+        """
+        )
+
+        await RawTable.raw(
+            """ insert into customer_type (id, name, description, is_active)
+            VALUES
+        ('10000000-0000-0000-0000-000000000001', 'user', 'normal customer', true)
+        """
+        )
+
+        await RawTable.raw(
             """ insert into customer (id, customer_class, tlg_user_id, tlg_first_name, tlg_language, is_active)
             VALUES
-        ('00000000-0000-0000-0000-000000000000', 'translator', '0', 'microsoft_translate', 'en', true),
-        ('00000000-0000-0000-0000-000000000001', 'translator', '1', 'google_translate', 'en', true);
-        insert into explanation(id, description, is_active)
+('00000000-0000-0000-0000-000000000000', '10000000-0000-0000-0000-000000000000', '0', 'microsoft_translate', 'en', true)
+        """
+        )
+
+        await RawTable.raw(
+            """ insert into customer (id, customer_class, tlg_user_id, tlg_first_name, tlg_language, is_active)
+            VALUES
+('00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000000', '1', 'google_translate', 'en', true)
+        """
+        )
+
+        await RawTable.raw(
+            """ insert into explanation(id, description, is_active)
         VALUES
         ('00000000-0000-0000-0000-000000000010','word translation', true);
-        insert into relation_type (id, name, is_active)
+        """
+        )
+
+        await RawTable.raw(
+            """insert into relation_type (id, name, is_active)
         VALUES
         ('00000000-0000-0000-0000-000000000020','word translation', true);
         """
@@ -36,7 +64,11 @@ async def forwards():
 
         await RawTable.raw(
             """ ALTER TABLE customer_context DROP CONSTRAINT unique_combination_cc;
-                create unique index customer_context_idx
+        """
+        )
+
+        await RawTable.raw(
+            """create unique index customer_context_idx
                 on customer_context (greatest(customer,context_1,context_2), least(customer,context_1,context_2));
         """
         )
