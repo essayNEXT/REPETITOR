@@ -37,12 +37,12 @@ class GetItemRelationViewResponse(BaseModel):
     item_relation: UUID
     item_text_1: Annotated[str, Query(min_length=2, max_length=255)]
     item_author_1: UUID
-    item_context_name_short_1: Annotated[str, Query(min_length=2, max_length=10)]
+    context_1_id_sn: tuple[UUID, Annotated[str, Query(min_length=2, max_length=10)]]
     question: UUID
     right_answ_item: UUID
     item_text_2: Annotated[str, Query(min_length=2, max_length=255)]
     item_author_2: UUID
-    item_context_name_short_2: Annotated[str, Query(min_length=2, max_length=10)]
+    context_2_id_sn: tuple[UUID, Annotated[str, Query(min_length=2, max_length=10)]]
     is_active: bool
 
 

@@ -46,10 +46,10 @@ async def creating_phrases(new_creating_phrases: CreatingPhrasesRequest) -> list
         - item_relation: UUID of item relation,
         - item_text_1: str type - перше слово з пари у представлені, необов'язково що це source слово ,
         - item_author_1: UUID - автор слова №1, який створив об'єкт у БД,
-        - item_context_name_short_1: str type - мова слова №1,
-        - item_text_2: str type - друге слово з пари у представлені, необов'язково що це target слово ,
+        - context_1_id_sn: tuple[UUID, str] - UUID та коротке ім'я слова №1,
+        - item_text_2: str type - друге слово з пари у представлені, це target слово,
         - item_author_2: UUID - автор слова №2, який створив об'єкт у БД,
-        - item_context_name_short_2: str type - мова слова №2,
+        - context_1_id_sn: tuple[UUID, str] - UUID та коротке ім'я слова №2,
         - question: UUID - запис через який відбуваються зв'язки слів у контекстні пари,
         - right_answ_item: UUID - запис через який відбуваються зв'язки слів у контекстні пари,
         - is_active: bool
@@ -84,7 +84,7 @@ async def get_translate(
 ) -> list:
     """
     Уже 2версія, пошук слів у БД, якщо не знайшло, то перекладає через мікрософт, а потім отриману пару слів додає в БД.
-    Отримати список можливих перекладів у контексті(item_context_name_short_1, item_context_name_short_2)
+    Отримати список можливих перекладів у контексті(context_1_id_sn, context_2_id_sn)
     для слова(item_text) авторів (item_author), які мають сформований переклад
     на основі зв'язку через таблиці Question|RightAnswItem і додаткову М2М таблицю ItemRelation.
 
@@ -101,10 +101,10 @@ async def get_translate(
         - item_relation: UUID of item relation,
         - item_text_1: str type - перше слово з пари у представлені, необов'язково що це source слово ,
         - item_author_1: UUID - автор слова №1, який створив об'єкт у БД,
-        - item_context_name_short_1: str type - мова слова №1,
-        - item_text_2: str type - друге слово з пари у представлені, необов'язково що це target слово ,
+        - context_1_id_sn: tuple[UUID, str] - UUID та коротке ім'я слова №1,
+        - item_text_2: str type - друге слово з пари у представлені, це target слово,
         - item_author_2: UUID - автор слова №2, який створив об'єкт у БД,
-        - item_context_name_short_2: str type - мова слова №2,
+        - context_1_id_sn: tuple[UUID, str] - UUID та коротке ім'я слова №2,
         - question: UUID - запис через який відбуваються зв'язки слів у контекстні пари,
         - right_answ_item: UUID - запис через який відбуваються зв'язки слів у контекстні пари,
         - is_active: bool
@@ -127,8 +127,8 @@ async def get_translate(
     result_get_words_from_the_db = await item_relation_view.get_words_from_the_db(
         item_text=item_text,
         list_item_author=list_item_author,
-        item_context_name_short_1=context_1_id_sn[1],
-        item_context_name_short_2=context_2_id_sn[1],
+        context_1_id_sn=context_1_id_sn,
+        context_2_id_sn=context_2_id_sn,
         is_active=is_active,
     )
 
