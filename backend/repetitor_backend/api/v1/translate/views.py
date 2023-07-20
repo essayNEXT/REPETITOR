@@ -1,10 +1,16 @@
+import uuid
 from uuid import UUID
 from fastapi import APIRouter
 
-from repetitor_backend.db.crud.item_relation_view import MICROSOFT_UUID
+from repetitor_backend.db.crud.item_relation_view import (
+    MICROSOFT_UUID,
+    REPETITOR_EXPLANATION_UUID,
+    REPETITOR_TYPE_UUID,
+)
 from repetitor_backend.external_api.microsoft import translate
 from .serializers import (
     GetItemRelationViewResponse,
+    CreatingPhrasesRequest,
 )
 from repetitor_backend.db.crud import item_relation_view, customer_context
 import logging
@@ -14,22 +20,13 @@ logger = logging.getLogger()
 router = APIRouter()
 
 
-@router.get(
+@router.post(
     "/creating_phrases/",
     response_model=list[GetItemRelationViewResponse],
     response_model_exclude_none=True,
     response_model_exclude={"is_active"},
 )
-async def creating_phrases(
-    source_text: str,
-    target_text: str,
-    context_1_id_sn: tuple[UUID, str],
-    context_2_id_sn: tuple[UUID, str],
-    author: UUID = MICROSOFT_UUID,
-    explanation: UUID = "00000000-0000-0000-0000-000000000010",
-    type: UUID = "00000000-0000-0000-0000-000000000020",
-    is_active: bool = True,
-) -> list:
+async def creating_phrases(new_creating_phrases: CreatingPhrasesRequest) -> list:
     """
     Додає в БД два слова(source_text та target_text), у контексті(context_1_id_sn, context_2_id_sn)
     для  автор (author), які мають сформований переклад
@@ -59,14 +56,14 @@ async def creating_phrases(
         - is_active: bool
     """
     result = await item_relation_view.creating_phrases(
-        source_text=source_text,
-        target_text=target_text,
-        context_1_id_sn=context_1_id_sn,
-        context_2_id_sn=context_2_id_sn,
-        author=author,
-        explanation=explanation,
-        type=type,
-        is_active=is_active,
+        source_text=new_creating_phrases.source_text.strip(),
+        target_text=new_creating_phrases.target_text.strip(),
+        context_1_id_sn=new_creating_phrases.context_1_id_sn,
+        context_2_id_sn=new_creating_phrases.context_2_id_sn,
+        author=new_creating_phrases.author or MICROSOFT_UUID,
+        explanation=new_creating_phrases.explanation or REPETITOR_EXPLANATION_UUID,
+        type=new_creating_phrases.type or REPETITOR_TYPE_UUID,
+        is_active=new_creating_phrases.is_active,
     )
 
     return result
@@ -113,6 +110,8 @@ async def get_translate(
         - right_answ_item: UUID - запис через який відбуваються зв'язки слів у контекстні пари,
         - is_active: bool
     """
+
+    item_text = item_text.strip()
 
     result_pre_processing: dict = (
         await customer_context.get_the_latest_context_based_on_customer_tg_id(

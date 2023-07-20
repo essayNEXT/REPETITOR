@@ -87,12 +87,12 @@ async def translate(
 
         if text.lower() == res2.lower():
             return res_rev2, source_lng
-        else:
-            "Translation error"
+        # else:
+    return ("Translation error",)
 
 
 async def translate_lng(
-    session: ClientSession,
+    session: ClientSession = None,
     interface_lng: str = "en",
     url: str = URL_lNG,
 ) -> dict:
@@ -107,6 +107,10 @@ async def translate_lng(
     Returns: Dict of supported languages
     """
 
+    if session is None:
+        from repetitor_backend.app import app
+
+        session = app.session
     params = {
         "api-version": "3.0",
         "scope": "translation",
