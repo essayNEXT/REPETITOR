@@ -1,7 +1,6 @@
 from aiogram import Router
 from aiogram.filters import Text
 from aiogram.types import Message, CallbackQuery
-from utils.db.translate_text import get_translate_text
 from keyboards.text_translate.text_translate_kb import TextTranslateKeyboard
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
