@@ -67,12 +67,6 @@ async def forwards():
         """
         )
 
-        await RawTable.raw(
-            """create unique index customer_context_idx
-                on customer_context (greatest(customer,context_1,context_2), least(customer,context_1,context_2));
-        """
-        )
-
     manager.add_raw(run)
 
     #############################################################
