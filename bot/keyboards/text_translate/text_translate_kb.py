@@ -4,7 +4,9 @@ from ..inline_keyboard import KeyboardOfDict, ContextInlineKeyboardGenerator
 
 # from ..keyboard_translate.kb_translate import translate_context
 from asyncinit import asyncinit
-from utils.db.translate_text import get_translate_text
+from utils.db.translate_text import get_translate_text, post_user_translate
+
+from utils.db.customer import get_user
 
 
 @asyncinit
@@ -83,6 +85,14 @@ class TextTranslateKeyboard(ContextInlineKeyboardGenerator):
             self.text_for_translate
         )
 
-    def add_user_translation(self, user_translation):
-        print(f"adding user translation {self.text_for_translate} - {user_translation}")
-        pass
+    async def add_user_translation(self, user_translation):
+        source_text = self.text_for_translate
+        target_text = user_translation
+        context_1_id_sn = self.data_from_backend[0]["context_1_id_sn"]
+        context_2_id_sn = self.data_from_backend[0]["context_2_id_sn"]
+        author = await get_user(self.user_id)
+        author = author[0]["id"]
+        result = await post_user_translate(
+            source_text, target_text, context_1_id_sn, context_2_id_sn, author
+        )
+        return result

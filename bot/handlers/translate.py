@@ -20,8 +20,14 @@ class TranslationForm(StatesGroup):
     GET_TRANSLATION = State()
 
 
+@router.callback_query(Text(text="text_translate_ok"))
+async def send_translate_ok(callback: CallbackQuery, state: FSMContext):
+    await callback.message.edit_reply_markup(None)
+    await state.clear()
+
+
 @router.callback_query(Text(text="text_translate_my_translation"))
-async def choose_data_to_change(
+async def enter_user_translation(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
 ):
     """Хендлер, що ловить колбек при натисканні кнопки мій переклад."""
@@ -33,6 +39,7 @@ async def choose_data_to_change(
     )
     kb = tmp_storage[key]
 
+    await state.update_data(last_key=key)
     await state.set_state(TranslationForm.ADD_USER_TRANSLATION)
     await callback.message.edit_text(kb.message_for_user_translation())
 
@@ -41,15 +48,12 @@ async def choose_data_to_change(
 async def add_user_translation(
     message: Message, state: FSMContext, tmp_storage: TmpStorage
 ):
-    key = KeyKeyboard(
-        bot_id=bot.id,
-        chat_id=message.chat.id,
-        user_id=message.from_user.id,
-        message_id=message.message_id - 3,
-    )
+    data = await state.get_data()
+    key = data.get("last_key")
     kb = tmp_storage[key]
-    await kb.add_user_translation(message.text)
-    await message.edit_text("Done")
+    result = await kb.add_user_translation(message.text)
+    await message.answer(f"{result[0]['item_text_1']} - {result[0]['item_text_2']}")
+    await state.clear()
 
 
 @router.message()
