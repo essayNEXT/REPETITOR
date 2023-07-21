@@ -51,7 +51,6 @@ async def creating_phrases(
         - right_answ_item: UUID - запис через який відбуваються зв'язки слів у контекстні пари,
         - is_active: bool
     """
-    1 == 1
 
     create_item_relation = await item_relation.create(
         author=author, explanation=explanation, type=type
@@ -186,6 +185,9 @@ async def get_words_from_the_db(
                 i["item_context_name_short_2"],
                 i["item_context_name_short_1"],
             )
+        # йде заміна результату даних контексту.
+        # - замість item_context_name_short_1(де тільки коротка назва uk),
+        # + вноситься context_1_id_sn tuple[UUID, str] - UUID та коротке ім'я
         i["context_1_id_sn"] = (
             context_1_id_sn
             if i.pop("item_context_name_short_1") == context_1_id_sn[1]

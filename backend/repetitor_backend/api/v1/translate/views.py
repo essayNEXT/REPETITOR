@@ -1,3 +1,4 @@
+import uuid
 from uuid import UUID
 from fastapi import APIRouter
 
@@ -55,8 +56,8 @@ async def creating_phrases(new_creating_phrases: CreatingPhrasesRequest) -> list
         - is_active: bool
     """
     result = await item_relation_view.creating_phrases(
-        source_text=new_creating_phrases.source_text.strip(),
-        target_text=new_creating_phrases.target_text.strip(),
+        source_text=new_creating_phrases.source_text.strip().lower(),
+        target_text=new_creating_phrases.target_text.strip().lower(),
         context_1_id_sn=new_creating_phrases.context_1_id_sn,
         context_2_id_sn=new_creating_phrases.context_2_id_sn,
         author=new_creating_phrases.author or MICROSOFT_UUID,
@@ -66,9 +67,6 @@ async def creating_phrases(new_creating_phrases: CreatingPhrasesRequest) -> list
     )
 
     return result
-
-
-######################
 
 
 @router.get(
@@ -110,7 +108,7 @@ async def get_translate(
         - is_active: bool
     """
 
-    item_text = item_text.strip()
+    item_text = item_text.strip().lower()
 
     result_pre_processing: dict = (
         await customer_context.get_the_latest_context_based_on_customer_tg_id(
@@ -143,8 +141,22 @@ async def get_translate(
     )
 
     if len(result_translate) < 2:
+        # Якщо перекладу не дали. ТУТ треба доробляти, Бо програма буде падати, якщо True
+        target_tex = "У рамках поточного контексту не можемо знайти переклад.Пропонуємо надати свій варіант, якщо він є"
+
         return [
-            "У рамках поточного контексту не можемо знайти переклад пропонуємо надати свій варіант, якщо він є"
+            dict(
+                item_relation=uuid.uuid4(),  # фейкові, рандомні id
+                item_text_1=source_text,
+                item_author_1=item_author,
+                context_1_id_sn=context_1_id_sn,
+                question=uuid.uuid4(),  # фейкові, рандомні id
+                right_answ_item=uuid.uuid4(),  # фейкові, рандомні id
+                item_text_2=target_tex,
+                item_author_2=item_author,
+                context_2_id_sn=context_2_id_sn,
+                is_active=is_active,
+            )
         ]
 
         # привожу до 1 правила, source=context1, target=cntxt2

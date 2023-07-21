@@ -30,9 +30,6 @@ class CreatingPhrasesRequest(BaseModel):
         return value
 
 
-item_relation: UUID
-
-
 class GetItemRelationViewResponse(BaseModel):
     item_relation: UUID
     item_text_1: Annotated[str, Query(min_length=2, max_length=255)]
