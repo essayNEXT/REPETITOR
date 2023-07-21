@@ -42,7 +42,7 @@ async def translate(
         "q": text,
         "source": target_lng,
         "target": source_lng,
-        "key": api_key
+        "key": api_key,
     }
 
     async with session.post(url, data=params) as response:
@@ -73,7 +73,7 @@ async def translate(
         "q": txt,
         "source": src_lng,
         "target": trg_lng,
-        "key": api_key
+        "key": api_key,
     }
 
     async with session.post(url, data=params_verification) as response_verification:

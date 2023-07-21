@@ -61,7 +61,7 @@ async def translate(
         translated = response_data[0]["translations"][0]["text"].lower()
 
     async with session.post(
-            url, params=params_reverse, headers=headers, json=body
+        url, params=params_reverse, headers=headers, json=body
     ) as response:
         response_data = await response.json()
         translated_reverse = response_data[0]["translations"][0]["text"].lower()
@@ -82,7 +82,7 @@ async def translate(
     params_verif = {"api-version": "3.0", "from": src_lng, "to": [trg_lng]}
 
     async with session.post(
-            url, params=params_verif, headers=headers, json=body_verif
+        url, params=params_verif, headers=headers, json=body_verif
     ) as response_verif:
         translation_verif = await response_verif.json()
         translated_verif = translation_verif[0]["translations"][0]["text"].lower()
