@@ -36,12 +36,14 @@ async def translate(
     :return: tuple(result, target language) - if the translation is correct,
              then returns the translation of the input text
     """
+
     from repetitor_backend.app import app
 
     if not session:
         session = app.session
 
     text = text.lower()
+
     params = {"api-version": "3.0", "from": source_lng, "to": [target_lng]}
     params_reverse = {"api-version": "3.0", "from": target_lng, "to": [source_lng]}
 
@@ -64,6 +66,7 @@ async def translate(
         url, params=params_reverse, headers=headers, json=body
     ) as response:
         response_data = await response.json()
+
         translated_reverse = response_data[0]["translations"][0]["text"].lower()
 
     res = (
@@ -92,7 +95,7 @@ async def translate(
 
 
 async def translate_lng(
-    session: ClientSession,
+    session: ClientSession = None,
     interface_lng: str = "en",
     url: str = URL_lNG,
 ) -> dict:
@@ -107,6 +110,10 @@ async def translate_lng(
     Returns: Dict of supported languages
     """
 
+    if session is None:
+        from repetitor_backend.app import app
+
+        session = app.session
     params = {
         "api-version": "3.0",
         "scope": "translation",
