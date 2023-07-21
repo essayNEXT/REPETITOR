@@ -2,7 +2,7 @@ import asyncio
 import logging
 from middlewares import first_contact
 from handlers import (
-    echo,
+    translate,
     inline_kb_test,
     first_contact_handler,
     customer_context_handler,
@@ -18,7 +18,7 @@ async def main():
     dp.include_router(first_contact_handler.router)
     dp.include_router(customer_context_handler.router)
     dp.include_router(inline_kb_test.router)
-    dp.include_router(echo.router)
+    dp.include_router(translate.router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, skip_updates=True)
 
