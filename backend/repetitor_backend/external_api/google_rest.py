@@ -77,7 +77,9 @@ async def translate(
     async with session.post(url, data=params_verification) as response_verification:
         translation_verification = await response_verification.json()
         translated_verification = remove_accents(
-            translation_verification["data"]["translations"][0]["translatedText"].lower()
+            translation_verification["data"]["translations"][0][
+                "translatedText"
+            ].lower()
         )
 
     # print('translated_text:', translated_text)
