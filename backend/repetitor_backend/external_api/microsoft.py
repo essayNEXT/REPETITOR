@@ -36,10 +36,14 @@ async def translate(
     :return: tuple(result, target language) - if the translation is correct,
              then returns the translation of the input text
     """
-    if session is None:
-        from repetitor_backend.app import app
 
+    from repetitor_backend.app import app
+
+    if not session:
         session = app.session
+
+    text = text.lower()
+
     params = {"api-version": "3.0", "from": source_lng, "to": [target_lng]}
     params_reverse = {"api-version": "3.0", "from": target_lng, "to": [source_lng]}
 
@@ -52,43 +56,42 @@ async def translate(
     # "X-ClientTraceId": str(uuid.uuid4()), - A client-generated GUID to uniquely identify the request.
 
     # You can pass more than one object in body.
-    body = [{"text": text.lower()}]
+    body = [{"text": text}]
 
     async with session.post(url, params=params, headers=headers, json=body) as response:
         response_data = await response.json()
-        response_data = source_lng, response_data[0]["translations"][0]["text"]
-        res = response_data[1]
+        translated = response_data[0]["translations"][0]["text"].lower()
 
     async with session.post(
         url, params=params_reverse, headers=headers, json=body
     ) as response:
         response_data = await response.json()
-        response_data = source_lng, response_data[0]["translations"][0]["text"]
-        res_rev2 = response_data[1]
 
-    body_rev = [{"text": res}]
-    if res.lower() != text:
-        async with session.post(
-            url, params=params_reverse, headers=headers, json=body_rev
-        ) as response:
-            response_data = await response.json()
-            response_data = source_lng, response_data[0]["translations"][0]["text"]
-            res_rev = response_data[1]
-        if text.lower() == res_rev.lower():
-            return res, target_lng
+        translated_reverse = response_data[0]["translations"][0]["text"].lower()
 
-    if res_rev2.lower() != text:
-        async with session.post(
-            url, params=params, headers=headers, json=body
-        ) as response:
-            response_data = await response.json()
-            response_data = source_lng, response_data[0]["translations"][0]["text"]
-            res2 = response_data[1]
+    res = (
+        [translated_reverse, source_lng, target_lng]
+        if text == translated
+        else [translated, target_lng, source_lng]
+    )
 
-        if text.lower() == res2.lower():
-            return res_rev2, source_lng
-        # else:
-    return ("Translation error",)
+    # print('translated_text:', translated)
+    # print('translated_reverse:', translated_reverse)
+
+    # перевірка результату
+    txt, src_lng, trg_lng = res
+
+    body_verif = [{"text": txt}]
+    params_verif = {"api-version": "3.0", "from": src_lng, "to": [trg_lng]}
+
+    async with session.post(
+        url, params=params_verif, headers=headers, json=body_verif
+    ) as response_verif:
+        translation_verif = await response_verif.json()
+        translated_verif = translation_verif[0]["translations"][0]["text"].lower()
+    # print('translated_verification', translated_verif)
+
+    return tuple(res[:2]) if text == translated_verif else ("Translation ERROR",)
 
 
 async def translate_lng(
