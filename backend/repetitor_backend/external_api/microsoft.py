@@ -68,7 +68,9 @@ async def translate(
     ) as response:
         response_data = await response.json()
 
-        translated_reverse = remove_accents(response_data[0]["translations"][0]["text"].lower())
+        translated_reverse = remove_accents(
+            response_data[0]["translations"][0]["text"].lower()
+        )
 
     res = (
         [translated_reverse, source_lng, target_lng]
@@ -86,7 +88,9 @@ async def translate(
         url, params=params_verif, headers=headers, json=body_verif
     ) as response_verif:
         translation_verif = await response_verif.json()
-        translated_verif = remove_accents(translation_verif[0]["translations"][0]["text"].lower())
+        translated_verif = remove_accents(
+            translation_verif[0]["translations"][0]["text"].lower()
+        )
 
     # print('translated_text:', translated)
     # print('translated_reverse:', translated_reverse)

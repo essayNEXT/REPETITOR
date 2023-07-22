@@ -48,15 +48,15 @@ async def translate(
 
     async with session.post(url, data=params) as response:
         translation = await response.json()
-        translated_text = remove_accents(translation["data"]["translations"][0][
-            "translatedText"
-        ].lower())
+        translated_text = remove_accents(
+            translation["data"]["translations"][0]["translatedText"].lower()
+        )
 
     async with session.post(url, data=params_reverse) as response_reverse:
         translation_reverse = await response_reverse.json()
-        translated_reverse = remove_accents(translation_reverse["data"]["translations"][0][
-            "translatedText"
-        ].lower())
+        translated_reverse = remove_accents(
+            translation_reverse["data"]["translations"][0]["translatedText"].lower()
+        )
 
     res = (
         [translated_reverse, source_lng, target_lng]
@@ -76,9 +76,9 @@ async def translate(
 
     async with session.post(url, data=params_verification) as response_verification:
         translation_verification = await response_verification.json()
-        translated_verification = remove_accents(translation_verification["data"]["translations"][0][
-            "translatedText"
-        ].lower())
+        translated_verification = remove_accents(
+            translation_verification["data"]["translations"][0]["translatedText"].lower()
+        )
 
     # print('translated_text:', translated_text)
     # print('translated_reverse:', translated_reverse)

@@ -18,4 +18,3 @@ def remove_accents(word: str) -> str:
 
     # Return the word with accents removed.
     return letters
-
