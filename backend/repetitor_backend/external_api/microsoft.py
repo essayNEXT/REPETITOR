@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from aiohttp import ClientSession
+from accents import remove_accents
 
 # from repetitor_backend.app import app
 
@@ -42,7 +43,7 @@ async def translate(
     if not session:
         session = app.session
 
-    text = text.lower()
+    text = remove_accents(text.lower())
 
     params = {"api-version": "3.0", "from": source_lng, "to": [target_lng]}
     params_reverse = {"api-version": "3.0", "from": target_lng, "to": [source_lng]}
@@ -60,23 +61,20 @@ async def translate(
 
     async with session.post(url, params=params, headers=headers, json=body) as response:
         response_data = await response.json()
-        translated = response_data[0]["translations"][0]["text"].lower()
+        translated = remove_accents(response_data[0]["translations"][0]["text"].lower())
 
     async with session.post(
         url, params=params_reverse, headers=headers, json=body
     ) as response:
         response_data = await response.json()
 
-        translated_reverse = response_data[0]["translations"][0]["text"].lower()
+        translated_reverse = remove_accents(response_data[0]["translations"][0]["text"].lower())
 
     res = (
         [translated_reverse, source_lng, target_lng]
         if text == translated
         else [translated, target_lng, source_lng]
     )
-
-    # print('translated_text:', translated)
-    # print('translated_reverse:', translated_reverse)
 
     # перевірка результату
     txt, src_lng, trg_lng = res
@@ -88,7 +86,10 @@ async def translate(
         url, params=params_verif, headers=headers, json=body_verif
     ) as response_verif:
         translation_verif = await response_verif.json()
-        translated_verif = translation_verif[0]["translations"][0]["text"].lower()
+        translated_verif = remove_accents(translation_verif[0]["translations"][0]["text"].lower())
+
+    # print('translated_text:', translated)
+    # print('translated_reverse:', translated_reverse)
     # print('translated_verification', translated_verif)
 
     return tuple(res[:2]) if text == translated_verif else ("Translation ERROR",)
