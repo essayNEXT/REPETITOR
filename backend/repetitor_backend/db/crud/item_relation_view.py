@@ -126,8 +126,8 @@ async def get_words_from_the_db(
         - is_active: bool
     """
     # list_item_author.append(MICROSOFT_UUID)
-    queue = tables.ItemRelationView.select()
-    queue = queue.where(
+    query = tables.ItemRelationView.select()
+    query = query.where(
         (tables.ItemRelationView.is_active == is_active)
         & (
             (
@@ -172,7 +172,7 @@ async def get_words_from_the_db(
         tables.ItemRelationView.item_author_2,
         ascending=False,
     )
-    result = await queue
+    result = await query
     # міняю місцями щоб спочатку було source блок(i1, a1, c1), а потім target блок(i2, a2, c2)
     for i in result:
         if i["item_text_2"] == item_text:
