@@ -63,7 +63,8 @@ async def bidirectional_context_for_a_language_context_type(
         - context_2: UUID of context, used for ForeignKey links with Context
 
     Return:
-    - List that contains the results of the query, serialized to the CustomerContext type """
+    - List that contains the results of the query, serialized to the CustomerContext type
+    """
 
     query = tables.CustomerContext.objects()
     query = query.where(
