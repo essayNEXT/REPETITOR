@@ -10,6 +10,8 @@ from repetitor_backend.api.v1.customer_context.serializers import (
     CustomerContextCreateRequest,
 )
 
+CONTEXT_CLASS_NAME_FOR_BIDIRECTIONAL = "language"
+
 
 async def create(**kwargs: CustomerContextCreateRequest | datetime) -> UUID | str:
     """Create new customer context.
@@ -24,7 +26,10 @@ async def create(**kwargs: CustomerContextCreateRequest | datetime) -> UUID | st
     """
 
     # kwargs["is_active"] = None
-    check_exists = await get(**kwargs)
+    check_exists = await get(
+        **kwargs
+    ) or await bidirectional_context_for_a_language_context_type(**kwargs)
+
     if check_exists:  # якщо існує  такий запис
         return (
             f"an object with such parameters already exists id={check_exists[0].id}  "
@@ -42,6 +47,37 @@ async def create(**kwargs: CustomerContextCreateRequest | datetime) -> UUID | st
     except ForeignKeyViolationError as e:
         return str(e)
     return result[0]["id"]
+
+
+async def bidirectional_context_for_a_language_context_type(
+    **get_param: GetCustomerContextRequest,
+) -> list[tables.CustomerContext] | None:
+    """checking contexts when creating a user context. bidirectionality check when the user context is created,
+    if the context type is context_1=="language". if true, prevents the creation of duplicates in the user context.
+    problem solving (customer, context_1, context_2) == (customer, context_2, context_1):
+
+        Parameters:
+        - id: UUID of customer context
+        - customer: UUID of customer, used for ForeignKey links with Customer
+        - context_1: UUID of context, used for ForeignKey links with Context
+        - context_2: UUID of context, used for ForeignKey links with Context
+
+    Return:
+    - List that contains the results of the query, serialized to the CustomerContext type
+    """
+
+    query = tables.CustomerContext.objects()
+    query = query.where(
+        (tables.CustomerContext.customer == get_param["customer"])
+        & (
+            tables.CustomerContext.context_1.context_class.name
+            == CONTEXT_CLASS_NAME_FOR_BIDIRECTIONAL
+        )
+        & (tables.CustomerContext.context_2 == get_param["context_1"])
+        & (tables.CustomerContext.context_1 == get_param["context_2"])
+    )
+    result = await query
+    return result
 
 
 async def get(**get_param: GetCustomerContextRequest) -> list[tables.CustomerContext]:
