@@ -36,7 +36,7 @@ class Customer(Table):
     """Describe user."""
 
     id = UUID(primary_key=True)
-    customer_class = ForeignKey(references=CustomerType)
+    customer_type = ForeignKey(references=CustomerType)
     tlg_user_id = BigInt(
         null=False, unique=True
     )  # When we will add other frontend (not only Telegram,
@@ -64,7 +64,7 @@ class Context(Table):
     """Describe existing contents."""
 
     id = UUID(primary_key=True)
-    context_class = ForeignKey(references=ContextType)
+    context_type = ForeignKey(references=ContextType)
     name = Varchar(length=50, null=False)
     name_short = Varchar(length=10, null=False)
     description = Text(null=False)
@@ -171,7 +171,7 @@ class Question(Table):
     )
 
 
-class Cards(Table):
+class Card(Table):
     """Describe cards class."""
 
     id = UUID(primary_key=True)
