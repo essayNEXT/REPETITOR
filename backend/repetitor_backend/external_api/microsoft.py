@@ -92,9 +92,9 @@ async def translate(
             translation_verif[0]["translations"][0]["text"].lower()
         )
 
-    print('translated_text:', translated)
-    print('translated_reverse:', translated_reverse)
-    print('translated_verification', translated_verif)
+    # print('translated_text:', translated)
+    # print('translated_reverse:', translated_reverse)
+    # print('translated_verification', translated_verif)
 
     return tuple(res[:2]) if text == translated_verif else ("Translation ERROR",)
 

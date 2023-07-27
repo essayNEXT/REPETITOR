@@ -20,7 +20,6 @@ def remove_accents(word: str) -> str:
     return letters
 
 
-
 if __name__ == "__main__":
     word = "петру́шка п'ять іёїй"
     print(remove_accents(word))

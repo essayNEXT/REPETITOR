@@ -82,8 +82,8 @@ async def translate(
             ].lower()
         )
 
-    print('translated_text:', translated_text)
-    print('translated_reverse:', translated_reverse)
-    print('translated_verification:', translated_verification)
+    # print('translated_text:', translated_text)
+    # print('translated_reverse:', translated_reverse)
+    # print('translated_verification:', translated_verification)
 
     return tuple(res[:2]) if text == translated_verification else ("Translation ERROR",)
