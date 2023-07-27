@@ -10,7 +10,7 @@ GOOGLE_UUID = uuid.UUID("00000000-0000-0000-0000-000000000001")
 REPETITOR_EXPLANATION_UUID = uuid.UUID("00000000-0000-0000-0000-000000000010")
 REPETITOR_TYPE_UUID = uuid.UUID("00000000-0000-0000-0000-000000000020")
 
-TRUSTED_USER_CUSTOMER_CLASS = "translator"
+TRUSTED_USER_CUSTOMER_TYPE = "translator"
 
 
 async def creating_phrases(
@@ -131,15 +131,15 @@ async def get_words_from_the_db(
         (tables.ItemRelationView.is_active == is_active)
         & (
             (
-                tables.ItemRelationView.item_author_1.customer_class.name
-                == TRUSTED_USER_CUSTOMER_CLASS
+                tables.ItemRelationView.item_author_1.customer_type.name
+                == TRUSTED_USER_CUSTOMER_TYPE
             )
             | tables.ItemRelationView.item_author_1.is_in(list_item_author)
         )
         & (
             (
-                tables.ItemRelationView.item_author_2.customer_class.name
-                == TRUSTED_USER_CUSTOMER_CLASS
+                tables.ItemRelationView.item_author_2.customer_type.name
+                == TRUSTED_USER_CUSTOMER_TYPE
             )
             | tables.ItemRelationView.item_author_2.is_in(list_item_author)
         )
