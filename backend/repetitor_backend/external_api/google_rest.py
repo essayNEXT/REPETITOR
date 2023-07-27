@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from aiohttp import ClientSession
-from accents import remove_accents
+from .accents import remove_accents
 
 
 load_dotenv()

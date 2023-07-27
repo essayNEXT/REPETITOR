@@ -11,14 +11,16 @@ def remove_accents(word: str) -> str:
     """
 
     # Get the unicode decomposition of the word.
-    decomposition = unicodedata.normalize("NFKD", word)
-
-    # Remove all characters that are not letters.
-    letters = "".join(c for c in decomposition if unicodedata.combining(c) == 0 and c not in "іїйё")
+    decomposition = unicodedata.normalize("NFKC", word)
+    # print([c for c in decomposition])
+    # Remove all characters that are not letters. and c not in ["і","ї","й","ё"]
+    letters = "".join(c for c in decomposition if unicodedata.combining(c) == 0)
 
     # Return the word with accents removed.
     return letters
 
+
+
 if __name__ == "__main__":
-    word = "новий"
+    word = "петру́шка п'ять іёїй"
     print(remove_accents(word))
