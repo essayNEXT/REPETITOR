@@ -41,7 +41,7 @@ async def get_customer(customer_id: UUID | int = None) -> List[Customer]:
 
 
 async def create_new_customer(
-    customer_class: UUID,
+    customer_type: UUID,
     tlg_user_id: int,
     tlg_language: str,
     tlg_first_name: str,
@@ -72,7 +72,7 @@ async def create_new_customer(
     try:
         result = await Customer.insert(
             Customer(
-                customer_class=customer_class,
+                customer_type=customer_type,
                 tlg_user_id=tlg_user_id,
                 tlg_language=tlg_language,
                 tlg_user_name=tlg_user_name,
@@ -88,12 +88,12 @@ async def create_new_customer(
     except UniqueViolationError:
         return f"A user with this ID ({tlg_user_id}) already exists"
     except IndexError:
-        return f"There is no such user type ({customer_class})"
+        return f"There is no such user type ({customer_type})"
 
 
 async def update_customer(
     id: UUID,
-    customer_class: Optional[UUID] = None,
+    customer_type: Optional[UUID] = None,
     tlg_user_id: Optional[int] = None,
     tlg_language: Optional[str] = None,
     tlg_first_name: Optional[str] = None,
@@ -130,7 +130,7 @@ async def update_customer(
         )
     kwargs = {}
     update_values = [
-        "customer_class",
+        "customer_type",
         "tlg_user_id",
         "tlg_language",
         "tlg_first_name",

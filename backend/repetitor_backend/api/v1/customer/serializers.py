@@ -7,7 +7,7 @@ from repetitor_backend import tables
 
 class CustomerResponse(BaseModel):
     id: UUID
-    customer_class: UUID
+    customer_type: UUID
     tlg_user_id: int
     tlg_language: str
     tlg_first_name: str
@@ -25,7 +25,7 @@ class CustomerResponse(BaseModel):
 
         return CustomerResponse(
             id=db_model.id,
-            customer_class=db_model.customer_class,
+            customer_type=db_model.customer_type,
             tlg_user_id=db_model.tlg_user_id,
             tlg_language=db_model.tlg_language,
             tlg_user_name=db_model.tlg_user_name,
@@ -40,7 +40,7 @@ class CustomerResponse(BaseModel):
 
 
 class CustomerCreateRequest(BaseModel):
-    customer_class: UUID
+    customer_type: UUID
     tlg_user_id: int
     tlg_language: str = Field(max_length=10)
     tlg_first_name: str = Field(max_length=50)
@@ -54,7 +54,7 @@ class CustomerCreateRequest(BaseModel):
 
 class CustomerUpdateRequest(BaseModel):
     id: UUID
-    customer_class: Optional[UUID]
+    customer_type: Optional[UUID]
     tlg_user_id: Optional[int]
     tlg_language: Optional[str] = Field(max_length=10)
     tlg_first_name: Optional[str] = Field(max_length=50)

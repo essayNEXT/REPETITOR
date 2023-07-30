@@ -3,7 +3,6 @@ from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
 import aiohttp
 from keyboards.first_contact.first_contact_kb import RegisterKeyboard
-from create_bot import bot
 
 
 async def get_user_id(message: Message) -> int:
@@ -36,7 +35,6 @@ class FirstContactMiddleware(BaseMiddleware):
         user_id = await get_user_id(message=event)
         if await is_existing_user(user_id):
             return await handler(event, data)
-        await bot.delete_message(event.chat.id, event.message_id - 1)
         kb = await RegisterKeyboard(
             user_language=event.from_user.language_code, user_id=event.from_user.id
         )

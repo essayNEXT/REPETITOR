@@ -10,7 +10,7 @@ from repetitor_backend.api.v1.customer_context.serializers import (
     CustomerContextCreateRequest,
 )
 
-CONTEXT_CLASS_NAME_FOR_BIDIRECTIONAL = "language"
+CONTEXT_TYPE_NAME_FOR_BIDIRECTIONAL = "language"
 
 
 async def create(**kwargs: CustomerContextCreateRequest | datetime) -> UUID | str:
@@ -70,8 +70,8 @@ async def bidirectional_context_for_a_language_context_type(
     query = query.where(
         (tables.CustomerContext.customer == get_param["customer"])
         & (
-            tables.CustomerContext.context_1.context_class.name
-            == CONTEXT_CLASS_NAME_FOR_BIDIRECTIONAL
+            tables.CustomerContext.context_1.context_type.name
+            == CONTEXT_TYPE_NAME_FOR_BIDIRECTIONAL
         )
         & (tables.CustomerContext.context_2 == get_param["context_1"])
         & (tables.CustomerContext.context_1 == get_param["context_2"])

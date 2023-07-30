@@ -59,7 +59,7 @@ async def create_customer(new_customer: CustomerCreateRequest) -> UUID:
     - Customer.id: UUID - primary key for new customer record - UUID type
     """
     return await customer.create_new_customer(
-        customer_class=new_customer.customer_class,
+        customer_type=new_customer.customer_type,
         tlg_user_id=new_customer.tlg_user_id,
         tlg_language=new_customer.tlg_language,
         tlg_first_name=new_customer.tlg_first_name,
@@ -96,7 +96,7 @@ async def update_customer(update_customer: CustomerUpdateRequest) -> UUID | None
     """
     return await customer.update_customer(
         id=update_customer.id,
-        customer_class=update_customer.customer_class,
+        customer_type=update_customer.customer_type,
         tlg_user_id=update_customer.tlg_user_id,
         tlg_language=update_customer.tlg_language,
         tlg_first_name=update_customer.tlg_first_name,

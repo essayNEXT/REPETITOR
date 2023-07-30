@@ -13,7 +13,7 @@ async def create(**kwargs: ContextCreateRequest) -> UUID:
     Parameters:
         - name: str, max lenght is 50 symbols - the name of the context, required
         - name_short: str, max lenght is 10 symbols - the short name of the context, required
-        - context_class: UUID of context, used for ForeignKey links with Context, required
+        - context_type: UUID of context, used for ForeignKey links with Context, required
         - description: str, max lenght is 255 symbols - context description, required
         - is_active: bool = True
     Return:
@@ -31,7 +31,7 @@ async def get(**get_param: GetContextRequest) -> list[tables.Context]:
         - id: UUID of item
         - name: str, max lenght is 50 symbols - the name of the context
         - name_short: str, max lenght is 10 symbols - the short name of the context
-        - context_class: UUID of context, used for ForeignKey links with Context
+        - context_type: UUID of context, used for ForeignKey links with Context
         - description: str, max lenght is 255 symbols - context description
         - is_active: bool = True
     Return:
@@ -57,7 +57,7 @@ async def update(id: UUID, **update_param: UpdateContextRequest) -> UUID | None:
         - id: UUID of item
         - name: str, max lenght is 50 symbols - the name of the context
         - name_short: str, max lenght is 10 symbols - the short name of the context
-        - context_class: UUID of context, used for ForeignKey links with Context
+        - context_type: UUID of context, used for ForeignKey links with Context
         - description: str, max lenght is 255 symbols - context description
         - is_active: bool = True
     Return:

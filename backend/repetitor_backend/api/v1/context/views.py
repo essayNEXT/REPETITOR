@@ -26,7 +26,7 @@ async def create_context(new_context: ContextCreateRequest) -> UUID:
     Parameters:
     - name: str, max lenght is 50 symbols - the name of the context, required
     - name_short: str, max lenght is 10 symbols - the short name of the context, required
-    - context_class: UUID of context, used for ForeignKey links with Context, required
+    - context_type: UUID of context, used for ForeignKey links with Context, required
     - description: str, max lenght is 255 symbols - context description, required
     - is_active: bool = True
 
@@ -46,7 +46,7 @@ async def get_context(
     id: UUID | None = None,
     name: Annotated[str, Query(min_length=1, max_length=50)] = None,
     name_short: Annotated[str, Query(min_length=1, max_length=10)] = None,
-    context_class: UUID = None,
+    context_type: UUID = None,
     description: Annotated[str, Query(min_length=2, max_length=255)] = None,
     is_active: bool = True,
     is_key_only: Annotated[bool, Query(description="if only 'id' is needed")] = False,
@@ -58,7 +58,7 @@ async def get_context(
     - id: UUID of item
     - name: str, max lenght is 50 symbols - the name of the context
     - name_short: str, max lenght is 10 symbols - the short name of the context
-    - context_class: UUID of context, used for ForeignKey links with Context
+    - context_type: UUID of context, used for ForeignKey links with Context
     - description: str, max lenght is 255 symbols - context description
     - is_active: bool = True
     - is_key_only: bool - as a result, return:
@@ -72,7 +72,7 @@ async def get_context(
         id=id,
         name=name,
         name_short=name_short,
-        context_class=context_class,
+        context_type=context_type,
         description=description,
         is_active=is_active,
     )
@@ -101,7 +101,7 @@ async def update_context(
     - id: UUID of item
     - name: str, max lenght is 50 symbols - the name of the context
     - name_short: str, max lenght is 10 symbols - the short name of the context
-    - context_class: UUID of context, used for ForeignKey links with Context
+    - context_type: UUID of context, used for ForeignKey links with Context
     - description: str, max lenght is 255 symbols - context description
     - is_active: bool = True
 
