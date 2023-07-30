@@ -3,7 +3,6 @@ from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
 import aiohttp
 from keyboards.first_contact.first_contact_kb import RegisterKeyboard
-from create_bot import bot
 
 
 async def get_user_id(message: Message) -> int:
