@@ -22,6 +22,10 @@ import json
 router = Router()
 
 
+class Email(BaseModel):
+    email: EmailStr
+
+
 class StepsForm(StatesGroup):
     """Клас, що описує стани проходження реєстрації користувача."""
 
@@ -163,9 +167,6 @@ async def update_user_data(message: Message, state: FSMContext):
         key = "native_language"
 
     data = {key: message.text}
-
-    class Email(BaseModel):
-        email: EmailStr
 
     if key == "email":
         email_data = json.dumps(data)
