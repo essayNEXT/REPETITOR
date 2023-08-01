@@ -154,7 +154,6 @@ async def update_user_data(message: Message, state: FSMContext):
     """Хендлер, що обробляє зміну даних отриманих від користувача.
     Виводить колбек-кнопки 'змінити' та 'продовжити'."""
     user_state = await state.get_state()
-    # await message.answer("❌")
 
     key = None
     if user_state == StepsForm.F_NAME_CHANGED:
