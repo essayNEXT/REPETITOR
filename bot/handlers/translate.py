@@ -5,7 +5,7 @@ from keyboards.text_translate.text_translate_kb import TextTranslateKeyboard
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from utils.storages import TmpStorage
-
+from handlers.first_contact_handler import StepsForm
 from create_bot import bot
 from keyboards.inline_keyboard import KeyKeyboard
 
@@ -57,18 +57,22 @@ async def add_user_translation(
 
 @router.message()
 async def echo(message: Message, tmp_storage: TmpStorage, state: FSMContext):
-    kb = await TextTranslateKeyboard(
-        user_language=message.from_user.language_code,
-        user_id=message.from_user.id,
-        text_for_translate=message.text,
-    )
+    if await state.get_state() != StepsForm.CHANGE_DATA:
+        kb = await TextTranslateKeyboard(
+            user_language=message.from_user.language_code,
+            user_id=message.from_user.id,
+            text_for_translate=message.text,
+        )
 
-    key = KeyKeyboard(
-        bot_id=bot.id,
-        chat_id=message.chat.id,
-        user_id=message.from_user.id,
-        message_id=message.message_id,
-    )
-    tmp_storage[key] = kb
-    await message.answer(kb.massage_for_translation_text(), reply_markup=kb.markup())
-    await state.set_state(TranslationForm.GET_TRANSLATION)
+        key = KeyKeyboard(
+            bot_id=bot.id,
+            chat_id=message.chat.id,
+            user_id=message.from_user.id,
+            message_id=message.message_id,
+        )
+        tmp_storage[key] = kb
+        await message.answer(kb.massage_for_translation_text(), reply_markup=kb.markup())
+        await state.set_state(TranslationForm.GET_TRANSLATION)
+    else:
+        await message.answer("⁉️")
+        await message.answer("you have to choose one of the options")
