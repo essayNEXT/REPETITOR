@@ -71,7 +71,9 @@ async def echo(message: Message, tmp_storage: TmpStorage, state: FSMContext):
             message_id=message.message_id,
         )
         tmp_storage[key] = kb
-        await message.answer(kb.massage_for_translation_text(), reply_markup=kb.markup())
+        await message.answer(
+            kb.massage_for_translation_text(), reply_markup=kb.markup()
+        )
         await state.set_state(TranslationForm.GET_TRANSLATION)
     else:
         await message.answer("⁉️")
