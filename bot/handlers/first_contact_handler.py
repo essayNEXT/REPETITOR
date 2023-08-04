@@ -12,6 +12,7 @@ from keyboards.first_contact.first_contact_kb import (
     ChangeUserDataKeyboard,
 )
 from keyboards.user_context.user_context_kb import ChooseContextKeyboard
+from keyboards.native_language.native_language_kb import ChooseNativeLanguageKeyboard
 
 from keyboards.inline_keyboard import KeyKeyboard
 from create_bot import bot
@@ -27,7 +28,7 @@ class StepsForm(StatesGroup):
     CHANGE_DATA = State()
     F_NAME_CHANGED = State()
     L_NAME_CHANGED = State()
-    NATIVE_LANGUAGE_CHANGED = State()
+    NATIVE_LANGUAGE_SELECTING = State()
     EMAIL_CHANGED = State()
 
 
@@ -86,6 +87,9 @@ async def confirm_data(
     await state.set_state(CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT)
 
 
+@router.callback_query(
+    StepsForm.NATIVE_LANGUAGE_SELECTING, Text(text="native_language_back")
+)
 @router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_kb_change_data"))
 async def change_data(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
@@ -115,16 +119,34 @@ async def choose_data_to_change(
     """Хендлер, що ловить колбек при натисканні кнопки зміни визначеного параметра від користувача.
     Виводить повідомляння з проханням вказати необхідний параметр та змінює стан згідно з параметром, що змінено.
     """
-    key = KeyKeyboard(
-        bot_id=bot.id,
-        chat_id=callback.message.chat.id,
-        user_id=callback.from_user.id,
-        message_id=callback.message.message_id - 1,
-    )
-    kb = tmp_storage[key]
+    if callback.data == "change_native_language":
+        kb = await ChooseNativeLanguageKeyboard(
+            user_language=callback.from_user.language_code,
+            user_id=callback.from_user.id,
+            dp=router,
+        )
 
-    await callback.message.delete()
-    await callback.answer()
+        key = KeyKeyboard(
+            bot_id=bot.id,
+            chat_id=callback.message.chat.id,
+            user_id=callback.from_user.id,
+            message_id=callback.message.message_id,
+        )
+        tmp_storage[key] = kb
+        await callback.message.edit_text(kb.text, reply_markup=kb.markup())
+        await state.set_state(StepsForm.NATIVE_LANGUAGE_SELECTING)
+    else:
+        key = KeyKeyboard(
+            bot_id=bot.id,
+            chat_id=callback.message.chat.id,
+            user_id=callback.from_user.id,
+            message_id=callback.message.message_id - 1,
+        )
+        kb = tmp_storage[key]
+
+        await callback.message.delete()
+        await callback.answer()
+
     # перевіряємо вхідний колбек згідно з параметрами, які необхідно змінити
     if callback.data == "change_first_name":
         await callback.message.answer(kb.messages["change_first_name"])
@@ -135,14 +157,49 @@ async def choose_data_to_change(
     elif callback.data == "change_email":
         await callback.message.answer(kb.messages["change_email"])
         await state.set_state(StepsForm.EMAIL_CHANGED)
-    elif callback.data == "change_native_language":
-        await callback.message.answer(kb.messages["change_native_language"])
-        await state.set_state(StepsForm.NATIVE_LANGUAGE_CHANGED)
+
+
+@router.callback_query(
+    StepsForm.NATIVE_LANGUAGE_SELECTING, Text(startswith="native_language_")
+)
+async def selecting_native_language(
+    callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
+):
+    """Хендлер, що ловить колбек при натисканні кнопок у меню вибору рідної мови користувача."""
+    key = KeyKeyboard(
+        bot_id=bot.id,
+        chat_id=callback.message.chat.id,
+        user_id=callback.from_user.id,
+        message_id=callback.message.message_id,
+    )
+    kb = tmp_storage[key]
+
+    if callback.data == "native_language_done":
+        if kb.validation[0]:
+            await kb.update_user_native_language()
+
+            kb = await ConfirmKeyboard(
+                user_language=callback.from_user.language_code,
+                user_id=callback.from_user.id,
+            )
+
+            text = await kb.message_text()
+            await callback.message.edit_text(
+                text.format(callback.from_user.first_name), reply_markup=kb.markup()
+            )
+            await state.set_state(StepsForm.CONFIRM_DATA)
+        else:
+            await callback.answer()
+    else:
+        kb.validation[0] = True
+        kb.selected_data[0] = callback.data
+        await callback.message.edit_text(
+            kb.language_selection_text(), reply_markup=kb.markup()
+        )
 
 
 @router.message(StepsForm.F_NAME_CHANGED)
 @router.message(StepsForm.L_NAME_CHANGED)
-@router.message(StepsForm.NATIVE_LANGUAGE_CHANGED)
 @router.message(StepsForm.EMAIL_CHANGED)
 async def update_user_data(message: Message, state: FSMContext):
     """Хендлер, що обробляє зміну даних отриманих від користувача.
@@ -157,8 +214,6 @@ async def update_user_data(message: Message, state: FSMContext):
         key = "last_name"
     elif user_state == StepsForm.EMAIL_CHANGED:
         key = "email"
-    elif user_state == StepsForm.NATIVE_LANGUAGE_CHANGED:
-        key = "native_language"
 
     data = {key: message.text}
     await update_user(message.from_user.id, data)
