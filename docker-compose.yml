@@ -23,6 +23,8 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./.env
+    volumes:
+      - logigng_data:/home/docker_user/app/log
 
   repetitor_db:
     container_name: repetitor_db
@@ -50,4 +52,5 @@ services:
 
 volumes:
   postgres_data:
+  logigng_data:
 
