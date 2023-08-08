@@ -28,8 +28,8 @@ async def translate(
     :param text: text to be translated
     :param url: address to request a text translation
     :param api_key: access key
-    :return: tuple(result, target language) - if the translation is correct,
-             else tuple ('Translation ERROR',)
+    :return: tuple(result, target language, GOOGLE_UUID, True) - if the translation + verification is correct,
+             else tuple (result, target language, GOOGLE_UUID, False) if verification is incorrect
     """
     from repetitor_backend.app import app
 
@@ -81,9 +81,19 @@ async def translate(
                 "translatedText"
             ].lower()
         )
+    res = res[:2]
+    print()
+    print("text_to_translate:", text)
+    print("translated_no_verification:", tuple(res))
+    # print("translated_text:", translated_text)
+    # print("translated_reverse:", translated_reverse)
+    print("translated_verification:", translated_verification)
 
-    # print('translated_text:', translated_text)
-    # print('translated_reverse:', translated_reverse)
-    # print('translated_verification:', translated_verification)
+    # return tuple(res) if text == translated_verification else ("Translation ERROR",)
 
-    return tuple(res[:2]) if text == translated_verification else ("Translation ERROR",)
+    res += [
+        "00000000-0000-0000-0000-000000000001", True
+    ] if text == translated_verification else [
+        "00000000-0000-0000-0000-000000000001", False
+    ]
+    return tuple(res)

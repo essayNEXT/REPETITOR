@@ -3,8 +3,6 @@ from dotenv import load_dotenv
 from aiohttp import ClientSession
 from .accents import remove_accents
 
-# from repetitor_backend.app import app
-
 
 load_dotenv()
 URL = "https://api.cognitive.microsofttranslator.com/translate"
@@ -34,8 +32,8 @@ async def translate(
     :param url: address to request a text translation
     :param api_key: access key
     :param location: site location for the request
-    :return: tuple(result, target language) - if the translation is correct,
-             then returns the translation of the input text
+    :return: tuple(result, target language, MICROSOFT_UUID) - if the translation is correct,
+             else tuple ('Translation ERROR',)
     """
 
     from repetitor_backend.app import app
@@ -45,8 +43,8 @@ async def translate(
 
     text = remove_accents(text.lower())
 
-    params = {"api-version": "3.0", "from": source_lng, "to": [target_lng]}
-    params_reverse = {"api-version": "3.0", "from": target_lng, "to": [source_lng]}
+    params = {"api-version": "3.0", "to": [target_lng]}  # "from": source_lng,
+    params_reverse = {"api-version": "3.0", "to": [source_lng]}  # "from": target_lng,
 
     headers = {
         "Ocp-Apim-Subscription-Key": api_key,
@@ -62,41 +60,29 @@ async def translate(
     async with session.post(url, params=params, headers=headers, json=body) as response:
         response_data = await response.json()
         translated = remove_accents(response_data[0]["translations"][0]["text"].lower())
+        detected_src_lng = response_data[0]["detectedLanguage"]["language"]
 
-    async with session.post(
-        url, params=params_reverse, headers=headers, json=body
-    ) as response:
-        response_data = await response.json()
 
-        translated_reverse = remove_accents(
-            response_data[0]["translations"][0]["text"].lower()
-        )
+    print()
+    print('MS translate')
+    print(f"text_to_translate: {text}, src_lng: {source_lng}, detected_src_lng: {detected_src_lng}")
+    print(f"translated_text: {translated}, target_lng: {target_lng}")
 
-    res = (
-        [translated_reverse, source_lng, target_lng]
-        if text == translated
-        else [translated, target_lng, source_lng]
-    )
+    if source_lng == detected_src_lng:
+        return translated, target_lng, "00000000-0000-0000-0000-000000000000"
 
-    # перевірка результату
-    txt, src_lng, trg_lng = res
+    elif target_lng == detected_src_lng:
+        async with session.post(
+                url, params=params_reverse, headers=headers, json=body
+        ) as response:
+            response_data = await response.json()
 
-    body_verif = [{"text": txt}]
-    params_verif = {"api-version": "3.0", "from": src_lng, "to": [trg_lng]}
-
-    async with session.post(
-        url, params=params_verif, headers=headers, json=body_verif
-    ) as response_verif:
-        translation_verif = await response_verif.json()
-        translated_verif = remove_accents(
-            translation_verif[0]["translations"][0]["text"].lower()
-        )
-
-    # print('translated_text:', translated)
-    # print('translated_reverse:', translated_reverse)
-    # print('translated_verification', translated_verif)
-
-    return tuple(res[:2]) if text == translated_verif else ("Translation ERROR",)
+            translated_reverse = remove_accents(
+                response_data[0]["translations"][0]["text"].lower()
+            )
+        return translated_reverse, source_lng, "00000000-0000-0000-0000-000000000000"
+    else:
+        return ("Translation ERROR",)
 
 
 async def translate_lng(
