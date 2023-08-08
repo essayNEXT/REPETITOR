@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-08-07T22:09:35.570Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36" etag="prMF1-7kppsR0vzEGmrM" version="21.6.6" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2023-08-08T09:48:35.548Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36" etag="lXReUVZMu7v3F6Uq7X1h" version="21.6.6" type="github" pages="2">
   <diagram name="БД" id="HOyWcJGzsAJvnxjZpjYC">
     <mxGraphModel dx="2261" dy="790" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -1190,18 +1190,12 @@
     </mxGraphModel>
   </diagram>
   <diagram id="-Q5VIu-EZHM6Y3VrYJgK" name="Переклад">
-    <mxGraphModel dx="2022" dy="658" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1463" dy="1939" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="78DXTsgVCQyzwh-uVWNw-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#cce5ff;strokeColor=#36393d;strokeWidth=0;" vertex="1" parent="1">
-          <mxGeometry x="-430" y="80" width="397" height="532" as="geometry" />
-        </mxCell>
-        <mxCell id="swi2EClm02vc6-Y3g8R2-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="swi2EClm02vc6-Y3g8R2-1" target="swi2EClm02vc6-Y3g8R2-2" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
         <mxCell id="swi2EClm02vc6-Y3g8R2-1" value="отримуємо текст для перекладу та контекст &lt;br&gt;(en-uk, uk-en)" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="320" y="20" width="160" height="60" as="geometry" />
+          <mxGeometry x="60" y="-60" width="160" height="60" as="geometry" />
         </mxCell>
         <mxCell id="swi2EClm02vc6-Y3g8R2-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="swi2EClm02vc6-Y3g8R2-2" target="swi2EClm02vc6-Y3g8R2-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -1277,7 +1271,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="swi2EClm02vc6-Y3g8R2-26" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;хотілося б отримати контекст з урахуванням &lt;br&gt;направлення останнього перекладу, &lt;br&gt;щоб збільшити ймовірність потрапляння &lt;br&gt;в правильний напрямок контексту.&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="540" y="10" width="230" height="70" as="geometry" />
+          <mxGeometry x="266" y="-60" width="230" height="70" as="geometry" />
         </mxCell>
         <mxCell id="swi2EClm02vc6-Y3g8R2-27" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;text == translated_text&lt;/font&gt;" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="80" y="280" width="160" height="120" as="geometry" />
@@ -1317,14 +1311,14 @@
         <mxCell id="41xWMe8WQzc2Zq65ZBpB-1" value="Запит в MS&lt;br&gt;(text, trg_lng)" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-200" y="100" width="160" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="41xWMe8WQzc2Zq65ZBpB-2" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" target="swi2EClm02vc6-Y3g8R2-23" edge="1">
+        <mxCell id="41xWMe8WQzc2Zq65ZBpB-2" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" target="swi2EClm02vc6-Y3g8R2-23" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="319" y="340" as="sourcePoint" />
             <mxPoint x="30" y="25" as="targetPoint" />
             <Array as="points">
               <mxPoint x="280" y="340" />
-              <mxPoint x="280" y="60" />
-              <mxPoint x="160" y="60" />
+              <mxPoint x="280" y="80" />
+              <mxPoint x="160" y="80" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -1377,7 +1371,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="41xWMe8WQzc2Zq65ZBpB-16" value="Ні" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="-160" y="400" width="30" height="30" as="geometry" />
+          <mxGeometry x="-43" y="340" width="30" height="30" as="geometry" />
         </mxCell>
         <mxCell id="41xWMe8WQzc2Zq65ZBpB-17" value="Так" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="-240" y="338" width="40" height="30" as="geometry" />
@@ -1388,24 +1382,24 @@
         <mxCell id="41xWMe8WQzc2Zq65ZBpB-19" value="Ні" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="-320" y="400" width="30" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="78DXTsgVCQyzwh-uVWNw-2" value="&lt;font color=&quot;#ff3333&quot; style=&quot;font-size: 10px;&quot;&gt;&lt;b&gt;Опція&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="1">
-          <mxGeometry x="-430" y="79" width="50" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="78DXTsgVCQyzwh-uVWNw-3" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="41xWMe8WQzc2Zq65ZBpB-4" target="78DXTsgVCQyzwh-uVWNw-4">
+        <mxCell id="78DXTsgVCQyzwh-uVWNw-3" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="41xWMe8WQzc2Zq65ZBpB-4" target="swi2EClm02vc6-Y3g8R2-2" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-13" y="480" as="sourcePoint" />
-            <mxPoint x="37" y="430" as="targetPoint" />
+            <mxPoint x="400" y="90" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-10" y="340" />
+              <mxPoint x="-10" y="60" />
+              <mxPoint x="400" y="60" />
+            </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="78DXTsgVCQyzwh-uVWNw-4" value="Translated ERROR" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-200" y="520" width="160" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="78DXTsgVCQyzwh-uVWNw-5" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" edge="1" parent="1" target="41xWMe8WQzc2Zq65ZBpB-1">
+        <mxCell id="78DXTsgVCQyzwh-uVWNw-5" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeWidth=2;" parent="1" target="41xWMe8WQzc2Zq65ZBpB-1" edge="1" source="swi2EClm02vc6-Y3g8R2-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="140" y="60" as="sourcePoint" />
             <mxPoint x="-70" y="20" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-120" y="60" />
+              <mxPoint x="140" y="40" />
+              <mxPoint x="-120" y="40" />
             </Array>
           </mxGeometry>
         </mxCell>
