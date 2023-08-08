@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 from utils.db.customer_type import get_customer_type
 from utils.db.customer import create_user, update_user
 from utils.storages import TmpStorage
+from pydantic import BaseModel, EmailStr, ValidationError
 
 from keyboards.first_contact.first_contact_kb import (
     ConfirmKeyboard,
@@ -16,8 +17,13 @@ from keyboards.user_context.user_context_kb import ChooseContextKeyboard
 from keyboards.inline_keyboard import KeyKeyboard
 from create_bot import bot
 from .customer_context_handler import CreateContextStepsForm
+import json
 
 router = Router()
+
+
+class Email(BaseModel):
+    email: EmailStr
 
 
 class StepsForm(StatesGroup):
@@ -148,7 +154,6 @@ async def update_user_data(message: Message, state: FSMContext):
     """Хендлер, що обробляє зміну даних отриманих від користувача.
     Виводить колбек-кнопки 'змінити' та 'продовжити'."""
     user_state = await state.get_state()
-    await message.answer("✅")
 
     key = None
     if user_state == StepsForm.F_NAME_CHANGED:
@@ -161,7 +166,19 @@ async def update_user_data(message: Message, state: FSMContext):
         key = "native_language"
 
     data = {key: message.text}
-    await update_user(message.from_user.id, data)
+
+    if key == "email":
+        email_data = json.dumps(data)
+        try:
+            Email.parse_raw(email_data)
+            await update_user(message.from_user.id, data)
+            await message.answer("✅")
+        except ValidationError:
+            await message.answer("Invalid email")
+            await message.answer("❌")
+    else:
+        await update_user(message.from_user.id, data)
+        await message.answer("✅")
 
     kb = await ConfirmKeyboard(
         user_language=message.from_user.language_code, user_id=message.from_user.id
