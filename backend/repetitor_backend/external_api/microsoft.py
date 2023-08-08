@@ -1,4 +1,5 @@
 import os
+import uuid
 from dotenv import load_dotenv
 from aiohttp import ClientSession
 from .accents import remove_accents
@@ -9,7 +10,7 @@ URL = "https://api.cognitive.microsofttranslator.com/translate"
 URL_lNG = "https://api.cognitive.microsofttranslator.com/languages"
 API_KEY = os.environ.get("KEY_MICROSOFT")
 LOCATION = os.environ.get("LOCATION")
-
+MICROSOFT_UUID = uuid.UUID("00000000-0000-0000-0000-000000000000")
 
 async def translate(
     session: ClientSession = None,
@@ -36,10 +37,10 @@ async def translate(
              else tuple ('Translation ERROR',)
     """
 
-    from repetitor_backend.app import app
-
-    if not session:
-        session = app.session
+    # from repetitor_backend.app import app
+    #
+    # if not session:
+    #     session = app.session
 
     text = remove_accents(text.lower())
 
@@ -67,10 +68,10 @@ async def translate(
     # print(f"text_to_translate: {text}, src_lng: {source_lng}, detected_src_lng: {detected_src_lng}")
     # print(f"translated_text: {translated}, target_lng: {target_lng}")
 
-    if source_lng == detected_src_lng:
-        return translated, target_lng, "00000000-0000-0000-0000-000000000000"
+    if source_lng == detected_src_lng and text != translated:  # qwerty
+        return translated, target_lng, MICROSOFT_UUID
 
-    elif target_lng == detected_src_lng:
+    elif target_lng == detected_src_lng and text != translated:
         async with session.post(
             url, params=params_reverse, headers=headers, json=body
         ) as response:
@@ -79,7 +80,7 @@ async def translate(
             translated_reverse = remove_accents(
                 response_data[0]["translations"][0]["text"].lower()
             )
-        return translated_reverse, source_lng, "00000000-0000-0000-0000-000000000000"
+        return translated_reverse, source_lng, MICROSOFT_UUID
     else:
         return ("Translation ERROR",)
 

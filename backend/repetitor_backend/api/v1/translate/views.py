@@ -7,7 +7,7 @@ from repetitor_backend.db.crud.item_relation_view import (
     REPETITOR_EXPLANATION_UUID,
     REPETITOR_TYPE_UUID,
 )
-from repetitor_backend.external_api.microsoft import translate
+from repetitor_backend.external_api.translate import translate
 from .serializers import (
     GetItemRelationViewResponse,
     CreatingPhrasesRequest,

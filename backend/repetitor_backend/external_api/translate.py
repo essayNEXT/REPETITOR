@@ -22,8 +22,12 @@ async def translate(
     :param target_lng: second language
     :param text: text to be translated
 
-    :return: tuple(result, target language, GOOGLE_UUID, True) - if the translation + verification is correct,
-             else tuple (result, target language, GOOGLE_UUID, False) if verification is incorrect
+    :return: 1.tuple(result, target language, MICROSOFT_UUID) - if the translation is correct,
+             else tuple ('Translation ERROR',)
+             2.tuple(result, target language, GOOGLE_UUID) - if the translation is correct,
+             else tuple ('Translation ERROR',)
+            3.tuple(result, target language, GOOGLE_UUID, True) - if the translation + verification is correct,
+            else tuple (result, target language, GOOGLE_UUID, False) if verification is incorrect
 
     """
 
@@ -36,25 +40,19 @@ async def translate(
     result = await ms_auto(
         session, text=text, source_lng=source_lng, target_lng=target_lng
     )
-    # print("result = ", result)
-
-    if len(result) > 1:
-        return result
+    print("result MS = ", result)
 
     # GOOGLE translate
-    else:
+    if len(result) == 1:
         result = await gg_auto(
             session, text=text, source_lng=source_lng, target_lng=target_lng
         )
-        # print("result = ", result)
-
-        if len(result) > 1:
-            return result
+        print("result GG = ", result)
 
         # GOOGLE fix translate
-        else:
-            res = await gg_fix(
+        if len(result) == 1:
+            result = await gg_fix(
                 session, text=text, source_lng=source_lng, target_lng=target_lng
             )
-            # print("result = ", res)
-            return res
+            print("result fix = ", result)
+    return result
