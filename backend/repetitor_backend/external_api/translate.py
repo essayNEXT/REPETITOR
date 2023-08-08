@@ -56,5 +56,5 @@ async def translate(
             res = await gg_fix(
                 session, text=text, source_lng=source_lng, target_lng=target_lng
             )
-            print('result = ', res)
+            # print("result = ", res)
             return res

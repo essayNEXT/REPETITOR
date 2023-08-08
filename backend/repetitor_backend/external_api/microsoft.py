@@ -63,17 +63,17 @@ async def translate(
         detected_src_lng = response_data[0]["detectedLanguage"]["language"]
 
 
-    print()
-    print('MS translate')
-    print(f"text_to_translate: {text}, src_lng: {source_lng}, detected_src_lng: {detected_src_lng}")
-    print(f"translated_text: {translated}, target_lng: {target_lng}")
+    # print()
+    # print('MS translate')
+    # print(f"text_to_translate: {text}, src_lng: {source_lng}, detected_src_lng: {detected_src_lng}")
+    # print(f"translated_text: {translated}, target_lng: {target_lng}")
 
     if source_lng == detected_src_lng:
         return translated, target_lng, "00000000-0000-0000-0000-000000000000"
 
     elif target_lng == detected_src_lng:
         async with session.post(
-                url, params=params_reverse, headers=headers, json=body
+            url, params=params_reverse, headers=headers, json=body
         ) as response:
             response_data = await response.json()
 
