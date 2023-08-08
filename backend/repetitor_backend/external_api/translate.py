@@ -33,22 +33,28 @@ async def translate(
         session = app.session
 
     # MS translate
-    result = await ms_auto(session, text=text, source_lng=source_lng, target_lng=target_lng)
-    print('result = ', result)
+    result = await ms_auto(
+        session, text=text, source_lng=source_lng, target_lng=target_lng
+    )
+    # print("result = ", result)
 
     if len(result) > 1:
         return result
 
     # GOOGLE translate
     else:
-        result = await gg_auto(session, text=text, source_lng=source_lng, target_lng=target_lng)
-        print('result = ', result)
+        result = await gg_auto(
+            session, text=text, source_lng=source_lng, target_lng=target_lng
+        )
+        # print("result = ", result)
 
         if len(result) > 1:
             return result
 
         # GOOGLE fix translate
         else:
-            res = await gg_fix(session, text=text, source_lng=source_lng, target_lng=target_lng)
+            res = await gg_fix(
+                session, text=text, source_lng=source_lng, target_lng=target_lng
+            )
             print('result = ', res)
             return res

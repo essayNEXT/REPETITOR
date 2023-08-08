@@ -44,12 +44,14 @@ async def translate(
         translated_text = remove_accents(
             translation["data"]["translations"][0]["translatedText"].lower()
         )
-        detected_src_lng = translation["data"]["translations"][0]["detectedSourceLanguage"]
+        detected_src_lng = translation["data"]["translations"][0][
+            "detectedSourceLanguage"
+        ]
 
-    print()
-    print("GOOGLE translate")
-    print(f"text_to_translate: {text}, src_lng: {source_lng}, detected_src_lng: {detected_src_lng}")
-    print(f"translated_text: {translated_text}, target_lng: {target_lng}")
+    # print()
+    # print("GOOGLE translate")
+    # print(f"text_to_translate: {text}, src_lng: {source_lng}, detected_src_lng: {detected_src_lng}")
+    # print(f"translated_text: {translated_text}, target_lng: {target_lng}")
 
     if source_lng == detected_src_lng:
         return translated_text, target_lng, "00000000-0000-0000-0000-000000000001"
