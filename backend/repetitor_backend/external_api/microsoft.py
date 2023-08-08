@@ -62,7 +62,6 @@ async def translate(
         translated = remove_accents(response_data[0]["translations"][0]["text"].lower())
         detected_src_lng = response_data[0]["detectedLanguage"]["language"]
 
-
     # print()
     # print('MS translate')
     # print(f"text_to_translate: {text}, src_lng: {source_lng}, detected_src_lng: {detected_src_lng}")
