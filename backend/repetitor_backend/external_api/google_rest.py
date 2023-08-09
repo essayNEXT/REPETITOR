@@ -1,4 +1,5 @@
 import os
+import uuid
 from dotenv import load_dotenv
 from aiohttp import ClientSession
 from .accents import remove_accents
@@ -7,6 +8,7 @@ from .accents import remove_accents
 load_dotenv()
 URL = "https://translation.googleapis.com/language/translate/v2"
 API_KEY = os.environ.get("GOOGLE_API_KEY")
+GOOGLE_UUID = uuid.UUID("00000000-0000-0000-0000-000000000001")
 
 
 async def translate(
@@ -28,13 +30,13 @@ async def translate(
     :param text: text to be translated
     :param url: address to request a text translation
     :param api_key: access key
-    :return: tuple(result, target language) - if the translation is correct,
-             else tuple ('Translation ERROR',)
+    :return: tuple(result, target language, GOOGLE_UUID, True) - if the translation + verification is correct,
+             else tuple (result, target language, GOOGLE_UUID, False) if verification is incorrect
     """
-    from repetitor_backend.app import app
-
-    if not session:
-        session = app.session
+    # from repetitor_backend.app import app
+    #
+    # if not session:
+    #     session = app.session
 
     text = remove_accents(text.lower())
     params = {"q": text, "source": source_lng, "target": target_lng, "key": api_key}
@@ -81,9 +83,17 @@ async def translate(
                 "translatedText"
             ].lower()
         )
+    res = res[:2]
+    # print()
+    # print("text_to_translate:", text)
+    # print("translated_text:", translated_text)
+    # print("translated_reverse:", translated_reverse)
+    # print("translated_no_verification:", tuple(res))
+    # print("translated_verification:", translated_verification)
 
-    # print('translated_text:', translated_text)
-    # print('translated_reverse:', translated_reverse)
-    # print('translated_verification:', translated_verification)
+    # return tuple(res) if text == translated_verification else ("Translation ERROR",)
 
-    return tuple(res[:2]) if text == translated_verification else ("Translation ERROR",)
+    res += (
+        [GOOGLE_UUID, True] if text == translated_verification else [GOOGLE_UUID, False]
+    )
+    return tuple(res)

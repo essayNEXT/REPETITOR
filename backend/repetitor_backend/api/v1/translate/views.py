@@ -7,7 +7,7 @@ from repetitor_backend.db.crud.item_relation_view import (
     REPETITOR_EXPLANATION_UUID,
     REPETITOR_TYPE_UUID,
 )
-from repetitor_backend.external_api.microsoft import translate
+from repetitor_backend.external_api.translate import translate
 from .serializers import (
     GetItemRelationViewResponse,
     CreatingPhrasesRequest,
@@ -163,6 +163,7 @@ async def get_translate(
     if result_translate[1] == context_1_id_sn[1]:
         context_1_id_sn, context_2_id_sn = context_2_id_sn, context_1_id_sn
     target_text = result_translate[0]
+    item_author = result_translate[2]
 
     #
     # створення нової пари слів у БД на основі
@@ -171,6 +172,7 @@ async def get_translate(
         target_text=target_text,
         context_1_id_sn=context_1_id_sn,
         context_2_id_sn=context_2_id_sn,
+        author=item_author,
     )
 
     return result_creating_phrases
