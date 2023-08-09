@@ -10,6 +10,7 @@ URL = "https://translation.googleapis.com/language/translate/v2"
 API_KEY = os.environ.get("GOOGLE_API_KEY")
 GOOGLE_UUID = uuid.UUID("00000000-0000-0000-0000-000000000001")
 
+
 async def translate(
     session: ClientSession = None,
     source_lng: str = "en",
@@ -57,7 +58,7 @@ async def translate(
     if source_lng == detected_src_lng and text != translated:
         return translated, target_lng, GOOGLE_UUID
 
-    elif target_lng == detected_src_lng and text != translated:   # qwerty
+    elif target_lng == detected_src_lng and text != translated:  # qwerty
         params = {"q": text, "target": source_lng, "key": api_key}
         async with session.post(url, data=params) as response:
             translation = await response.json()

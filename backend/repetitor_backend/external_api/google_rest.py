@@ -94,8 +94,6 @@ async def translate(
     # return tuple(res) if text == translated_verification else ("Translation ERROR",)
 
     res += (
-        [GOOGLE_UUID, True]
-        if text == translated_verification
-        else [GOOGLE_UUID, False]
+        [GOOGLE_UUID, True] if text == translated_verification else [GOOGLE_UUID, False]
     )
     return tuple(res)

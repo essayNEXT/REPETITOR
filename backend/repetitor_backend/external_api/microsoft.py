@@ -12,6 +12,7 @@ API_KEY = os.environ.get("KEY_MICROSOFT")
 LOCATION = os.environ.get("LOCATION")
 MICROSOFT_UUID = uuid.UUID("00000000-0000-0000-0000-000000000000")
 
+
 async def translate(
     session: ClientSession = None,
     source_lng: str = "en",
