@@ -40,7 +40,9 @@ async def enter_user_translation(
 
     await state.update_data(last_key=key)
     await state.set_state(TranslationForm.ADD_USER_TRANSLATION)
-    await callback.message.edit_text(kb.message_for_user_translation())
+    await callback.message.edit_text(
+        kb.message_for_user_translation(), reply_markup=kb.markup_cancel()
+    )
 
 
 @router.message(TranslationForm.ADD_USER_TRANSLATION)
@@ -56,7 +58,7 @@ async def add_user_translation(
 
 
 @router.message()
-async def echo(message: Message, tmp_storage: TmpStorage, state: FSMContext):
+async def translate_word(message: Message, tmp_storage: TmpStorage, state: FSMContext):
     if await state.get_state() != StepsForm.CHANGE_DATA:
         kb = await TextTranslateKeyboard(
             user_language=message.from_user.language_code,
