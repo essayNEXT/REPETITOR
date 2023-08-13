@@ -7,6 +7,7 @@ from .accents import remove_accents
 
 load_dotenv()
 URL = "https://translation.googleapis.com/language/translate/v2"
+URL_lNG = "https://translation.googleapis.com/language/translate/v2/languages"
 API_KEY = os.environ.get("GOOGLE_API_KEY")
 GOOGLE_UUID = uuid.UUID("00000000-0000-0000-0000-000000000001")
 
@@ -97,3 +98,37 @@ async def translate(
         [GOOGLE_UUID, True] if text == translated_verification else [GOOGLE_UUID, False]
     )
     return tuple(res)
+
+
+async def google_languages(
+    session: ClientSession = None,
+    interface_lng: str = "en",
+    url: str = URL_lNG,
+) -> dict:
+    """
+    We get a dictionary of languages supported by the Translator's operations.
+    Args:
+        session: aiohttp.ClientSession
+        interface_lng: full names of languages are displayed in the interface language
+        url: address for requesting languages supported by the translation
+
+    Returns: Dict of supported languages
+        lang_dict = {'af': 'Afrikaans', 'am': 'Amharic', ...}
+    """
+
+    if session is None:
+        from repetitor_backend.app import app
+
+        session = app.session
+
+    params = {
+        "key": API_KEY,
+        "target": interface_lng  # Встановіть код вашої мови для виведення назв мов
+    }
+
+    async with session.post(url, params=params) as response:
+        data = await response.json()
+
+    lng_list = data["data"]["languages"]  # [{'language': 'az', 'name': 'азербайджанська'}, ...]
+    dict_lng = {lng["language"]: lng["name"] for lng in lng_list}
+    return dict_lng

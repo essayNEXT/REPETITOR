@@ -37,22 +37,34 @@ async def translate(
         session = app.session
 
     # MS translate
-    result = await ms_auto(
-        session, text=text, source_lng=source_lng, target_lng=target_lng
-    )
-    print("result MS = ", result)
+    try:
+        result = await ms_auto(
+            session, text=text, source_lng=source_lng, target_lng=target_lng
+        )
+        print("result MS = ", result)
+    except Exception:
+        print("MS ERROR")
+        result = ("MS ERROR",)
 
     # GOOGLE translate
     if len(result) == 1:
-        result = await gg_auto(
-            session, text=text, source_lng=source_lng, target_lng=target_lng
-        )
-        print("result GG = ", result)
+        try:
+            result = await gg_auto(
+                session, text=text, source_lng=source_lng, target_lng=target_lng
+            )
+            print("result GG = ", result)
+        except Exception:
+            print("Google_auto ERROR")
+            result = ("MS ERROR & Google_auto ERROR",)
 
         # GOOGLE fix translate
         if len(result) == 1:
-            result = await gg_fix(
-                session, text=text, source_lng=source_lng, target_lng=target_lng
-            )
-            print("result fix = ", result)
+            try:
+                result = await gg_fix(
+                    session, text=text, source_lng=source_lng, target_lng=target_lng
+                )
+                print("result fix = ", result)
+            except Exception:
+                print("Google_fix ERROR")
+                result = ("MS ERROR & Google_auto ERROR & Google_fix ERROR",)
     return result

@@ -100,12 +100,18 @@ async def translate_lng(
         url: address for requesting languages supported by the translation
 
     Returns: Dict of supported languages
+    response_data["translation"] = {
+    'af': {'name': 'Afrikaans', 'nativeName': 'Afrikaans', 'dir': 'ltr'},
+    'am': {'name': 'Amharic', 'nativeName': 'አማርኛ', 'dir': 'ltr'}...}
+
+    lang_dict = {'af': 'Afrikaans', 'am': 'Amharic', ...}
     """
 
     if session is None:
         from repetitor_backend.app import app
 
         session = app.session
+
     params = {
         "api-version": "3.0",
         "scope": "translation",
@@ -118,4 +124,7 @@ async def translate_lng(
     async with session.get(url, params=params, headers=headers) as response:
         response_data = await response.json()
 
-    return response_data["translation"]
+    lang_dict_full = response_data["translation"]
+    lang_dict = {key: value["name"] for key, value in lang_dict_full.items()}
+
+    return lang_dict
