@@ -123,12 +123,14 @@ async def google_languages(
 
     params = {
         "key": API_KEY,
-        "target": interface_lng  # Встановіть код вашої мови для виведення назв мов
+        "target": interface_lng,  # Встановіть код вашої мови для виведення назв мов
     }
 
     async with session.post(url, params=params) as response:
         data = await response.json()
 
-    lng_list = data["data"]["languages"]  # [{'language': 'az', 'name': 'азербайджанська'}, ...]
+    lng_list = data["data"][
+        "languages"
+    ]  # [{'language': 'az', 'name': 'азербайджанська'}, ...]
     dict_lng = {lng["language"]: lng["name"] for lng in lng_list}
     return dict_lng
