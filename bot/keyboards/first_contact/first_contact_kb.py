@@ -144,7 +144,7 @@ class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):
 
     @property
     def callback_pattern(self) -> str:
-        callback_pattern = "change"
+        callback_pattern = "change_"
         return callback_pattern
 
     @property
@@ -182,6 +182,13 @@ class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):
                     "text": "Email",
                     "message": "Enter your <b>Email</b>:",
                 },
+            ],
+            [
+                {
+                    "callback_data": "change_cancel",
+                    "text": "❌",
+                    "message": "Cancel",
+                }
             ],
         ]
         return top_buttons

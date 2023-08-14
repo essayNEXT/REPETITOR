@@ -96,6 +96,9 @@ async def confirm_data(
 @router.callback_query(
     StepsForm.NATIVE_LANGUAGE_SELECTING, Text(text="native_language_back")
 )
+@router.callback_query(StepsForm.F_NAME_CHANGED, Text(text="change_cancel"))
+@router.callback_query(StepsForm.L_NAME_CHANGED, Text(text="change_cancel"))
+@router.callback_query(StepsForm.EMAIL_CHANGED, Text(text="change_cancel"))
 @router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_kb_change_data"))
 async def change_data(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
@@ -141,6 +144,20 @@ async def choose_data_to_change(
         tmp_storage[key] = kb
         await callback.message.edit_text(kb.text, reply_markup=kb.markup())
         await state.set_state(StepsForm.NATIVE_LANGUAGE_SELECTING)
+
+    elif callback.data == "change_cancel":
+        kb = await ConfirmKeyboard(
+            user_language=callback.from_user.language_code,
+            user_id=callback.from_user.id,
+        )
+
+        text = await kb.message_text()
+
+        await callback.message.edit_text(
+            text.format(callback.from_user.first_name), reply_markup=kb.markup()
+        )
+        await state.set_state(StepsForm.CONFIRM_DATA)
+
     else:
         key = KeyKeyboard(
             bot_id=bot.id,
@@ -155,13 +172,22 @@ async def choose_data_to_change(
 
     # перевіряємо вхідний колбек згідно з параметрами, які необхідно змінити
     if callback.data == "change_first_name":
-        await callback.message.answer(kb.messages["change_first_name"])
+        last_message = await callback.message.answer(
+            kb.messages["change_first_name"], reply_markup=kb.markup_cancel()
+        )
+        await state.update_data(last_message=last_message.message_id)
         await state.set_state(StepsForm.F_NAME_CHANGED)
     elif callback.data == "change_last_name":
-        await callback.message.answer(kb.messages["change_last_name"])
+        last_message = await callback.message.answer(
+            kb.messages["change_last_name"], reply_markup=kb.markup_cancel()
+        )
+        await state.update_data(last_message=last_message.message_id)
         await state.set_state(StepsForm.L_NAME_CHANGED)
     elif callback.data == "change_email":
-        await callback.message.answer(kb.messages["change_email"])
+        last_message = await callback.message.answer(
+            kb.messages["change_email"], reply_markup=kb.markup_cancel()
+        )
+        await state.update_data(last_message=last_message.message_id)
         await state.set_state(StepsForm.EMAIL_CHANGED)
 
 
@@ -211,14 +237,22 @@ async def update_user_data(message: Message, state: FSMContext):
     """Хендлер, що обробляє зміну даних отриманих від користувача.
     Виводить колбек-кнопки 'змінити' та 'продовжити'."""
     user_state = await state.get_state()
+    state_data = await state.get_data()
+    last_message = state_data.get("last_message")
+    print(last_message)
+    print(message.from_user.id)
+    print(message.chat.id)
 
     key = None
     if user_state == StepsForm.F_NAME_CHANGED:
         key = "first_name"
+        await bot.delete_message(chat_id=message.chat.id, message_id=last_message)
     elif user_state == StepsForm.L_NAME_CHANGED:
         key = "last_name"
+        await bot.delete_message(chat_id=message.chat.id, message_id=last_message)
     elif user_state == StepsForm.EMAIL_CHANGED:
         key = "email"
+        await bot.delete_message(chat_id=message.chat.id, message_id=last_message)
 
     data = {key: message.text}
 
