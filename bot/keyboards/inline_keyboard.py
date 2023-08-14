@@ -103,6 +103,11 @@ class ScrollInlineKeyboardGenerator:
                 "PAGINATION: All scroll buttons in one page, check value of max_rows_number!"
             )
 
+        # створюємо кнопку для можливого скасування дій
+        self.cancel_button = InlineKeyboardButton(
+            text="❌", callback_data=f"{self.callback_pattern}cancel"
+        )
+
     async def _scroll_kb(self, call: CallbackQuery):
         """Хендлер обробки колбеків від кнопок вверх та вниз"""
         if call.data.endswith("fast_up"):
@@ -234,6 +239,9 @@ class CombineInlineKeyboardGenerator(ScrollInlineKeyboardGenerator):
                 )
             )
         )
+
+    def markup_cancel(self) -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(inline_keyboard=[[self.cancel_button]])
 
 
 @asyncinit
