@@ -27,7 +27,7 @@ class TextTranslateKeyboard(ContextInlineKeyboardGenerator):
 
     @property
     def initial_text(self) -> str:
-        initial_text = "<b>This is translate of your word {} - {} </b>"
+        initial_text = '<b>This is translate of your word "{}" - "{}" </b>'
         return initial_text
 
     @property
@@ -61,7 +61,7 @@ class TextTranslateKeyboard(ContextInlineKeyboardGenerator):
                 {
                     "callback_data": "text_translate_my_translation",
                     "text": "My translation",
-                    "message": "Enter your translation for word {} :",
+                    "message": 'Enter your translation for word "{}" :',
                 },
             ]
         ]
@@ -95,4 +95,5 @@ class TextTranslateKeyboard(ContextInlineKeyboardGenerator):
         result = await post_user_translate(
             source_text, target_text, context_1_id_sn, context_2_id_sn, author
         )
-        return result
+        self.data_from_backend = result
+        # return result

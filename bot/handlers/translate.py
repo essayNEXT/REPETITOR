@@ -38,10 +38,29 @@ async def enter_user_translation(
     )
     kb = tmp_storage[key]
 
-    await state.update_data(last_key=key)
+    await state.update_data(last_key=key, last_message=callback.message.message_id)
     await state.set_state(TranslationForm.ADD_USER_TRANSLATION)
     await callback.message.edit_text(
         kb.message_for_user_translation(), reply_markup=kb.markup_cancel()
+    )
+
+
+@router.callback_query(Text(text="text_translate_cancel"))
+async def enter_user_translation_cancel(
+    callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
+):
+    """Хендлер, що ловить колбек при натисканні кнопки ❌ (скасувати)."""
+    key = KeyKeyboard(
+        bot_id=bot.id,
+        chat_id=callback.message.chat.id,
+        user_id=callback.from_user.id,
+        message_id=callback.message.message_id - 1,
+    )
+    kb = tmp_storage[key]
+
+    await state.set_state(TranslationForm.GET_TRANSLATION)
+    await callback.message.edit_text(
+        kb.massage_for_translation_text(), reply_markup=kb.markup()
     )
 
 
@@ -51,9 +70,15 @@ async def add_user_translation(
 ):
     data = await state.get_data()
     key = data.get("last_key")
+    last_message = data.get("last_message")
     kb = tmp_storage[key]
-    result = await kb.add_user_translation(message.text)
-    await message.answer(f"{result[0]['item_text_1']} - {result[0]['item_text_2']}")
+    await kb.add_user_translation(message.text)
+    await bot.edit_message_text(
+        chat_id=message.chat.id,
+        message_id=last_message,
+        text=kb.massage_for_translation_text(),
+        reply_markup=kb.markup(),
+    )
     await state.clear()
 
 
