@@ -13,9 +13,7 @@ CURRENT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
 APP_CONFIG = AppConfig(
     app_name="repetitor_help",
-    migrations_folder_path=os.path.join(
-        CURRENT_DIRECTORY, "piccolo_migrations"
-    ),
+    migrations_folder_path=os.path.join(CURRENT_DIRECTORY, "piccolo_migrations"),
     table_classes=table_finder(
         modules=["repetitor_help.tables"], exclude_imported=True
     ),

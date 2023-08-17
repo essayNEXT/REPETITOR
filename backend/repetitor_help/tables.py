@@ -31,7 +31,3 @@ class Help(Table):
     auto_translation = Boolean()
     modified_on = Timestamptz(auto_update=datetime.utcnow())
     is_active = Boolean(default=True)
-
-    context = ForeignKey(
-        references=Context, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
-    )
