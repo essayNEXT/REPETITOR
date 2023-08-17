@@ -70,7 +70,7 @@ async def get(**get_param: GetHelpRequest) -> list[tables.Help]:
         - is_active: bool
         - advanced options for filtering:
             - item__author: author of item, used for foreign key links with Item
-            - item__context__name_short: the short name of the required items context, used for foreign key links with Item - str
+            - ontext__name_short: the name of the required items context, used for foreign key links with Item - str
             - item__text: the text of the required items, used for foreign key links with Item - str type len(2..255)
 
     Return:
