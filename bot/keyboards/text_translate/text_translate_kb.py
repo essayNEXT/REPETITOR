@@ -7,10 +7,11 @@ from asyncinit import asyncinit
 from utils.db.translate_text import get_translate_text, post_user_translate
 
 from utils.db.customer import get_user
+from utils.help import HelpConstructor
 
 
 @asyncinit
-class TextTranslateKeyboard(ContextInlineKeyboardGenerator):
+class TextTranslateKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     """Клавіатура перекладу слів"""
 
     async def __init__(
@@ -24,6 +25,7 @@ class TextTranslateKeyboard(ContextInlineKeyboardGenerator):
         self.data_from_backend = await get_translate_text(text_for_translate, user_id)
 
         await super().__init__(user_language, user_id, dp)
+        await HelpConstructor.__init__(self)
 
     @property
     def initial_text(self) -> str:
@@ -74,6 +76,22 @@ class TextTranslateKeyboard(ContextInlineKeyboardGenerator):
     @property
     def bottom_buttons(self) -> KeyboardOfDict | None:
         return None
+
+    @property
+    def help_messages(self):
+        help_messages = [
+            {
+                "state_name": "TranslationForm:ADD_USER_TRANSLATION",
+                "language_code": "en",
+                "help_text": "Enter your translation to word please",
+            },
+            {
+                "state_name": "TranslationForm:GET_TRANSLATION",
+                "language_code": "en",
+                "help_text": "Add word to learn or add our translation",
+            },
+        ]
+        return help_messages
 
     def massage_for_translation_text(self):
         translated_text = self.data_from_backend[0]["item_text_2"]
