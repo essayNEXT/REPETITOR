@@ -11,10 +11,10 @@ class CreateHelpRequest(BaseModel):
     language: UUID
     front_name: Annotated[str, Query(min_length=2, max_length=255)]
     state: Annotated[str, Query(min_length=2, max_length=255)]
-    auto_translation: bool | None = False
     positive_feedback: int | None = 0
     negative_feedback: int | None = 0
     total_impressions: int | None = 0
+    auto_translation: bool | None = False
 
     @validator("total_impressions", pre=True)
     def validate_total_impressions(cls, total_impressions, values):
@@ -30,9 +30,15 @@ class CreateHelpRequest(BaseModel):
 
 
 class UpdateHelpRequest(CreateHelpRequest):
-    language: UUID | None = None
-    state: str | None
-    front_name: str | None
+    text: str = None
+    language: UUID = None
+    front_name: str = None
+    state: str = None
+    total_impressions: int = None
+    positive_feedback: int = None
+    negative_feedback: int = None
+    auto_translation: bool = None
+    modified_on: pydantic_datetime = None
     is_active: bool = True
 
 
@@ -43,11 +49,20 @@ class GetHelpRequest(CreateHelpRequest):
     front_name: str | None
     language: UUID | None
     is_active: bool | None
+    auto_translation: bool | None
     modified_on: pydantic_datetime | None
     language__name_short: Annotated[str | None, Query(min_length=2, max_length=10)]
 
 
-class GetHelpResponse(CreateHelpRequest):
+class GetHelpResponse(BaseModel):
     id: UUID
+    text: str
+    language: UUID
+    front_name: str
+    state: str
+    total_impressions: int
+    positive_feedback: int
+    negative_feedback: int
+    auto_translation: bool
     modified_on: pydantic_datetime
     is_active: bool

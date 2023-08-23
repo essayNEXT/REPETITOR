@@ -17,9 +17,15 @@ from .serializers import (
 )
 from repetitor_help.db.crud import help
 
+MAX_IMPRESSIONS = 100
+
 logger = logging.getLogger()
 
 router = APIRouter()
+
+
+def helps_less_max_impressions(list_of_helps: list[tables.Help]) -> list[tables.Help]:
+    return [list_of_helps[0]]
 
 
 @router.post("/help/")
@@ -106,11 +112,11 @@ async def get_help(
     front_name: Annotated[str, Query(min_length=2, max_length=255)],
     customer_tg_id: UUID | int,
     state: Annotated[str, Query(min_length=2, max_length=255)],
+    auto_translation: bool | None = None,
     id: UUID | None = None,
     text: Annotated[str | None, Query(min_length=2, max_length=255)] = None,
     language: UUID = None,
     is_active: bool = True,
-    auto_translation: bool | None = True,
     modified_on: pydantic_datetime = None,
     positive_feedback: int | None = 0,
     negative_feedback: int | None = 0,
@@ -160,7 +166,7 @@ async def get_help(
         base_help = await help.get(**get_param_help.dict())
         if not base_help:
             raise ValueError(
-                f"нема жодного хелпа для таких параметрів {get_param_help.dict()}"
+                f"there is no help for such parameters {get_param_help.dict()}"
             )
         base_help_text = base_help[0].text
         result_translate = await translate(
@@ -187,7 +193,9 @@ async def get_help(
         # ... )
 
         # створення перекладеного запису в БД
-        language = get_context(name_short=language__name_short)
+        language_query = await get_context(name_short=language__name_short)
+        language = language_query[0]["id"]
+        text = result_translate[0]
         new_help = CreateHelpRequest(
             text=text,
             language=language,
@@ -197,7 +205,10 @@ async def get_help(
             auto_translation=True,
         )
         new_help_id = await help.create(**new_help.dict())
-        return [
+        results = await help.get(**GetHelpRequest(id=new_help_id).dict())
+        # fin_result = [result.to_dict() for result in results if isinstance(result, tables.Help)]
+        # return fin_result
+        [
             dict(
                 id=new_help_id,
                 text=text,
@@ -215,15 +226,16 @@ async def get_help(
 
     # тепер якщо переклад хелпа здайдено в БД
     elif len(helps) == 1:
-        return helps
+        results = helps
 
     else:  # хз, тут треба доробляти з незрозумілим helps_less_max_impressions
         results_sorted = sorted(helps, key=lambda r: r.modified_on, reverse=True)
-        return [results_sorted[0]]
+        results_after_process = helps_less_max_impressions(results_sorted)
+        results = results_after_process
 
-    # fin_result = [
-    #     result.to_dict() for result in results if isinstance(result, tables.Help)
-    # ]
+    fin_result = [
+        result.to_dict() for result in results if isinstance(result, tables.Help)
+    ]
     return fin_result
 
 
