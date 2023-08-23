@@ -10,16 +10,26 @@ from repetitor_help.api.v1.help.serializers import (
 )
 
 
-async def create(**kwargs: CreateHelpRequest) -> UUID | str:
+async def create(**kwargs: CreateHelpRequest) -> tables.Help | str:
     """
-    Create new help.
-    Parameters:
-        - relation: UUID of item relation, used for ForeignKey links with Item Relation, required
-        - item: UUID of item, used for ForeignKey links with Item, required
+    Creates a new help entry in the database.
 
-    Return:
-    - Help.id: UUID - primary key for new Help record - UUID type
-    - str - error message in case of invalid foreign keys
+    Parameters:
+    - `front_name` (str): The front name of the help, required.
+    - `state` (str): The state of the help, required.
+    - `text` (str): The text of the help, required.
+    - `language` (UUID): The language of the help, required.
+
+    - `auto_translation` (bool|None): Flag for auto translation.
+    - `positive_feedback` (int|None): The positive feedback count of the help.
+    - `negative_feedback` (int|None): The negative feedback count of the help.
+    - `total_impressions` (int|None): The total impressions count of the help.
+
+    Returns:
+    -
+    - tables.Help: a database object that corresponds to the description of the tables.Help.
+    - str - error message in case of invalid foreign keys.
+
     """
     # check_exists = await get(**kwargs)
     # if check_exists:  # якщо існує  такий запис
@@ -32,10 +42,6 @@ async def create(**kwargs: CreateHelpRequest) -> UUID | str:
     #     )
 
     try:
-        # result = await tables.Help.insert(tables.Help(**kwargs)).returning(
-        #     tables.Help.id
-        # )
-        #  чат переробив  функцію на get_or_create
         query_conditions = [
             getattr(tables.Help, key) == value
             for key, value in kwargs.items()
@@ -50,32 +56,32 @@ async def create(**kwargs: CreateHelpRequest) -> UUID | str:
     except ForeignKeyViolationError as e:
         return str(e)  # якщо  невірні зовнішні ключі передані
 
-    # 20.08 погодив не робити розділення, завжди повертати UUID запису
-    # if result._was_created:  # якщо запис щойно був створений
-    #     return result["id"]
-    # else:  # якщо запис вже існував
-    #     return (
-    #         f"an object with such parameters already exists id={result.id}  "
-    #         f"is_active={result.is_active} "
-    #     )
-    return result["id"]
+    return result
 
 
 async def get(**get_param: GetHelpRequest) -> list[tables.Help]:
     """
-    Get a list of existing help according to match conditions:
-        Parameters:
-        - id: UUID of Help
-        - relation: UUID of item relation, used for foreign key links with item Relation
-        - item: UUID of item, used for foreign key links with Item
-        - is_active: bool
-        - advanced options for filtering:
-            - item__author: author of item, used for foreign key links with Item
-            - ontext__name_short: the name of the required items context, used for foreign key links with Item - str
-            - item__text: the text of the required items, used for foreign key links with Item - str type len(2..255)
 
-    Return:
-    - List that contains the results of the query, serialized to the Help type
+    This method `get_help` retrieves help information based on the provided parameters.
+
+    Parameters:
+    - `front_name` (str, Query): The front name of the help.
+    - `customer_tg_id` (UUID|int): The customer's Telegram ID or UUID.
+    - `state` (str, Query): The state of the help.
+    - `auto_translation` (bool|None): Flag for auto translation.
+    - `id` (UUID|None): The ID of the help.
+    - `text` (str|None, Query): The text of the help.
+    - `language` (UUID): The language of the help.
+    - `is_active` (bool): Flag indicating if the help is active.
+    - `modified_on` (pydantic_datetime): The modified timestamp of the help.
+    - `positive_feedback` (int|None): The positive feedback count of the help.
+    - `negative_feedback` (int|None): The negative feedback count of the help.
+    - `total_impressions` (int|None): The total impressions count of the help.
+    - `language__name_short` (str, Query): The short name of the language.
+
+    Returns:
+    - list[tables.Help]: The list of help responses based on the provided parameters.
+
     """
 
     query = tables.Help.objects()
@@ -97,17 +103,29 @@ async def get(**get_param: GetHelpRequest) -> list[tables.Help]:
 
 async def update(id: UUID, **update_param: UpdateHelpRequest) -> UUID | None:
     """
-    Update existing record in help.
+    Updates the help entry with the specified ID.
 
-    parameters:
-    - id: UUID of Help, required
-    - relation: UUID of item relation, used for ForeignKey links with Item Relation
-    - item: UUID of item, used for ForeignKey links with Item
-    - is_active: bool
+    Parameters:
+    - `id` (UUID): The ID of the help, required
+    - `front_name` (str): The front name of the help.
+    - `customer_tg_id` (UUID|int): The customer's Telegram ID or UUID.
+    - `state` (str): The state of the help.
+    - `auto_translation` (bool|None): Flag for auto translation.
+    - `text` (str|None): The text of the help.
+    - `language` (UUID): The language of the help.
+    - `is_active` (bool): Flag indicating if the help is active.
+    - `modified_on` (pydantic_datetime): The modified timestamp of the help.
+    - `positive_feedback` (int|None): The positive feedback count of the help.
+    - `negative_feedback` (int|None): The negative feedback count of the help.
+    - `total_impressions` (int|None): The total impressions count of the help.
+    - `language__name_short` (str): The short name of the language.
+    -  advanced options:
+        - `modifying_positive_feedback` (int|None): You can add / subtract values to the positive feedback count.
+        - `modifying_negative_feedback` (int|None): You can add / subtract values to the negative feedback count.
+        - `modifying_total_impressions` (int|None): You can add / subtract values to the total impressions count.
 
-    Return:
-    - Help.id: UUID - primary key for help record - UUID type
-    - If there is no record with this id, it returns None
+    Result:
+    - UUID | None: The updated help entry ID, or None if the update was unsuccessful.
 
     """
     if not isinstance(id, UUID):
@@ -115,6 +133,17 @@ async def update(id: UUID, **update_param: UpdateHelpRequest) -> UUID | None:
             f"parameter 'id' for function update help must be UUID-type, but got {type(id)}"
         )
     filtered_param = {k: v for k, v in update_param.items() if v is not None}
+    # special_filtered_paramhttps://piccolo-orm.readthedocs.io/en/latest/piccolo/query_types/update.html#integer-columns
+    # # Add 100 to the popularity of each band:
+    # await Band.update({ Band.popularity: Band.popularity + 100 },)
+    keys_to_be_deleted = [
+        k for k, v in filtered_param.items() if k.startswith("modifying_")
+    ]  # шукаємо усі 'modifying_'ключі, щоб потім по них пройтися
+    for key in keys_to_be_deleted:
+        new_k = key.replace("modifying_", "")  # створюємо новий ключ без modifying_
+        filtered_param[new_k] = getattr(tables.Help, new_k, None) + filtered_param[key]
+        del filtered_param[key]  # видаляємо стару пару ключ-значення
+
     result = (
         await tables.Help.update(filtered_param)
         .where(tables.Help.id == id)
@@ -124,11 +153,13 @@ async def update(id: UUID, **update_param: UpdateHelpRequest) -> UUID | None:
 
 
 async def delete(id: UUID) -> UUID | None:
-    """Delete help with help.id == id.
+    """
+    Delete help with help.id == id.
 
-    parameter:
-    - id - UUID.
-    result:
+    Parameter:
+    - `id` (UUID): The ID of the help, required
+
+    Result:
     - primary key for deleted record - UUID type.
     - If there is no record with this id, it returns None.
 

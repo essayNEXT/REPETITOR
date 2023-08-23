@@ -18,14 +18,15 @@ class CreateHelpRequest(BaseModel):
 
     @validator("total_impressions", pre=True)
     def validate_total_impressions(cls, total_impressions, values):
-        positive_feedback = values.get("positive_feedback", 0)
-        negative_feedback = values.get("negative_feedback", 0)
+        positive_feedback = values.get("positive_feedback", 0) or 0
+        negative_feedback = values.get("negative_feedback", 0) or 0
         expected_total_impressions = positive_feedback + negative_feedback
         if total_impressions < expected_total_impressions:
             raise ValueError(
                 f"total_impressions should be equal to the sum of positive and negative feedbacks "
                 f"(Expected: {expected_total_impressions}, Got: {total_impressions})"
             )
+
         return total_impressions
 
 
@@ -40,6 +41,9 @@ class UpdateHelpRequest(CreateHelpRequest):
     auto_translation: bool = None
     modified_on: pydantic_datetime = None
     is_active: bool = True
+    modifying_total_impressions: int = None
+    modifying_positive_feedback: int = None
+    modifying_negative_feedback: int = None
 
 
 class GetHelpRequest(CreateHelpRequest):
