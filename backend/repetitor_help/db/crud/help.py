@@ -50,14 +50,15 @@ async def create(**kwargs: CreateHelpRequest) -> UUID | str:
     except ForeignKeyViolationError as e:
         return str(e)  # якщо  невірні зовнішні ключі передані
 
-    if result._was_created:  # якщо запис щойно був створений
-        return result["id"]
-    else:  # якщо запис вже існував
-        return (
-            f"an object with such parameters already exists id={result.id}  "
-            f"is_active={result.is_active} "
-        )
-    # return result["id"]
+    # 20.08 погодив не робити розділення, завжди повертати UUID запису
+    # if result._was_created:  # якщо запис щойно був створений
+    #     return result["id"]
+    # else:  # якщо запис вже існував
+    #     return (
+    #         f"an object with such parameters already exists id={result.id}  "
+    #         f"is_active={result.is_active} "
+    #     )
+    return result["id"]
 
 
 async def get(**get_param: GetHelpRequest) -> list[tables.Help]:

@@ -28,7 +28,7 @@ class Context(Table, tablename="context"):
     )
 
 
-ID = "2023-08-16T20:57:12:446826"
+ID = "2023-08-21T21:07:31:752546"
 VERSION = "0.111.1"
 DESCRIPTION = ""
 
@@ -106,6 +106,27 @@ async def forwards():
     manager.add_column(
         table_class_name="Help",
         tablename="help",
+        column_name="front_name",
+        db_column_name="front_name",
+        column_class_name="Varchar",
+        column_class=Varchar,
+        params={
+            "length": 255,
+            "default": "",
+            "null": False,
+            "primary_key": False,
+            "unique": False,
+            "index": False,
+            "index_method": IndexMethod.btree,
+            "choices": None,
+            "db_column_name": None,
+            "secret": False,
+        },
+    )
+
+    manager.add_column(
+        table_class_name="Help",
+        tablename="help",
         column_name="state",
         db_column_name="state",
         column_class_name="Varchar",
@@ -113,7 +134,7 @@ async def forwards():
         params={
             "length": 255,
             "default": "",
-            "null": True,
+            "null": False,
             "primary_key": False,
             "unique": False,
             "index": False,

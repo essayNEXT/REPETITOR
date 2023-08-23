@@ -24,7 +24,8 @@ class Help(Table):
     language = ForeignKey(
         references=Context, on_delete=OnDelete.restrict, on_update=OnUpdate.cascade
     )
-    state = Varchar(null=True)
+    front_name = Varchar(null=False)
+    state = Varchar(null=False)
     total_impressions = Integer(default=0)
     positive_feedback = Integer(default=0)
     negative_feedback = Integer(default=0)
