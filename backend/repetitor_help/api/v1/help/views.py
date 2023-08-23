@@ -159,9 +159,9 @@ async def get_help(
     language: UUID = None,
     is_active: bool = True,
     modified_on: pydantic_datetime = None,
-    positive_feedback: int | None = 0,
-    negative_feedback: int | None = 0,
-    total_impressions: int | None = 0,
+    positive_feedback: int | None = None,
+    negative_feedback: int | None = None,
+    total_impressions: int | None = None,
     language__name_short: Annotated[str, Query(min_length=2, max_length=10)] = None,
 ) -> list:
     """
@@ -240,7 +240,7 @@ async def get_help(
             auto_translation=True,
         )
         results = await help.create(**new_help.dict())
-
+        results = [results]
     # тепер якщо переклад хелпа здайдено в БД
     elif len(helps) == 1:
         results = helps
