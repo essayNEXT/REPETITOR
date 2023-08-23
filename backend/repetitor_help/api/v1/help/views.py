@@ -150,47 +150,50 @@ async def get_help1(
     response_model_exclude={"is_active"},
 )
 async def get_help(
-    front_name: Annotated[str, Query(min_length=2, max_length=255)],
-    customer_tg_id: UUID | int,
-    state: Annotated[str, Query(min_length=2, max_length=255)],
+    front_name: Annotated[str | None, Query(min_length=2, max_length=255)] = None,
+    customer_tg_id: UUID | int | None = None,
+    state: Annotated[str | None, Query(min_length=2, max_length=255)] = None,
     auto_translation: bool | None = None,
     id: UUID | None = None,
     text: Annotated[str | None, Query(min_length=2, max_length=255)] = None,
-    language: UUID = None,
-    is_active: bool = True,
-    modified_on: pydantic_datetime = None,
+    language: UUID | None = None,
+    is_active: bool | None = None,
+    modified_on: pydantic_datetime | None = None,
     positive_feedback: int | None = None,
     negative_feedback: int | None = None,
     total_impressions: int | None = None,
-    language__name_short: Annotated[str, Query(min_length=2, max_length=10)] = None,
+    language__name_short: Annotated[
+        str | None, Query(min_length=2, max_length=10)
+    ] = None,
 ) -> list:
     """
 
     This method `get_help` retrieves help information based on the provided parameters.
 
     Parameters:
-    - `front_name` (str, Query): The front name of the help.
-    - `customer_tg_id` (UUID|int): The customer's Telegram ID or UUID.
-    - `state` (str, Query): The state of the help.
+    - `front_name` (str|None): The front name of the help.
+    - `customer_tg_id` (UUID|int|None): The customer's Telegram ID or UUID.
+    - `state` (str|None): The state of the help.
     - `auto_translation` (bool|None): Flag for auto translation.
     - `id` (UUID|None): The ID of the help.
-    - `text` (str|None, Query): The text of the help.
-    - `language` (UUID): The language of the help.
-    - `is_active` (bool): Flag indicating if the help is active.
-    - `modified_on` (pydantic_datetime): The modified timestamp of the help.
+    - `text` (str|None): The text of the help.
+    - `language` (UUID|None): The language of the help.
+    - `is_active` (bool|None): Flag indicating if the help is active.
+    - `modified_on` (pydantic_datetime|None): The modified timestamp of the help.
     - `positive_feedback` (int|None): The positive feedback count of the help.
     - `negative_feedback` (int|None): The negative feedback count of the help.
     - `total_impressions` (int|None): The total impressions count of the help.
-    - `language__name_short` (str, Query): The short name of the language.
+    - `language__name_short` (str|None): The short name of the language.
 
     Returns:
     - list[tables.Help]: The list of help responses based on the provided parameters.
 
     """
-    customer_info = await get_customer(customer_id=customer_tg_id)
-    language__name_short = (
-        customer_info[0].native_language or customer_info[0].tlg_language or "en"
-    )
+    if customer_tg_id:
+        customer_info = await get_customer(customer_id=customer_tg_id)
+        language__name_short = (
+            customer_info[0].native_language or customer_info[0].tlg_language or "en"
+        )
 
     get_param_help = GetHelpRequest(
         id=id,
@@ -198,7 +201,7 @@ async def get_help(
         language=language,
         front_name=front_name,
         state=state,
-        is_active=is_active,
+        is_active=is_active or True,
         auto_translation=auto_translation,
         modified_on=modified_on,
         total_impressions=total_impressions,
@@ -264,18 +267,16 @@ async def update_help(id: UUID, update_param_help: UpdateHelpRequest) -> UUID | 
 
     Parameters:
     - `id` (UUID): The ID of the help, required
-    - `front_name` (str): The front name of the help.
-    - `customer_tg_id` (UUID|int): The customer's Telegram ID or UUID.
-    - `state` (str): The state of the help.
+    - `front_name` (str|None): The front name of the help.
+    - `state` (str|None): The state of the help.
     - `auto_translation` (bool|None): Flag for auto translation.
     - `text` (str|None): The text of the help.
-    - `language` (UUID): The language of the help.
-    - `is_active` (bool): Flag indicating if the help is active.
-    - `modified_on` (pydantic_datetime): The modified timestamp of the help.
+    - `language` (UUID|None): The language of the help.
+    - `is_active` (bool|None): Flag indicating if the help is active.
+    - `modified_on` (pydantic_datetime|None): The modified timestamp of the help.
     - `positive_feedback` (int|None): The positive feedback count of the help.
     - `negative_feedback` (int|None): The negative feedback count of the help.
     - `total_impressions` (int|None): The total impressions count of the help.
-    - `language__name_short` (str): The short name of the language.
     -  advanced options:
         - `modifying_positive_feedback` (int|None): You can add / subtract values to the positive feedback count.
         - `modifying_negative_feedback` (int|None): You can add / subtract values to the negative feedback count.

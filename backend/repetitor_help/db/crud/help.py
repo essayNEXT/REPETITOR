@@ -65,19 +65,19 @@ async def get(**get_param: GetHelpRequest) -> list[tables.Help]:
     This method `get_help` retrieves help information based on the provided parameters.
 
     Parameters:
-    - `front_name` (str, Query): The front name of the help.
+    - `front_name` (str|None): The front name of the help.
     - `customer_tg_id` (UUID|int): The customer's Telegram ID or UUID.
-    - `state` (str, Query): The state of the help.
+    - `state` (str|None): The state of the help.
     - `auto_translation` (bool|None): Flag for auto translation.
     - `id` (UUID|None): The ID of the help.
-    - `text` (str|None, Query): The text of the help.
-    - `language` (UUID): The language of the help.
-    - `is_active` (bool): Flag indicating if the help is active.
+    - `text` (str|None): The text of the help.
+    - `language` (UUID|None): The language of the help.
+    - `is_active` (bool|None): Flag indicating if the help is active.
     - `modified_on` (pydantic_datetime): The modified timestamp of the help.
     - `positive_feedback` (int|None): The positive feedback count of the help.
     - `negative_feedback` (int|None): The negative feedback count of the help.
     - `total_impressions` (int|None): The total impressions count of the help.
-    - `language__name_short` (str, Query): The short name of the language.
+    - `language__name_short` (str|None): The short name of the language.
 
     Returns:
     - list[tables.Help]: The list of help responses based on the provided parameters.
@@ -107,18 +107,16 @@ async def update(id: UUID, **update_param: UpdateHelpRequest) -> UUID | None:
 
     Parameters:
     - `id` (UUID): The ID of the help, required
-    - `front_name` (str): The front name of the help.
-    - `customer_tg_id` (UUID|int): The customer's Telegram ID or UUID.
-    - `state` (str): The state of the help.
+    - `front_name` (str|None): The front name of the help.
+    - `state` (str|None): The state of the help.
     - `auto_translation` (bool|None): Flag for auto translation.
     - `text` (str|None): The text of the help.
-    - `language` (UUID): The language of the help.
-    - `is_active` (bool): Flag indicating if the help is active.
-    - `modified_on` (pydantic_datetime): The modified timestamp of the help.
+    - `language` (UUID|None): The language of the help.
+    - `is_active` (bool|None): Flag indicating if the help is active.
+    - `modified_on` (pydantic_datetime|None): The modified timestamp of the help.
     - `positive_feedback` (int|None): The positive feedback count of the help.
     - `negative_feedback` (int|None): The negative feedback count of the help.
     - `total_impressions` (int|None): The total impressions count of the help.
-    - `language__name_short` (str): The short name of the language.
     -  advanced options:
         - `modifying_positive_feedback` (int|None): You can add / subtract values to the positive feedback count.
         - `modifying_negative_feedback` (int|None): You can add / subtract values to the negative feedback count.
@@ -133,9 +131,9 @@ async def update(id: UUID, **update_param: UpdateHelpRequest) -> UUID | None:
             f"parameter 'id' for function update help must be UUID-type, but got {type(id)}"
         )
     filtered_param = {k: v for k, v in update_param.items() if v is not None}
-    # special_filtered_paramhttps://piccolo-orm.readthedocs.io/en/latest/piccolo/query_types/update.html#integer-columns
-    # # Add 100 to the popularity of each band:
-    # await Band.update({ Band.popularity: Band.popularity + 100 },)
+    # https://piccolo-orm.readthedocs.io/en/latest/piccolo/query_types/update.html#integer-columns
+    # # Add 100 to the total_impressions of each help:
+    # await Help.update({ Help.total_impressions: Help.total_impressions + 100 },)
     keys_to_be_deleted = [
         k for k, v in filtered_param.items() if k.startswith("modifying_")
     ]  # шукаємо усі 'modifying_'ключі, щоб потім по них пройтися

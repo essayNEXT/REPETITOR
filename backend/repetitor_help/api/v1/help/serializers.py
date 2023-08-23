@@ -61,6 +61,12 @@ class GetHelpRequest(CreateHelpRequest):
     modified_on: pydantic_datetime | None
     language__name_short: Annotated[str | None, Query(min_length=2, max_length=10)]
 
+    def __init__(self, **data):
+        super().__init__(**data)
+
+        if all(v is None for v in self.dict().values()):
+            self.language__name_short = "en"
+
 
 class GetHelpResponse(BaseModel):
     id: UUID
