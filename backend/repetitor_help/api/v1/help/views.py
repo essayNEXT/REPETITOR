@@ -83,7 +83,7 @@ async def create_help(
 
     """
     result = await help.create(**new_help.dict())
-    return result["id"]
+    return result if isinstance(result, str) else result["id"]
 
 
 # стандартний гет
