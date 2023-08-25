@@ -2,6 +2,7 @@ from ..inline_keyboard import KeyboardOfDict, ContextInlineKeyboardGenerator
 
 # from ..keyboard_translate.kb_translate import translate_context
 from utils.db.customer import get_user
+from utils.help import HelpConstructor
 
 
 class RegisterKeyboard(ContextInlineKeyboardGenerator):
@@ -55,7 +56,7 @@ class RegisterKeyboard(ContextInlineKeyboardGenerator):
         return None
 
 
-class ConfirmKeyboard(ContextInlineKeyboardGenerator):
+class ConfirmKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     """Клавіатура погодження даних від користувача"""
 
     @property
@@ -111,6 +112,18 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
     @property
     def bottom_buttons(self) -> KeyboardOfDict | None:
         return None
+
+    @property
+    def help_messages(self):
+        help_messages = [
+            {
+                "state_name": "StepsForm:CONFIRM_DATA",
+                "language_code": "en",
+                "help_text": "Press 'Continue' if you do not want to change the data displayed in the message. Press "
+                "'Change data ' if you want to change the data.",
+            }
+        ]
+        return help_messages
 
     async def __user_data(self):
         user_data = await get_user(self.user_id)
