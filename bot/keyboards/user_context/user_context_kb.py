@@ -94,13 +94,17 @@ class ChooseContextKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
         ]
         return bottom_buttons
 
-    @property
-    def help_messages(self):
+    @staticmethod
+    def help_messages() -> list[dict]:
         help_message = [
             {
                 "state_name": "CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT",
                 "language_code": "en",
-                "help_text": "You need to press the 'BASE' button and select your primary language. Use the '⬆️/⬇️' and '⬇⏫️/⏬️' buttons to scroll, the '⬆️/⬇️' button scrolls one page at a time, the '⏬️' button scrolls to the last page, the '⏫️' button scrolls to the first page. Then press the 'TARGET' button and select the language you are learning. After selecting the languages, press the 'APPROVE' button.",
+                "help_text": "You need to press the 'BASE' button and select your primary language. Use the '⬆️/⬇️' "
+                "and '⬇⏫️/⏬️' buttons to scroll, the '⬆️/⬇️' button scrolls one page at a time, the '⏬️' "
+                "button scrolls to the last page, the '⏫️' button scrolls to the first page. Then press "
+                "the 'TARGET' button and select the language you are learning. After selecting the "
+                "languages, press the 'APPROVE' button.",
             }
         ]
         return help_message

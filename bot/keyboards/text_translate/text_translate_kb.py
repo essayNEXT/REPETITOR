@@ -77,8 +77,8 @@ class TextTranslateKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     def bottom_buttons(self) -> KeyboardOfDict | None:
         return None
 
-    @property
-    def help_messages(self):
+    @staticmethod
+    def help_messages() -> list[dict]:
         help_messages = [
             {
                 "state_name": "TranslationForm:ADD_USER_TRANSLATION",

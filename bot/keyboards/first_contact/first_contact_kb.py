@@ -113,8 +113,8 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     def bottom_buttons(self) -> KeyboardOfDict | None:
         return None
 
-    @property
-    def help_messages(self):
+    @staticmethod
+    def help_messages() -> list[dict]:
         help_messages = [
             {
                 "state_name": "StepsForm:CONFIRM_DATA",
@@ -142,7 +142,7 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
         return self.messages["confirm_kb_continue"]
 
 
-class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):
+class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     """Клавіатура зміни даних про користувача"""
 
     @property
@@ -213,3 +213,14 @@ class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):
     @property
     def bottom_buttons(self) -> KeyboardOfDict | None:
         return None
+
+    @staticmethod
+    def help_messages() -> list[dict]:
+        help_messages = [
+            {
+                "state_name": "StepsForm:CHANGE_DATA",
+                "language_code": "en",
+                "help_text": "Press into one of parameters 'name', 'surname', 'language' or 'email' you want to change",
+            }
+        ]
+        return help_messages
