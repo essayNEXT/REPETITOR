@@ -3,6 +3,7 @@ from aiogram import Dispatcher, Router
 from ..inline_keyboard import KeyboardOfDict, ContextInlineKeyboardGenerator
 
 from asyncinit import asyncinit
+import aiohttp
 
 
 class HelpProblemKeyboard(ContextInlineKeyboardGenerator):
@@ -65,9 +66,9 @@ class HelpProblemKeyboard(ContextInlineKeyboardGenerator):
             ],
             [
                 {
-                    "callback_data": "help_problem_4",
-                    "text": "Problem #4",
-                    "message": "Problem #4",
+                    "callback_data": "help_problem_5",
+                    "text": "Problem #5",
+                    "message": "Problem #5",
                 },
             ],
             [
@@ -106,6 +107,8 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
         # Отримуємо дані з сервера на основі поточного стану
         if self.user_state is None:
             self.user_state = "No_Telegram_state"
+
+        # self.data_from_backend = await self.__get_help_message()
         self.data_from_backend = [
             {
                 "state_name": "No_Telegram_state",
@@ -115,7 +118,7 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
         ]
 
         # Створюємо наступний рівень вкладеної клавіатури через змінну екземпляр клавіатури HelpProblemKeyboard
-        self.problem_kb = HelpProblemKeyboard(user_language, user_id, dp)
+        self.problem_kb = await HelpProblemKeyboard(user_language, user_id, dp)
 
         await super().__init__(user_language, user_id, dp)
 
@@ -149,15 +152,22 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
             [
                 {
                     "callback_data": "help_ok",
-                    "text": "Ok",
-                    "message": "Ok",
+                    "text": "Thanks 👌",
+                    "message": "Thanks",
                 },
                 {
                     "callback_data": "help_report_problem",
-                    "text": "Report about problem",
+                    "text": "Report about problem 😡",
                     "message": "Report about problem",
                 },
-            ]
+            ],
+            [
+                {
+                    "callback_data": "help_remove",
+                    "text": "Remove help 🗑",
+                    "message": "Report about problem",
+                },
+            ],
         ]
         return top_buttons
 
@@ -175,3 +185,17 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
     @property
     def problem_report_text(self):
         return self.problem_kb.text
+
+    async def __get_help_message(self) -> list | None:
+        async with aiohttp.ClientSession() as session:
+            params = {"state_name": self.user_state}
+            async with session.get(self.HELP_URL, params=params) as response:
+                help_from_db = await response.json()
+                return help_from_db
+
+    async def __patch_help_message(self, data_for_patch: dict) -> list | None:
+        async with aiohttp.ClientSession() as session:
+            data = data_for_patch
+            async with session.patch(self.HELP_URL, data=data) as response:
+                help_from_db = await response.json()
+                return help_from_db
