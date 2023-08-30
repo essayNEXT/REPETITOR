@@ -12,7 +12,7 @@ class HelpConstructor(ABC):
         pass
 
 
-class HelpMessage(TypedDict):
+class HelpMessageDict(TypedDict):
     state_name: str
     language_code: str
     help_text: str
@@ -35,10 +35,12 @@ class HelpPublisher:
         for kb_class in kb_classes:
             self.help_messages_to_db += kb_class.help_messages()
 
-        # for help_message in self.help_messages_to_db:
-        #     result = await self.__get_help_message(help_message)
-        #     if result is None:
-        #         await self.__post_help_message(help_message)
+        for help_message in self.help_messages_to_db:
+            if self.help_message_validator(help_message):
+                print(f"Help for {help_message['state_name']} is correct!")
+                # result = await self.__get_help_message(help_message)
+                # if result is None:
+                #     await self.__post_help_message(help_message)
         print(self.help_messages_to_db)
 
     async def __get_help_message(self, help_message) -> list | None:
@@ -56,11 +58,12 @@ class HelpPublisher:
                 return help_from_db
 
     @staticmethod
-    def help_message_validator(help_message: dict):
+    def help_message_validator(help_message_dict: dict):
         """Функція повинна перевіряти структуру та правильність заповнення параметра help_messages"""
-        ta = TypeAdapter(HelpMessage)
+        ta = TypeAdapter(HelpMessageDict)
         try:
-            ta.validate_python(help_message)
+            ta.validate_python(help_message_dict)
             return True
         except ValidationError as err:
+            print(f"{err} - Wrong structure of help!")
             return False
