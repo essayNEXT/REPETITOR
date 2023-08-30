@@ -61,6 +61,6 @@ class HelpPublisher:
         ta = TypeAdapter(HelpMessage)
         try:
             ta.validate_python(help_message)
-            return help_message
+            return True
         except ValidationError as err:
-            return "Error"
+            return False
