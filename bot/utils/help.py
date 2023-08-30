@@ -1,5 +1,7 @@
 from abc import abstractmethod, ABC
 from asyncinit import asyncinit
+from typing_extensions import TypedDict
+from pydantic import TypeAdapter, ValidationError
 import aiohttp
 
 
@@ -8,6 +10,12 @@ class HelpConstructor(ABC):
     @abstractmethod
     def help_messages() -> list[dict]:
         pass
+
+
+class HelpMessage(TypedDict):
+    state_name: str
+    language_code: str
+    help_text: str
 
 
 @asyncinit
@@ -50,5 +58,9 @@ class HelpPublisher:
     @staticmethod
     def help_message_validator(help_message: dict):
         """Функція повинна перевіряти структуру та правильність заповнення параметра help_messages"""
-        #  тут має бути код, що перевіряє правильність внесених даних
-        return help_message
+        ta = TypeAdapter(HelpMessage)
+        try:
+            ta.validate_python(help_message)
+            return help_message
+        except ValidationError as err:
+            return "Error"
