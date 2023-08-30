@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from pydantic import ValidationError
@@ -20,6 +22,7 @@ async def lifespan(app: FastAPI):
     print("The End Session")
 
 
+
 def create_app(settings) -> FastAPI:
     """Create fastAPI app."""
     app = FastAPI(
@@ -40,5 +43,14 @@ def create_app(settings) -> FastAPI:
     app.add_exception_handler(ValidationError, http422_error_handler)
     return app
 
+
+file_log = logging.FileHandler("repetitor_backend/log/FASTAPI.log")
+console_out = logging.StreamHandler()
+logging.basicConfig(
+    handlers=(file_log, console_out),
+    level=logging.INFO,
+    datefmt="%d.%m.%Y %H:%M:%S",
+    format="[%(asctime)s loglevel=%(levelname)-6s]:  %(message)s ||| call_trace=%(pathname)s L%(lineno)-4d ",
+)
 
 app = create_app(app_settings)

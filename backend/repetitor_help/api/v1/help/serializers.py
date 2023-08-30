@@ -1,7 +1,7 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import Query
+from fastapi import Query, HTTPException
 from pydantic import BaseModel, validator
 from pydantic.validators import datetime as pydantic_datetime
 
@@ -23,8 +23,9 @@ class CreateHelpRequest(BaseModel):
         total_impressions_2 = total_impressions or 0
         expected_total_impressions = positive_feedback + negative_feedback
         if total_impressions_2 < expected_total_impressions:
-            raise ValueError(
-                f"total_impressions should be equal to the sum of positive and negative feedbacks "
+            raise HTTPException(
+                status_code=404,
+                detail=f"total_impressions should be equal to the sum of positive and negative feedbacks "
                 f"(Expected: {expected_total_impressions}, Got: {total_impressions})"
             )
 

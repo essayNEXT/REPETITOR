@@ -2,7 +2,7 @@ from uuid import UUID
 from typing import Optional, List, Annotated
 
 from asyncpg import ForeignKeyViolationError
-from fastapi import Query
+from fastapi import Query, HTTPException
 
 from repetitor_backend import tables
 from repetitor_backend.api.v1.item.serializers import UpdateItemRequest
@@ -27,7 +27,10 @@ async def create(text: str, **kwargs) -> UUID | str:
             f"paremeter 'text' for context_type must be only str-type, but type(text)={type(text)} "
         )
     elif not len(text) <= 20:
-        raise ValueError(f"len(text) must be <= 20, but got len(text)={len(text)}")
+        raise HTTPException(
+            status_code=404,
+            detail=f"len(text) must be <= 20, but got len(text)={len(text)}",
+        )
     kwargs["text"] = text
     check_exists = await get(**kwargs)
     if check_exists:  # якщо існує  такий запис

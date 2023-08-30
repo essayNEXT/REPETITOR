@@ -2,7 +2,7 @@ import logging
 
 from typing import List, Annotated
 from uuid import UUID
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Response, status, HTTPException
 from pydantic.validators import datetime as pydantic_datetime
 
 from repetitor_backend.api.v1.context.views import get_context
@@ -60,9 +60,7 @@ async def helps_less_max_impressions(
 
 
 @router.post("/help/")
-async def create_help(
-    new_help: CreateHelpRequest,
-) -> UUID | str:
+async def create_help(new_help: CreateHelpRequest, response: Response) -> UUID | str:
     """
     Creates a new help entry in the database.
 
@@ -83,7 +81,16 @@ async def create_help(
 
     """
     result = await help.create(**new_help.dict())
-    return result if isinstance(result, str) else result["id"]
+
+    if isinstance(result, str):
+        response.status_code = status.HTTP_404_NOT_FOUND
+    else:
+        if result._was_created:
+            response.status_code = status.HTTP_201_CREATED
+        else:
+            response.status_code = status.HTTP_200_OK
+        result = result["id"]
+    return result
 
 
 # стандартний гет
@@ -148,6 +155,7 @@ async def get_help1(
     response_model=List[GetHelpResponse],
     response_model_exclude_none=True,
     response_model_exclude={"is_active"},
+    status_code=status.HTTP_200_OK,
 )
 async def get_help(
     front_name: Annotated[str | None, Query(min_length=2, max_length=255)] = None,
@@ -216,8 +224,12 @@ async def get_help(
 
         base_help = await help.get(**get_param_help.dict())
         if not base_help:
-            raise ValueError(
+            logging.error(
                 f"there is no help for such parameters {get_param_help.dict()}"
+            )
+            raise HTTPException(
+                status_code=404,
+                detail=f"there is no help for such parameters {get_param_help.dict()}",
             )
         base_help_text = base_help[0].text
         result_translate = await translate(
@@ -226,8 +238,14 @@ async def get_help(
 
         if len(result_translate) < 2:
             # Якщо перекладу не дали.
-            raise ValueError(
-                "У рамках поточного контексту не можемо знайти переклад.Пропонуємо надати свій варіант, якщо він є"
+            logging.error(
+                f"У рамках поточного контексту не можемо знайти переклад. "
+                f'source_lng="en", target_lng={language__name_short}, text={base_help_text}'
+            )
+            raise HTTPException(
+                status_code=404,
+                detail="У рамках поточного контексту не можемо знайти переклад."
+                "Пропонуємо надати свій варіант, якщо він є",
             )
 
         # створення перекладеного запису в БД
