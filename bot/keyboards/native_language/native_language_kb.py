@@ -91,7 +91,7 @@ class ChooseNativeLanguageKeyboard(ContextInlineKeyboardGenerator, HelpConstruct
     def help_messages() -> list[dict]:
         help_message = [
             {
-                "state_name": "CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT",
+                "state_name": "RegistrationForm.NATIVE_LANGUAGE_SELECTING",
                 "language_code": "en",
                 "help_text": "Use the '⬆️/⬇️' and '⬇⏫️/⏬️' buttons to scroll, the '⬆️/⬇️' button scrolls one page at "
                 "a time, the '⏬️' button scrolls to the last page, the '⏫️' button scrolls to the first "

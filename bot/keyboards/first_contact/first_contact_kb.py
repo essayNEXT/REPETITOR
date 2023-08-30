@@ -117,7 +117,7 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     def help_messages() -> list[dict]:
         help_messages = [
             {
-                "state_name": "StepsForm:CONFIRM_DATA",
+                "state_name": "RegistrationForm:CONFIRM_DATA",
                 "language_code": "en",
                 "help_text": "Press 'Continue' if you do not want to change the data displayed in the message. Press "
                 "'Change data ' if you want to change the data.",
@@ -218,7 +218,7 @@ class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     def help_messages() -> list[dict]:
         help_messages = [
             {
-                "state_name": "StepsForm:CHANGE_DATA",
+                "state_name": "RegistrationForm:CHANGE_DATA",
                 "language_code": "en",
                 "help_text": "Press into one of parameters 'name', 'surname', 'language' or 'email' you want to change",
             }

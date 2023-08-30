@@ -25,7 +25,6 @@ class TextTranslateKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
         self.data_from_backend = await get_translate_text(text_for_translate, user_id)
 
         await super().__init__(user_language, user_id, dp)
-        await HelpConstructor.__init__(self)
 
     @property
     def initial_text(self) -> str:
