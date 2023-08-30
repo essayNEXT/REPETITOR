@@ -22,7 +22,6 @@ async def lifespan(app: FastAPI):
     print("The End Session")
 
 
-
 def create_app(settings) -> FastAPI:
     """Create fastAPI app."""
     app = FastAPI(

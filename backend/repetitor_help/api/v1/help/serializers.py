@@ -26,7 +26,7 @@ class CreateHelpRequest(BaseModel):
             raise HTTPException(
                 status_code=404,
                 detail=f"total_impressions should be equal to the sum of positive and negative feedbacks "
-                f"(Expected: {expected_total_impressions}, Got: {total_impressions})"
+                f"(Expected: {expected_total_impressions}, Got: {total_impressions})",
             )
 
         return total_impressions
