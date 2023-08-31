@@ -43,13 +43,13 @@ def create_app(settings) -> FastAPI:
     return app
 
 
-file_log = logging.FileHandler("repetitor_backend/log/FASTAPI.log")
-console_out = logging.StreamHandler()
-logging.basicConfig(
-    handlers=(file_log, console_out),
-    level=logging.INFO,
-    datefmt="%d.%m.%Y %H:%M:%S",
-    format="[%(asctime)s loglevel=%(levelname)-6s]:  %(message)s ||| call_trace=%(pathname)s L%(lineno)-4d ",
-)
+# file_log = logging.FileHandler("log/FASTAPI.log")
+# console_out = logging.StreamHandler()
+# logging.basicConfig(
+#     handlers=(file_log, console_out),
+#     level=logging.INFO,
+#     datefmt="%d.%m.%Y %H:%M:%S",
+#     format="[%(asctime)s loglevel=%(levelname)-6s]:  %(message)s ||| call_trace=%(pathname)s L%(lineno)-4d ",
+# )
 
 app = create_app(app_settings)
