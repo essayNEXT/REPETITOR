@@ -173,6 +173,7 @@ async def get_help(
     language__name_short: Annotated[
         str | None, Query(min_length=2, max_length=10)
     ] = None,
+    is_show_all_list: bool | None = False,
 ) -> list:
     """
 
@@ -192,6 +193,7 @@ async def get_help(
     - `negative_feedback` (int|None): The negative feedback count of the help.
     - `total_impressions` (int|None): The total impressions count of the help.
     - `language__name_short` (str|None): The short name of the language.
+    - `is_show_all_list` (bool|None): Flag for show all list in the final result or not. default False.
 
     Returns:
     - list[tables.Help]: The list of help responses based on the provided parameters.
@@ -228,7 +230,7 @@ async def get_help(
                 f"there is no help for such parameters {get_param_help.dict()}"
             )
             raise HTTPException(
-                status_code=404,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"there is no help for such parameters {get_param_help.dict()}",
             )
         base_help_text = base_help[0].text
@@ -241,11 +243,12 @@ async def get_help(
             logging.error(
                 f"У рамках поточного контексту не можемо знайти переклад. "
                 f'source_lng="en", target_lng={language__name_short}, text={base_help_text}'
+                f" Деталі: {result_translate}"
             )
             raise HTTPException(
-                status_code=404,
-                detail="У рамках поточного контексту не можемо знайти переклад."
-                "Пропонуємо надати свій варіант, якщо він є",
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"У рамках поточного контексту не можемо знайти переклад."
+                f"Пропонуємо надати свій варіант, якщо він є. Деталі: {result_translate}",
             )
 
         # створення перекладеного запису в БД
@@ -268,8 +271,11 @@ async def get_help(
 
     else:  # хз, тут  helps_less_max_impressions
         helps_sorted = sorted(helps, key=lambda h: h.total_impressions)
-        helps_after_preprocess = await helps_less_max_impressions(helps_sorted)
-        results = [helps_after_preprocess]
+        if is_show_all_list:
+            results = helps_sorted
+        else:
+            helps_after_preprocessing = await helps_less_max_impressions(helps_sorted)
+            results = [helps_after_preprocessing]
 
     # фінальна обробка результату
     fin_result = [

@@ -1,4 +1,4 @@
-import logging
+# import logging
 
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
@@ -43,7 +43,7 @@ def create_app(settings) -> FastAPI:
     return app
 
 
-# file_log = logging.FileHandler("log/FASTAPI.log")
+# file_log = logging.FileHandler("repetitor_backend/log/FASTAPI.log")
 # console_out = logging.StreamHandler()
 # logging.basicConfig(
 #     handlers=(file_log, console_out),
