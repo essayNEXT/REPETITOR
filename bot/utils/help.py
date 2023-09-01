@@ -6,18 +6,18 @@ import aiohttp
 from .db.context import get_context_by_short_name
 
 
-class HelpConstructor(ABC):
-    @staticmethod
-    @abstractmethod
-    def help_messages() -> list[dict]:
-        pass
-
-
 class HelpMessageDict(TypedDict):
     front_name: str
     state: str
     text: str
     language_short_name: str
+
+
+class HelpConstructor(ABC):
+    @staticmethod
+    @abstractmethod
+    def help_messages() -> list[HelpMessageDict]:
+        pass
 
 
 @asyncinit
