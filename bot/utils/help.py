@@ -3,6 +3,7 @@ from asyncinit import asyncinit
 from typing_extensions import TypedDict
 from pydantic import TypeAdapter, ValidationError
 import aiohttp
+from .db.context import get_context_by_short_name
 
 
 class HelpConstructor(ABC):
@@ -13,9 +14,10 @@ class HelpConstructor(ABC):
 
 
 class HelpMessageDict(TypedDict):
-    state_name: str
-    language_code: str
-    help_text: str
+    front_name: str
+    state: str
+    text: str
+    language_short_name: str
 
 
 @asyncinit
@@ -25,9 +27,10 @@ class HelpPublisher:
     async def __init__(self, kb_classes: list):
         self.help_messages_to_db = [
             {
-                "state_name": "No_Telegram_state",
-                "language_code": "en",
-                "help_text": "Do anything you want now. Here some of commands and possibilities: ...",
+                "front_name": "Telegram",
+                "state": "NoTelegramState",
+                "language_short_name": "en",
+                "text": "You can enter any words according your language contexts for translation.",
             }
         ]
 
@@ -35,20 +38,27 @@ class HelpPublisher:
         for kb_class in kb_classes:
             self.help_messages_to_db += kb_class.help_messages()
 
+        # Отримуємо з БД UUID для мови за коротким ім'ям
+        en_language = await get_context_by_short_name("en")
+        self.languages_uuid = {"en": en_language[0]["id"]}
+
         for help_message in self.help_messages_to_db:
             if self.help_message_validator(help_message):
-                print(f"Help for {help_message['state_name']} is correct!")
-                # result = await self.__get_help_message(help_message)
-                # if result is None:
+                print(f"HELP_VALIDATOR: Help for {help_message['state']} is correct!")
+                # request_status = await self.__get_help_message_status(help_message)
+                # if request_status == "404":
+                #     if help_message["language_short_name"] not in self.languages_uuid.keys():
+                #         any_language = await get_context_by_short_name(help_message["language_short_name"])
+                #         self.languages_uuid = {"en": any_language[0]["id"]}
+                #     help_message["language"] = self.languages_uuid[help_message["language_short_name"]]
                 #     await self.__post_help_message(help_message)
         print(self.help_messages_to_db)
 
-    async def __get_help_message(self, help_message) -> list | None:
+    async def __get_help_message_status(self, help_message) -> int:
         async with aiohttp.ClientSession() as session:
             params = help_message
             async with session.get(self.HELP_URL, params=params) as response:
-                help_from_db = await response.json()
-                return help_from_db
+                return response.status
 
     async def __post_help_message(self, help_message) -> list | None:
         async with aiohttp.ClientSession() as session:

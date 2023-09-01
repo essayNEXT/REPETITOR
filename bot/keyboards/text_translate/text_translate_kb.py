@@ -80,14 +80,16 @@ class TextTranslateKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     def help_messages() -> list[dict]:
         help_messages = [
             {
-                "state_name": "TranslationForm:ADD_USER_TRANSLATION",
-                "language_code": "en",
-                "help_text": "Enter your translation to word please",
+                "front_name": "Telegram",
+                "state": "TranslationForm:ADD_USER_TRANSLATION",
+                "language_short_name": "en",
+                "text": "Enter your translation to word please",
             },
             {
-                "state_name": "TranslationForm:GET_TRANSLATION",
-                "language_code": "en",
-                "help_text": "Add word to learn or add our translation",
+                "front_name": "Telegram",
+                "state": "TranslationForm:GET_TRANSLATION",
+                "language_short_name": "en",
+                "text": "Add word to learn or add our translation",
             },
         ]
         return help_messages
