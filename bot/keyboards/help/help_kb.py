@@ -106,25 +106,30 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
         self.user_state = user_state
         # Отримуємо дані з сервера на основі поточного стану
         if self.user_state is None:
-            self.user_state = "No_Telegram_state"
+            self.user_state = "NoTelegramState"
 
-        # self.data_from_backend = await self.__get_help_message()
+        # self.data_from_backend = await self.__get_help_message(user_state)
         self.data_from_backend = [
             {
-                "state_name": "No_Telegram_state",
-                "language_code": "en",
-                "help_text": "Do anything you want now. Here some of commands and possibilities: ...",
+                "id": 1234567890,
+                "state": "NoTelegramState",
+                "language__name_short": "en",
+                "text": "Do anything you want now. Here some of commands and possibilities: ...",
             }
         ]
 
         # Створюємо наступний рівень вкладеної клавіатури через змінну екземпляр клавіатури HelpProblemKeyboard
         self.problem_kb = await HelpProblemKeyboard(user_language, user_id, dp)
 
+        # Створюємо сигнальні параметри відправлення позитивного та негативного відгуків для уникнення повторень
+        self.positive_feedback = False
+        self.negative_feedback = False
+
         await super().__init__(user_language, user_id, dp)
 
     @property
     def initial_text(self) -> str:
-        initial_text = self.data_from_backend[0]["help_text"]
+        initial_text = self.data_from_backend[0]["text"]
         return initial_text
 
     @property
@@ -151,7 +156,7 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
         top_buttons = [
             [
                 {
-                    "callback_data": "help_ok",
+                    "callback_data": "help_thanks",
                     "text": "Thanks 👌",
                     "message": "Thanks",
                 },
@@ -188,7 +193,11 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
 
     async def __get_help_message(self) -> list | None:
         async with aiohttp.ClientSession() as session:
-            params = {"state_name": self.user_state}
+            params = {
+                "state": self.user_state,
+                "customer_tg_id": self.user_id,
+                "front_name": "Telegram",
+            }
             async with session.get(self.HELP_URL, params=params) as response:
                 help_from_db = await response.json()
                 return help_from_db
@@ -199,3 +208,27 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
             async with session.patch(self.HELP_URL, data=data) as response:
                 help_from_db = await response.json()
                 return help_from_db
+
+    async def send_positive_feedback(self):
+        if not self.positive_feedback:
+            # data_for_patch = {
+            #     "id": self.data_from_backend[0]["id"],
+            #     "positive_feedback": 1,
+            # }
+            # await self.__patch_help_message(data_for_patch)
+            self.positive_feedback = True
+
+    async def send_negative_feedback(self):
+        if not self.negative_feedback:
+            # data_for_patch = {
+            #     "id": self.data_from_backend[0]["id"],
+            #     "negative_feedback": 1,
+            # }
+            # await self.__patch_help_message(data_for_patch)
+            self.negative_feedback = True
+
+    async def send_problem_report(self, problem: str):
+        # TO DO в майбутньому має з'явитись можливість надсилати опис проблему
+        print(
+            f"HELP_PROBLEM_REPORT: user {self.user_id} for  help state [{self.user_state}] report '{problem}'"
+        )
