@@ -53,7 +53,7 @@ async def helps_less_max_impressions(
         )
         for element in results_sorted[:-1]:
             await delete_help(element.id)
-        fin_result = results_sorted[0]
+        fin_result = results_sorted[-1]
     else:
         fin_result = list_of_helps[0]
     return fin_result
@@ -91,62 +91,6 @@ async def create_help(new_help: CreateHelpRequest, response: Response) -> UUID |
             response.status_code = status.HTTP_200_OK
         result = result["id"]
     return result
-
-
-# стандартний гет
-@router.get(
-    "/help1/",
-    response_model=List[GetHelpResponse],
-    response_model_exclude_none=True,
-    response_model_exclude={"is_active"},
-)
-async def get_help1(
-    id: UUID | None = None,
-    text: Annotated[str | None, Query(min_length=2, max_length=255)] = None,
-    language: UUID = None,
-    state: Annotated[str | None, Query(min_length=2, max_length=255)] = None,
-    is_active: bool = True,
-    auto_translation: bool | None = True,
-    modified_on: pydantic_datetime = None,
-    positive_feedback: int | None = 0,
-    negative_feedback: int | None = 0,
-    total_impressions: int | None = 0,
-    language__name_short: Annotated[str, Query(min_length=2, max_length=10)] = None,
-) -> list:
-    """
-    Get a list of existing help according to match conditions:
-    Parameters:
-    - id: UUID of Help
-    - relation: UUID of item relation, used for ForeignKey links with Item Relation
-    - item: UUID of item, used for ForeignKey links with Item
-    - is_active: bool
-    - advanced options for filtering:
-        - item__author: author of item, used for ForeignKey links with Item
-        - item__context__name_short: the short name of the required items context, used for FK links with Item - str
-        - item__text: the text of the required items, used for ForeignKey links with Item - str type len(2..255)
-
-    Return:
-    - List that contains the results of the query, serialized to
-    the Help type
-    """
-    get_param_help = GetHelpRequest(
-        id=id,
-        text=text,
-        language=language,
-        state=state,
-        is_active=is_active,
-        auto_translation=auto_translation,
-        modified_on=modified_on,
-        total_impressions=total_impressions,
-        positive_feedback=positive_feedback,
-        negative_feedback=negative_feedback,
-        language__name_short=language__name_short,
-    )
-    results = await help.get(**get_param_help.dict())
-    fin_result = [
-        result.to_dict() for result in results if isinstance(result, tables.Help)
-    ]
-    return fin_result
 
 
 # гет згідно особливоо алгоритму
@@ -222,7 +166,8 @@ async def get_help(
     helps = await help.get(**get_param_help.dict())
 
     if not helps:
-        get_param_help.language__name_short = "en"
+        get_param_help.language__name_short = None
+        get_param_help.language = None
 
         base_help = await help.get(**get_param_help.dict())
         if not base_help:
@@ -233,37 +178,49 @@ async def get_help(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"there is no help for such parameters {get_param_help.dict()}",
             )
-        base_help_text = base_help[0].text
+        base_helps_sorted = sorted(
+            base_help, key=lambda h: h.total_impressions, reverse=True
+        )
+        base_help_sorted_0_text = base_helps_sorted[0].text
+        base_helps_sorted_0_language_name_short = base_helps_sorted[
+            0
+        ].language.name_short
         result_translate = await translate(
-            source_lng="en", target_lng=language__name_short, text=base_help_text
+            source_lng=base_helps_sorted_0_language_name_short,
+            target_lng=language__name_short,
+            text=base_help_sorted_0_text,
         )
 
         if len(result_translate) < 2:
             # Якщо перекладу не дали.
             logging.error(
                 f"У рамках поточного контексту не можемо знайти переклад. "
-                f'source_lng="en", target_lng={language__name_short}, text={base_help_text}'
+                f"source_lng={base_helps_sorted_0_language_name_short}, target_lng={language__name_short}, "
+                f"text={base_help_sorted_0_text}."
                 f" Деталі: {result_translate}"
             )
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"У рамках поточного контексту не можемо знайти переклад."
+                f"source_lng={base_helps_sorted_0_language_name_short}, target_lng={language__name_short}, "
+                f"text={base_help_sorted_0_text}."
                 f"Пропонуємо надати свій варіант, якщо він є. Деталі: {result_translate}",
             )
 
         # створення перекладеного запису в БД
         language_query = await get_context(name_short=language__name_short)
-        language = language_query[0]["id"]
-        text = result_translate[0]
+        language_translate = language_query[0]["id"]
+        text_translate = result_translate[0]
         new_help = CreateHelpRequest(
-            text=text,
-            language=language,
+            text=text_translate,
+            language=language_translate,
             front_name=front_name,
             state=state,
             is_active=True,
             auto_translation=True,
         )
         results = await help.create(**new_help.dict())
+        results.language = language_query[0]
         results = [results]
     # тепер якщо переклад хелпа здайдено в БД
     elif len(helps) == 1:
@@ -277,10 +234,14 @@ async def get_help(
             helps_after_preprocessing = await helps_less_max_impressions(helps_sorted)
             results = [helps_after_preprocessing]
 
-    # фінальна обробка результату
+            # фінальна обробка результату
     fin_result = [
         result.to_dict() for result in results if isinstance(result, tables.Help)
     ]
+    await update_help(
+        id=fin_result[0].get("id"),
+        update_param_help=UpdateHelpRequest(modifying_total_impressions=1),
+    )
     return fin_result
 
 

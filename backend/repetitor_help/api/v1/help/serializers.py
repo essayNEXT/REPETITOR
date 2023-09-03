@@ -5,6 +5,8 @@ from fastapi import Query, HTTPException
 from pydantic import BaseModel, validator
 from pydantic.validators import datetime as pydantic_datetime
 
+from repetitor_backend.api.v1.context.serializers import GetContextResponse
+
 
 class CreateHelpRequest(BaseModel):
     text: Annotated[str, Query(min_length=2, max_length=255)]
@@ -72,7 +74,7 @@ class GetHelpRequest(CreateHelpRequest):
 class GetHelpResponse(BaseModel):
     id: UUID
     text: str
-    language: UUID
+    language: GetContextResponse
     front_name: str
     state: str
     total_impressions: int

@@ -1,6 +1,8 @@
+import logging
 from uuid import UUID
 
 from asyncpg import ForeignKeyViolationError
+from fastapi import HTTPException, status
 
 from repetitor_help import tables
 from repetitor_help.api.v1.help.serializers import (
@@ -8,6 +10,8 @@ from repetitor_help.api.v1.help.serializers import (
     UpdateHelpRequest,
     CreateHelpRequest,
 )
+
+logger = logging.getLogger()
 
 
 async def create(**kwargs: CreateHelpRequest) -> tables.Help | str:
@@ -97,7 +101,7 @@ async def get(**get_param: GetHelpRequest) -> list[tables.Help]:
 
             query = query.where(nested_attr == value)
 
-    result = await query
+    result = await query.prefetch(tables.Help.all_related())
     return result if result else []
 
 
@@ -127,9 +131,14 @@ async def update(id: UUID, **update_param: UpdateHelpRequest) -> UUID | None:
 
     """
     if not isinstance(id, UUID):
-        raise TypeError(
+        logging.error(
             f"parameter 'id' for function update help must be UUID-type, but got {type(id)}"
         )
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"parameter 'id' for function update help must be UUID-type, but got {type(id)}",
+        )
+
     filtered_param = {k: v for k, v in update_param.items() if v is not None}
     # https://piccolo-orm.readthedocs.io/en/latest/piccolo/query_types/update.html#integer-columns
     # # Add 100 to the total_impressions of each help:
@@ -164,8 +173,12 @@ async def delete(id: UUID) -> UUID | None:
     If parameter has wrong type - raise TypeError.
     """
     if not isinstance(id, UUID):
-        raise TypeError(
+        logging.error(
             f"parameter 'id' for function del_help must be UUID-type, but got {type(id)}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"parameter 'id' for function del_help must be UUID-type, but got {type(id)}",
         )
     result = await update(id=id, is_active=False)
     return result
