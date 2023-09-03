@@ -14,13 +14,12 @@ from repetitor_backend import api
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the session: ClientSession
-    print("Start Session")
     logging.info("Start Session")
     app.session = ClientSession()
     yield
     # release the resources
     await app.session.close()
-    print("The End Session")
+    logging.info("The End Session")
 
 
 def create_app(settings) -> FastAPI:
