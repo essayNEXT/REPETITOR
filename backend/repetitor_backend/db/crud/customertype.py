@@ -1,5 +1,8 @@
 from uuid import UUID
 from typing import Optional, List
+
+from fastapi import HTTPException
+
 from repetitor_backend.tables import CustomerType
 
 
@@ -18,9 +21,10 @@ async def create_new_customer_type(name: str, description: str) -> UUID:
 str-type, but type(name)={type(name)} and type(description)={type(description)}"
         )
     elif not (len(name) <= 50 and len(description) <= 200):
-        raise ValueError(
-            f"len(name) must be <= 50 and len(description) must be <= 200, but\
-got len(name)={len(name)} and len(description)={len(description)}"
+        raise HTTPException(
+            status_code=404,
+            detail=f"len(name) must be <= 50 and len(description) must be <= 200, but\
+got len(name)={len(name)} and len(description)={len(description)}",
         )
     result = await CustomerType.insert(
         CustomerType(name=name, description=description)
