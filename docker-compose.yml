@@ -9,6 +9,7 @@ services:
       - '80:80'
     volumes:
       - "/backend/repetitor_backend:/$$(pwd)/repetitor_backend"
+      - loiggng_data:/home/user/repetitor_backend/log
     env_file:
       - .env
     depends_on:
@@ -52,4 +53,5 @@ services:
 volumes:
   postgres_data:
   logigng_data:
+  loiggng_data:
 
