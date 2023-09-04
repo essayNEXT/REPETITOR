@@ -16,12 +16,14 @@ from keyboards.first_contact.first_contact_kb import (
     ConfirmKeyboard,
     ChangeUserDataKeyboard,
 )
+from keyboards.text_translate.text_translate_kb import TextTranslateKeyboard
 
 kb_classes = [
     ConfirmKeyboard,
     ChangeUserDataKeyboard,
     ChooseContextKeyboard,
     ChooseNativeLanguageKeyboard,
+    TextTranslateKeyboard,
 ]
 
 
