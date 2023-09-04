@@ -82,13 +82,13 @@ class TextTranslateKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
             {
                 "front_name": "Telegram",
                 "state": "TranslationForm:ADD_USER_TRANSLATION",
-                "language_short_name": "en",
+                "language__name_short": "en",
                 "text": "Enter your translation to word please",
             },
             {
                 "front_name": "Telegram",
                 "state": "TranslationForm:GET_TRANSLATION",
-                "language_short_name": "en",
+                "language__name_short": "en",
                 "text": "Add word to learn or add our translation",
             },
         ]

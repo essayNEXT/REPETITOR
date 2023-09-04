@@ -100,7 +100,7 @@ class ChooseContextKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
             {
                 "front_name": "Telegram",
                 "state": "CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT",
-                "language_short_name": "en",
+                "language__name_short": "en",
                 "text": "You need to press the 'BASE' button and select your primary language. Use the '⬆️/⬇️' "
                 "and '⬇⏫️/⏬️' buttons to scroll, the '⬆️/⬇️' button scrolls one page at a time, the '⏬️' "
                 "button scrolls to the last page, the '⏫️' button scrolls to the first page. Then press "

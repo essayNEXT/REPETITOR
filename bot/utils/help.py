@@ -10,7 +10,7 @@ class HelpMessageDict(TypedDict):
     front_name: str
     state: str
     text: str
-    language_short_name: str
+    language__name_short: str
 
 
 class HelpConstructor(ABC):
@@ -29,7 +29,7 @@ class HelpPublisher:
             {
                 "front_name": "Telegram",
                 "state": "NoTelegramState",
-                "language_short_name": "en",
+                "language__name_short": "en",
                 "text": "You can enter any words according your language contexts for translation.",
             }
         ]
@@ -45,13 +45,13 @@ class HelpPublisher:
         for help_message in self.help_messages_to_db:
             if self.help_message_validator(help_message):
                 print(f"HELP_VALIDATOR: Help for {help_message['state']} is correct!")
-                # request_status = await self.__get_help_message_status(help_message)
-                # if request_status == "404":
-                #     if help_message["language_short_name"] not in self.languages_uuid.keys():
-                #         any_language = await get_context_by_short_name(help_message["language_short_name"])
-                #         self.languages_uuid = {"en": any_language[0]["id"]}
-                #     help_message["language"] = self.languages_uuid[help_message["language_short_name"]]
-                #     await self.__post_help_message(help_message)
+                request_status = await self.__get_help_message_status(help_message)
+                if request_status == 404:
+                    if help_message["language__name_short"] not in self.languages_uuid.keys():
+                        any_language = await get_context_by_short_name(help_message["language__name_short"])
+                        self.languages_uuid = {"en": any_language[0]["id"]}
+                    help_message["language"] = self.languages_uuid[help_message["language__name_short"]]
+                    await self.__post_help_message(help_message)
         print(self.help_messages_to_db)
 
     async def __get_help_message_status(self, help_message) -> int:

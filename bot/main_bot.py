@@ -33,14 +33,14 @@ async def help_create():
 
 
 async def main():
-    file_log = logging.FileHandler("log/bot.log")
-    console_out = logging.StreamHandler()
-    logging.basicConfig(
-        handlers=(file_log, console_out),
-        level=logging.INFO,
-        datefmt="%m.%d.%Y %H:%M:%S",
-        format="[%(asctime)s | %(levelname)s]: %(message)s",
-    )
+    # file_log = logging.FileHandler("log/bot.log")
+    # console_out = logging.StreamHandler()
+    # logging.basicConfig(
+    #     handlers=(file_log, console_out),
+    #     level=logging.INFO,
+    #     datefmt="%m.%d.%Y %H:%M:%S",
+    #     format="[%(asctime)s | %(levelname)s]: %(message)s",
+    # )
     dp.message.outer_middleware(first_contact.FirstContactMiddleware())
     await set_commands(bot)
     dp.include_router(first_contact_handler.router)
