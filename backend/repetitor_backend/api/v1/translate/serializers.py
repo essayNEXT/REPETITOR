@@ -1,7 +1,7 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import Query
+from fastapi import Query, HTTPException
 from pydantic import BaseModel, validator
 
 from repetitor_backend.db.crud.item_relation_view import (
@@ -24,8 +24,9 @@ class CreatingPhrasesRequest(BaseModel):
     @validator("context_2_id_sn")
     def validate_context_2(cls, value, values):
         if "context_1" in values and value == values["context_1_id_sn"]:
-            raise ValueError(
-                "context_2_id_sn must have a different value than context_1_id_sn"
+            raise HTTPException(
+                status_code=404,
+                detail="context_2_id_sn must have a different value than context_1_id_sn",
             )
         return value
 

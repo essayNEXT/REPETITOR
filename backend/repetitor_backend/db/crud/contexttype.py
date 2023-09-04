@@ -1,5 +1,8 @@
 from uuid import UUID
 from typing import Optional, List
+
+from fastapi import HTTPException
+
 from repetitor_backend import tables
 
 
@@ -19,7 +22,10 @@ async def create(name: str, description: str) -> UUID:
 str-type, but type(name)={type(name)} and type(description)={type(description)}"
         )
     elif not len(name) <= 20:
-        raise ValueError(f"len(name) must be <= 20, but got len(name)={len(name)}")
+        raise HTTPException(
+            status_code=404,
+            detail=f"len(name) must be <= 20, but got len(name)={len(name)}",
+        )
     result = await tables.ContextType.insert(
         tables.ContextType(name=name, description=description)
     ).returning(tables.ContextType.id)
@@ -91,8 +97,9 @@ async def update(
                 f"parameter 'name' for function update_context_type must be str-type, but got {type(name)}"
             )
         if len(name) > 20:
-            raise ValueError(
-                f"the 'name' parameter must be no more than 20 characters long, received {len(name)}"
+            raise HTTPException(
+                status_code=404,
+                detail=f"the 'name' parameter must be no more than 20 characters long, received {len(name)}",
             )
         kwargs["name"] = name
     if description is not None:

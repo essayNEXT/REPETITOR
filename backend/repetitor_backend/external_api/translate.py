@@ -36,26 +36,26 @@ async def translate(
     if not session:
         session = app.session
 
-    # MS translate
+    # GOOGLE translate
     try:
-        result = await ms_auto(
+        result = await gg_auto(
             session, text=text, source_lng=source_lng, target_lng=target_lng
         )
-        print("result MS = ", result)
+        print("result GG = ", result)
     except Exception:
-        print("MS ERROR")
-        result = ("MS ERROR",)
+        print("Google_auto ERROR")
+        result = ("Google_auto ERROR",)
 
-    # GOOGLE translate
+    # MS translate
     if len(result) == 1:
         try:
-            result = await gg_auto(
+            result = await ms_auto(
                 session, text=text, source_lng=source_lng, target_lng=target_lng
             )
-            print("result GG = ", result)
+            print("result MS = ", result)
         except Exception:
-            print("Google_auto ERROR")
-            result = ("MS ERROR & Google_auto ERROR",)
+            print("MS ERROR")
+            result = ("Google_auto ERROR & MS ERROR",)
 
         # GOOGLE fix translate
         if len(result) == 1:
@@ -66,5 +66,5 @@ async def translate(
                 print("result fix = ", result)
             except Exception:
                 print("Google_fix ERROR")
-                result = ("MS ERROR & Google_auto ERROR & Google_fix ERROR",)
+                result = ("Google_auto ERROR & MS ERROR & Google_fix ERROR",)
     return result
