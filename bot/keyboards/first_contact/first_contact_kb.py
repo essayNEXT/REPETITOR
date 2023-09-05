@@ -122,6 +122,7 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
                 "language__name_short": "en",
                 "text": "Press 'Continue' if you do not want to change the data displayed in the message. Press "
                 "'Change data ' if you want to change the data.",
+                "auto_translation": 1,
             }
         ]
         return help_messages
@@ -222,7 +223,8 @@ class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
                 "front_name": "Telegram",
                 "state": "RegistrationForm:CHANGE_DATA",
                 "language__name_short": "en",
-                "text": "Press into one of parameters 'name', 'surname', 'language' or 'email' you want to change",
+                "text": "Press into one of parameters 'name', 'surname', 'language' or 'email' you want to change.",
+                "auto_translation": 1,
             }
         ]
         return help_messages

@@ -101,11 +101,10 @@ class ChooseContextKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
                 "front_name": "Telegram",
                 "state": "CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT",
                 "language__name_short": "en",
-                "text": "You need to press the 'BASE' button and select your primary language. Use the '⬆️/⬇️' "
-                "and '⬇⏫️/⏬️' buttons to scroll, the '⬆️/⬇️' button scrolls one page at a time, the '⏬️' "
-                "button scrolls to the last page, the '⏫️' button scrolls to the first page. Then press "
-                "the 'TARGET' button and select the language you are learning. After selecting the "
-                "languages, press the 'APPROVE' button.",
+                "text": "Press the 'BASE' button before select your primary language. Use the '⬆️/⬇️'"
+                " and '⏫️/⏬️' buttons to scroll ud/down and fast up/down. Then press the 'TARGET'"
+                " and select the language you are learning. After selecting the languages, press the 'APPROVE'.",
+                "auto_translation": 1,
             }
         ]
         return help_message
@@ -113,7 +112,7 @@ class ChooseContextKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     def context_selection_text(self):
         con_1 = self.messages[self.selected_data[0]] if self.selected_data[0] else "???"
         con_2 = self.messages[self.selected_data[1]] if self.selected_data[1] else "???"
-        return f"[{con_1}] >>> [{con_2}]"
+        return f"{self.text}\n[{con_1}] >>> [{con_2}]"
 
     async def create_customer_context(self):
         user_data = await get_user(self.user_id)

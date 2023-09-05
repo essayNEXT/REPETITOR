@@ -97,6 +97,7 @@ class ChooseNativeLanguageKeyboard(ContextInlineKeyboardGenerator, HelpConstruct
                 "text": "Use the '⬆️/⬇️' and '⬇⏫️/⏬️' buttons to scroll, the '⬆️/⬇️' button scrolls one page at "
                 "a time, the '⏬️' button scrolls to the last page, the '⏫️' button scrolls to the first "
                 "page. Select your native language. After selecting press the 'APPROVE' button.",
+                "auto_translation": 1,
             }
         ]
         return help_message
@@ -107,9 +108,5 @@ class ChooseNativeLanguageKeyboard(ContextInlineKeyboardGenerator, HelpConstruct
 
     async def update_user_native_language(self):
         lng_short_name = self.selected_data[0].split("_")[-1]
-        lng_full_name = next(
-            (lang for lang in self.__languages if lang["name_short"] == lng_short_name),
-            None,
-        )["name"]
-        data = {"native_language": lng_full_name}
+        data = {"native_language": lng_short_name}
         await update_user(self.user_id, data)
