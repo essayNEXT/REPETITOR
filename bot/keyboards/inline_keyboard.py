@@ -4,7 +4,7 @@ from typing import List, Dict
 from aiogram.utils.keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from dataclasses import dataclass
 from aiogram.types import CallbackQuery
-from aiogram.filters import Text
+from aiogram import F
 
 # from enum import Enum
 from abc import ABC, abstractmethod
@@ -81,7 +81,8 @@ class ScrollInlineKeyboardGenerator:
                 )
                 self.dp = dp
                 self.dp.callback_query.register(
-                    self._scroll_kb, Text(startswith=f"{prefix}scroll_")
+                    self._scroll_kb,
+                    F.data.func(lambda data: data.startswith(f"{prefix}scroll_")),
                 )
             else:
                 prefix = self.callback_pattern

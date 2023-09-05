@@ -143,7 +143,7 @@ async def get_words_from_the_db(
             )
             | tables.ItemRelationView.item_author_2.is_in(list_item_author)
         )
-        & (  # <- тут end порівняння
+        & (  # <- тут and порівняння
             (
                 (tables.ItemRelationView.item_text_1 == item_text)
                 & (

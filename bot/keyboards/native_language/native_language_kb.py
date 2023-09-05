@@ -6,10 +6,11 @@ from utils.db.context import get_context
 from aiogram import Dispatcher, Router
 from typing import List
 from utils.db.customer import update_user
+from utils.help import HelpConstructor
 
 
 @asyncinit
-class ChooseNativeLanguageKeyboard(ContextInlineKeyboardGenerator):
+class ChooseNativeLanguageKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     """Клавіатура вибору рідної мови користувача з доступних контекстів"""
 
     async def __init__(
@@ -86,15 +87,26 @@ class ChooseNativeLanguageKeyboard(ContextInlineKeyboardGenerator):
         ]
         return bottom_buttons
 
+    @staticmethod
+    def help_messages() -> list[dict]:
+        help_message = [
+            {
+                "front_name": "Telegram",
+                "state": "RegistrationForm.NATIVE_LANGUAGE_SELECTING",
+                "language__name_short": "en",
+                "text": "Use the '⬆️/⬇️' and '⬇⏫️/⏬️' buttons to scroll, the '⬆️/⬇️' button scrolls one page at "
+                "a time, the '⏬️' button scrolls to the last page, the '⏫️' button scrolls to the first "
+                "page. Select your native language. After selecting press the 'APPROVE' button.",
+                "auto_translation": 1,
+            }
+        ]
+        return help_message
+
     def language_selection_text(self):
         lng = self.messages[self.selected_data[0]]
         return self.text + f"\n[{lng}]"
 
     async def update_user_native_language(self):
         lng_short_name = self.selected_data[0].split("_")[-1]
-        lng_full_name = next(
-            (lang for lang in self.__languages if lang["name_short"] == lng_short_name),
-            None,
-        )["name"]
-        data = {"native_language": lng_full_name}
+        data = {"native_language": lng_short_name}
         await update_user(self.user_id, data)

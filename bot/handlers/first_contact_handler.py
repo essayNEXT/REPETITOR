@@ -1,5 +1,4 @@
-from aiogram import Router
-from aiogram.filters import Text
+from aiogram import Router, F
 from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
@@ -27,7 +26,7 @@ class Email(BaseModel):
     email: EmailStr
 
 
-class StepsForm(StatesGroup):
+class RegistrationForm(StatesGroup):
     """Клас, що описує стани проходження реєстрації користувача."""
 
     CONFIRM_DATA = State()
@@ -38,10 +37,8 @@ class StepsForm(StatesGroup):
     EMAIL_CHANGED = State()
 
 
-@router.callback_query(Text(text="registration"))
-async def registration(
-    callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
-):
+@router.callback_query(F.data == "registration")
+async def registration(callback: CallbackQuery, state: FSMContext):
     """Хендлер, що ловить колбек при натисканні кнопки 'Зареєструватись' від користувача."""
     # Видаляємо кнопку реєстрації, щоб користувач не міг натискати її безліч разів
     await callback.message.delete()
@@ -63,14 +60,14 @@ async def registration(
         await callback.message.answer(
             text.format(callback.from_user.first_name), reply_markup=kb.markup()
         )
-        await state.set_state(StepsForm.CONFIRM_DATA)
+        await state.set_state(RegistrationForm.CONFIRM_DATA)
     else:
         await callback.message.delete(
             chat_id=callback.message.chat.id, message_id=callback.message.message_id
         )
 
 
-@router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_kb_continue"))
+@router.callback_query(RegistrationForm.CONFIRM_DATA, F.data == "confirm_kb_continue")
 async def confirm_data(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
 ):
@@ -94,12 +91,14 @@ async def confirm_data(
 
 
 @router.callback_query(
-    StepsForm.NATIVE_LANGUAGE_SELECTING, Text(text="native_language_back")
+    RegistrationForm.NATIVE_LANGUAGE_SELECTING, F.data == "native_language_back"
 )
-@router.callback_query(StepsForm.F_NAME_CHANGED, Text(text="change_cancel"))
-@router.callback_query(StepsForm.L_NAME_CHANGED, Text(text="change_cancel"))
-@router.callback_query(StepsForm.EMAIL_CHANGED, Text(text="change_cancel"))
-@router.callback_query(StepsForm.CONFIRM_DATA, Text(text="confirm_kb_change_data"))
+@router.callback_query(RegistrationForm.F_NAME_CHANGED, F.data == "change_cancel")
+@router.callback_query(RegistrationForm.L_NAME_CHANGED, F.data == "change_cancel")
+@router.callback_query(RegistrationForm.EMAIL_CHANGED, F.data == "change_cancel")
+@router.callback_query(
+    RegistrationForm.CONFIRM_DATA, F.data == "confirm_kb_change_data"
+)
 async def change_data(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
 ):
@@ -118,10 +117,12 @@ async def change_data(
     tmp_storage[key] = kb
 
     await callback.message.edit_text(kb.text, reply_markup=kb.markup())
-    await state.set_state(StepsForm.CHANGE_DATA)
+    await state.set_state(RegistrationForm.CHANGE_DATA)
 
 
-@router.callback_query(StepsForm.CHANGE_DATA, Text(startswith="change_"))
+@router.callback_query(
+    RegistrationForm.CHANGE_DATA, F.data.func(lambda data: data.startswith("change_"))
+)
 async def choose_data_to_change(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
 ):
@@ -143,7 +144,7 @@ async def choose_data_to_change(
         )
         tmp_storage[key] = kb
         await callback.message.edit_text(kb.text, reply_markup=kb.markup())
-        await state.set_state(StepsForm.NATIVE_LANGUAGE_SELECTING)
+        await state.set_state(RegistrationForm.NATIVE_LANGUAGE_SELECTING)
 
     elif callback.data == "change_cancel":
         kb = await ConfirmKeyboard(
@@ -156,7 +157,7 @@ async def choose_data_to_change(
         await callback.message.edit_text(
             text.format(callback.from_user.first_name), reply_markup=kb.markup()
         )
-        await state.set_state(StepsForm.CONFIRM_DATA)
+        await state.set_state(RegistrationForm.CONFIRM_DATA)
 
     else:
         key = KeyKeyboard(
@@ -176,23 +177,24 @@ async def choose_data_to_change(
             kb.messages["change_first_name"], reply_markup=kb.markup_cancel()
         )
         await state.update_data(last_message=last_message.message_id)
-        await state.set_state(StepsForm.F_NAME_CHANGED)
+        await state.set_state(RegistrationForm.F_NAME_CHANGED)
     elif callback.data == "change_last_name":
         last_message = await callback.message.answer(
             kb.messages["change_last_name"], reply_markup=kb.markup_cancel()
         )
         await state.update_data(last_message=last_message.message_id)
-        await state.set_state(StepsForm.L_NAME_CHANGED)
+        await state.set_state(RegistrationForm.L_NAME_CHANGED)
     elif callback.data == "change_email":
         last_message = await callback.message.answer(
             kb.messages["change_email"], reply_markup=kb.markup_cancel()
         )
         await state.update_data(last_message=last_message.message_id)
-        await state.set_state(StepsForm.EMAIL_CHANGED)
+        await state.set_state(RegistrationForm.EMAIL_CHANGED)
 
 
 @router.callback_query(
-    StepsForm.NATIVE_LANGUAGE_SELECTING, Text(startswith="native_language_")
+    RegistrationForm.NATIVE_LANGUAGE_SELECTING,
+    F.data.func(lambda data: data.startswith("native_language_")),
 )
 async def selecting_native_language(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
@@ -219,7 +221,7 @@ async def selecting_native_language(
             await callback.message.edit_text(
                 text.format(callback.from_user.first_name), reply_markup=kb.markup()
             )
-            await state.set_state(StepsForm.CONFIRM_DATA)
+            await state.set_state(RegistrationForm.CONFIRM_DATA)
         else:
             await callback.answer()
     else:
@@ -230,9 +232,9 @@ async def selecting_native_language(
         )
 
 
-@router.message(StepsForm.F_NAME_CHANGED)
-@router.message(StepsForm.L_NAME_CHANGED)
-@router.message(StepsForm.EMAIL_CHANGED)
+@router.message(RegistrationForm.F_NAME_CHANGED)
+@router.message(RegistrationForm.L_NAME_CHANGED)
+@router.message(RegistrationForm.EMAIL_CHANGED)
 async def update_user_data(message: Message, state: FSMContext):
     """Хендлер, що обробляє зміну даних отриманих від користувача.
     Виводить колбек-кнопки 'змінити' та 'продовжити'."""
@@ -244,13 +246,13 @@ async def update_user_data(message: Message, state: FSMContext):
     print(message.chat.id)
 
     key = None
-    if user_state == StepsForm.F_NAME_CHANGED:
+    if user_state == RegistrationForm.F_NAME_CHANGED:
         key = "first_name"
         await bot.delete_message(chat_id=message.chat.id, message_id=last_message)
-    elif user_state == StepsForm.L_NAME_CHANGED:
+    elif user_state == RegistrationForm.L_NAME_CHANGED:
         key = "last_name"
         await bot.delete_message(chat_id=message.chat.id, message_id=last_message)
-    elif user_state == StepsForm.EMAIL_CHANGED:
+    elif user_state == RegistrationForm.EMAIL_CHANGED:
         key = "email"
         await bot.delete_message(chat_id=message.chat.id, message_id=last_message)
 
@@ -277,4 +279,4 @@ async def update_user_data(message: Message, state: FSMContext):
     await message.answer(
         text.format(message.from_user.first_name), reply_markup=kb.markup()
     )
-    await state.set_state(StepsForm.CONFIRM_DATA)
+    await state.set_state(RegistrationForm.CONFIRM_DATA)
