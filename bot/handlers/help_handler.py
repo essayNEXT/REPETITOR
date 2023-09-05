@@ -25,9 +25,10 @@ async def help_thanks(callback: CallbackQuery, tmp_storage: TmpStorage):
     )
     kb = tmp_storage[key]
 
-    # Оновлюємо лічильний негативних відгуків
+    # Оновлюємо лічильний позитивних відгуків
     await kb.send_positive_feedback()
 
+    await callback.answer(kb.positive_message())
     # await callback.message.delete()
 
 
@@ -77,7 +78,8 @@ async def help_problem_report(callback: CallbackQuery, tmp_storage: TmpStorage):
     # Відправляємо опис проблеми для подальшого опрацювання
     await kb.send_problem_report(callback.data)
 
-    await callback.message.edit_text(kb.text, reply_markup=kb.markup())
+    await callback.answer(kb.negative_message())
+    # await callback.message.delete()
 
 
 @router.message(Command("help"))
