@@ -11,6 +11,7 @@ class HelpMessageDict(TypedDict):
     state: str
     text: str
     language__name_short: str
+    auto_translation: int
 
 
 class HelpConstructor(ABC):
@@ -30,8 +31,16 @@ class HelpPublisher:
                 "front_name": "Telegram",
                 "state": "NoTelegramState",
                 "language__name_short": "en",
-                "text": "You can enter any words according your language contexts for translation.",
-            }
+                "text": "You can enter any words according to your language contexts for words translation.",
+                "auto_translation": 1,
+            },
+            {
+                "front_name": "Telegram",
+                "state": "NoTelegramState",
+                "language__name_short": "en",
+                "text": "Now our feature is only word translation. Wait for another interesting possibilities.",
+                "auto_translation": 1,
+            },
         ]
 
         # Перебираємо список класів Клавіатури та витягуємо з них параметри help_messages
@@ -47,12 +56,22 @@ class HelpPublisher:
                 print(f"HELP_VALIDATOR: Help for {help_message['state']} is correct!")
                 request_status = await self.__get_help_message_status(help_message)
                 if request_status == 404:
-                    if help_message["language__name_short"] not in self.languages_uuid.keys():
-                        any_language = await get_context_by_short_name(help_message["language__name_short"])
+                    if (
+                        help_message["language__name_short"]
+                        not in self.languages_uuid.keys()
+                    ):
+                        any_language = await get_context_by_short_name(
+                            help_message["language__name_short"]
+                        )
                         self.languages_uuid = {"en": any_language[0]["id"]}
-                    help_message["language"] = self.languages_uuid[help_message["language__name_short"]]
+                    help_message["language"] = self.languages_uuid[
+                        help_message["language__name_short"]
+                    ]
                     await self.__post_help_message(help_message)
-        print(self.help_messages_to_db)
+                elif request_status in [200, 201]:
+                    print(
+                        f"HELP_PUBLISHER: Help for {help_message['state']} already is in database!"
+                    )
 
     async def __get_help_message_status(self, help_message) -> int:
         async with aiohttp.ClientSession() as session:
@@ -75,5 +94,5 @@ class HelpPublisher:
             ta.validate_python(help_message_dict)
             return True
         except ValidationError as err:
-            print(f"{err} - Wrong structure of help!")
+            print(f"HELP_VALIDATOR: {err} - Wrong structure of help!")
             return False
