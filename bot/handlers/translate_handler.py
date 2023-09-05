@@ -1,11 +1,11 @@
 from aiogram import Router
-from aiogram.filters import Text
+from aiogram import F
 from aiogram.types import Message, CallbackQuery
 from keyboards.text_translate.text_translate_kb import TextTranslateKeyboard
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from utils.storages import TmpStorage
-from handlers.first_contact_handler import StepsForm
+from handlers.first_contact_handler import RegistrationForm
 from create_bot import bot
 from keyboards.inline_keyboard import KeyKeyboard
 
@@ -13,19 +13,19 @@ router = Router()
 
 
 class TranslationForm(StatesGroup):
-    """Клас, що описує стани проходження перекладу."""
+    """Клас, що описує стани проходження перекладу слів."""
 
     ADD_USER_TRANSLATION = State()
     GET_TRANSLATION = State()
 
 
-@router.callback_query(Text(text="text_translate_ok"))
+@router.callback_query(F.data == "text_translate_ok")
 async def send_translate_ok(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_reply_markup(None)
     await state.clear()
 
 
-@router.callback_query(Text(text="text_translate_my_translation"))
+@router.callback_query(F.data == "text_translate_my_translation")
 async def enter_user_translation(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
 ):
@@ -45,7 +45,7 @@ async def enter_user_translation(
     )
 
 
-@router.callback_query(Text(text="text_translate_cancel"))
+@router.callback_query(F.data == "text_translate_cancel")
 async def enter_user_translation_cancel(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
 ):
@@ -84,7 +84,7 @@ async def add_user_translation(
 
 @router.message()
 async def translate_word(message: Message, tmp_storage: TmpStorage, state: FSMContext):
-    if await state.get_state() != StepsForm.CHANGE_DATA:
+    if await state.get_state() != RegistrationForm.CHANGE_DATA:
         kb = await TextTranslateKeyboard(
             user_language=message.from_user.language_code,
             user_id=message.from_user.id,

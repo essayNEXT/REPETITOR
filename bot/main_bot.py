@@ -2,13 +2,36 @@ import asyncio
 import logging
 from middlewares import first_contact
 from handlers import (
-    translate,
-    inline_kb_test,
+    translate_handler,
     first_contact_handler,
     customer_context_handler,
 )
 from utils.commands import set_commands
+from utils.help import HelpPublisher
 from create_bot import bot, dp
+
+from keyboards.user_context.user_context_kb import ChooseContextKeyboard
+from keyboards.native_language.native_language_kb import ChooseNativeLanguageKeyboard
+from keyboards.first_contact.first_contact_kb import (
+    ConfirmKeyboard,
+    ChangeUserDataKeyboard,
+)
+from keyboards.text_translate.text_translate_kb import TextTranslateKeyboard
+
+kb_classes = [
+    ConfirmKeyboard,
+    ChangeUserDataKeyboard,
+    ChooseContextKeyboard,
+    ChooseNativeLanguageKeyboard,
+    TextTranslateKeyboard,
+]
+
+
+async def help_create():
+    try:
+        await HelpPublisher(kb_classes)
+    except Exception as err:
+        print(f"{err} - Table do not exist. Do migrations before.")
 
 
 async def main():
@@ -24,11 +47,11 @@ async def main():
     await set_commands(bot)
     dp.include_router(first_contact_handler.router)
     dp.include_router(customer_context_handler.router)
-    dp.include_router(inline_kb_test.router)
-    dp.include_router(translate.router)
+    dp.include_router(translate_handler.router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, skip_updates=True)
 
 
 if __name__ == "__main__":
+    asyncio.run(help_create())
     asyncio.run(main())

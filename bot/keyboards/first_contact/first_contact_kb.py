@@ -2,6 +2,7 @@ from ..inline_keyboard import KeyboardOfDict, ContextInlineKeyboardGenerator
 
 # from ..keyboard_translate.kb_translate import translate_context
 from utils.db.customer import get_user
+from utils.help import HelpConstructor
 
 
 class RegisterKeyboard(ContextInlineKeyboardGenerator):
@@ -55,7 +56,7 @@ class RegisterKeyboard(ContextInlineKeyboardGenerator):
         return None
 
 
-class ConfirmKeyboard(ContextInlineKeyboardGenerator):
+class ConfirmKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     """Клавіатура погодження даних від користувача"""
 
     @property
@@ -112,6 +113,20 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
     def bottom_buttons(self) -> KeyboardOfDict | None:
         return None
 
+    @staticmethod
+    def help_messages() -> list[dict]:
+        help_messages = [
+            {
+                "front_name": "Telegram",
+                "state": "RegistrationForm:CONFIRM_DATA",
+                "language__name_short": "en",
+                "text": "Press 'Continue' if you do not want to change the data displayed in the message. Press "
+                "'Change data ' if you want to change the data.",
+                "auto_translation": 1,
+            }
+        ]
+        return help_messages
+
     async def __user_data(self):
         user_data = await get_user(self.user_id)
         user_data = user_data[0]
@@ -129,7 +144,7 @@ class ConfirmKeyboard(ContextInlineKeyboardGenerator):
         return self.messages["confirm_kb_continue"]
 
 
-class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):
+class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     """Клавіатура зміни даних про користувача"""
 
     @property
@@ -200,3 +215,16 @@ class ChangeUserDataKeyboard(ContextInlineKeyboardGenerator):
     @property
     def bottom_buttons(self) -> KeyboardOfDict | None:
         return None
+
+    @staticmethod
+    def help_messages() -> list[dict]:
+        help_messages = [
+            {
+                "front_name": "Telegram",
+                "state": "RegistrationForm:CHANGE_DATA",
+                "language__name_short": "en",
+                "text": "Press into one of parameters 'name', 'surname', 'language' or 'email' you want to change.",
+                "auto_translation": 1,
+            }
+        ]
+        return help_messages

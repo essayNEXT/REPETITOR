@@ -1,5 +1,5 @@
-from aiogram import Router
-from aiogram.filters import Text, Command
+from aiogram import Router, F
+from aiogram.filters import Command
 from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
@@ -22,7 +22,7 @@ class CreateContextStepsForm(StatesGroup):
     SECOND_CONTEXT_CHOSEN = State()
 
 
-@router.callback_query(Text(text="settings_add_customer_context"))
+@router.callback_query(F.data == "settings_add_customer_context")
 async def create_customer_context(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
 ):
@@ -47,7 +47,7 @@ async def create_customer_context(
 
 @router.callback_query(
     CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT,
-    Text(startswith="create_user_context_con_"),
+    F.data.func(lambda data: data.startswith("create_user_context_con_")),
 )
 async def choose_context(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
@@ -78,11 +78,11 @@ async def choose_context(
 
 @router.callback_query(
     CreateContextStepsForm.CHOOSE_FIRST_CONTEXT,
-    Text(startswith="create_user_context_lng_"),
+    F.data.func(lambda data: data.startswith("create_user_context_lng_")),
 )
 @router.callback_query(
     CreateContextStepsForm.CHOOSE_SECOND_CONTEXT,
-    Text(startswith="create_user_context_lng_"),
+    F.data.func(lambda data: data.startswith("create_user_context_lng_")),
 )
 async def choose_context_lng(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage
@@ -112,8 +112,7 @@ async def choose_context_lng(
 
 
 @router.callback_query(
-    CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT,
-    Text(text="create_user_context_done"),
+    CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT, F.data == "create_user_context_done"
 )
 async def approve_customer_context(
     callback: CallbackQuery, state: FSMContext, tmp_storage: TmpStorage

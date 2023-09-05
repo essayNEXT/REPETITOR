@@ -7,10 +7,11 @@ from utils.db.customer import get_user
 from utils.db.customer_context import create_customer_context
 from aiogram import Dispatcher, Router
 from typing import List
+from utils.help import HelpConstructor
 
 
 @asyncinit
-class ChooseContextKeyboard(ContextInlineKeyboardGenerator):
+class ChooseContextKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
     """Клавіатура створення контексту користувача"""
 
     async def __init__(
@@ -93,10 +94,25 @@ class ChooseContextKeyboard(ContextInlineKeyboardGenerator):
         ]
         return bottom_buttons
 
+    @staticmethod
+    def help_messages() -> list[dict]:
+        help_message = [
+            {
+                "front_name": "Telegram",
+                "state": "CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT",
+                "language__name_short": "en",
+                "text": "Press the 'BASE' button before select your primary language. Use the '⬆️/⬇️'"
+                " and '⏫️/⏬️' buttons to scroll ud/down and fast up/down. Then press the 'TARGET'"
+                " and select the language you are learning. After selecting the languages, press the 'APPROVE'.",
+                "auto_translation": 1,
+            }
+        ]
+        return help_message
+
     def context_selection_text(self):
         con_1 = self.messages[self.selected_data[0]] if self.selected_data[0] else "???"
         con_2 = self.messages[self.selected_data[1]] if self.selected_data[1] else "???"
-        return f"[{con_1}] >>> [{con_2}]"
+        return f"{self.text}\n[{con_1}] >>> [{con_2}]"
 
     async def create_customer_context(self):
         user_data = await get_user(self.user_id)
