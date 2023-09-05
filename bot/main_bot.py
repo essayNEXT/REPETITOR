@@ -48,8 +48,8 @@ async def main():
     await set_commands(bot)
     dp.include_router(first_contact_handler.router)
     dp.include_router(customer_context_handler.router)
-    dp.include_router(translate_handler.router)
     dp.include_router(help_handler.router)
+    dp.include_router(translate_handler.router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, skip_updates=True)
 
