@@ -39,43 +39,36 @@ class HelpProblemKeyboard(ContextInlineKeyboardGenerator):
             [
                 {
                     "callback_data": "help_problem_1",
-                    "text": "Problem #1",
-                    "message": "Problem #1",
+                    "text": "Poor translation quality",
+                    "message": "Poor translation quality",
                 }
             ],
             [
                 {
                     "callback_data": "help_problem_2",
-                    "text": "Problem #2",
-                    "message": "Problem #2",
+                    "text": "Help does not match the problem",
+                    "message": "Help does not match the problem",
                 },
             ],
             [
                 {
                     "callback_data": "help_problem_3",
-                    "text": "Problem #3",
-                    "message": "Problem #3",
+                    "text": "The help does not fully answer the question",
+                    "message": "The help does not fully answer the question",
                 },
             ],
             [
                 {
                     "callback_data": "help_problem_4",
-                    "text": "Problem #4",
-                    "message": "Problem #4",
-                },
-            ],
-            [
-                {
-                    "callback_data": "help_problem_5",
-                    "text": "Problem #5",
-                    "message": "Problem #5",
+                    "text": "There is a lot of extra information in the message",
+                    "message": "There is a lot of extra information in the message",
                 },
             ],
             [
                 {
                     "callback_data": "help_problem_cancel",
                     "text": "❌",
-                    "message": "Cancel",
+                    "message": "Help problem report Cancel",
                 },
             ],
         ]
@@ -108,15 +101,7 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
         if self.user_state is None:
             self.user_state = "NoTelegramState"
 
-        # self.data_from_backend = await self.__get_help_message(user_state)
-        self.data_from_backend = [
-            {
-                "id": 1234567890,
-                "state": "NoTelegramState",
-                "language__name_short": "en",
-                "text": "Do anything you want now. Here some of commands and possibilities: ...",
-            }
-        ]
+        self.data_from_backend = await self.__get_help_message(self.user_state, user_id)
 
         # Створюємо наступний рівень вкладеної клавіатури через змінну екземпляр клавіатури HelpProblemKeyboard
         self.problem_kb = await HelpProblemKeyboard(user_language, user_id, dp)
@@ -158,19 +143,19 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
                 {
                     "callback_data": "help_thanks",
                     "text": "Thanks 👌",
-                    "message": "Thanks",
+                    "message": "We do our best for you ☺️",
                 },
                 {
                     "callback_data": "help_report_problem",
                     "text": "Report about problem 😡",
-                    "message": "Report about problem",
+                    "message": "We will definitely make it better 🥲",
                 },
             ],
             [
                 {
                     "callback_data": "help_remove",
                     "text": "Remove help 🗑",
-                    "message": "Report about problem",
+                    "message": "Remove help",
                 },
             ],
         ]
@@ -191,40 +176,49 @@ class HelpKeyboard(ContextInlineKeyboardGenerator):
     def problem_report_text(self):
         return self.problem_kb.text
 
-    async def __get_help_message(self) -> list | None:
+    async def __get_help_message(self, user_state, user_id) -> list | None:
         async with aiohttp.ClientSession() as session:
             params = {
-                "state": self.user_state,
-                "customer_tg_id": self.user_id,
+                "state": user_state,
+                "customer_tg_id": user_id,
                 "front_name": "Telegram",
             }
             async with session.get(self.HELP_URL, params=params) as response:
                 help_from_db = await response.json()
                 return help_from_db
 
-    async def __patch_help_message(self, data_for_patch: dict) -> list | None:
+    async def __patch_help_message(
+        self, params: dict, data_for_patch: dict
+    ) -> list | None:
         async with aiohttp.ClientSession() as session:
-            data = data_for_patch
-            async with session.patch(self.HELP_URL, data=data) as response:
+            async with session.patch(
+                self.HELP_URL, params=params, json=data_for_patch
+            ) as response:
                 help_from_db = await response.json()
                 return help_from_db
 
+    def positive_message(self) -> str:
+        return self.messages["help_thanks"]
+
+    def negative_message(self) -> str:
+        return self.messages["help_report_problem"]
+
     async def send_positive_feedback(self):
         if not self.positive_feedback:
-            # data_for_patch = {
-            #     "id": self.data_from_backend[0]["id"],
-            #     "positive_feedback": 1,
-            # }
-            # await self.__patch_help_message(data_for_patch)
+            params = {"id": self.data_from_backend[0]["id"]}
+            data_for_patch = {
+                "modifying_positive_feedback": 1,
+            }
+            await self.__patch_help_message(params, data_for_patch)
             self.positive_feedback = True
 
     async def send_negative_feedback(self):
         if not self.negative_feedback:
-            # data_for_patch = {
-            #     "id": self.data_from_backend[0]["id"],
-            #     "negative_feedback": 1,
-            # }
-            # await self.__patch_help_message(data_for_patch)
+            params = {"id": self.data_from_backend[0]["id"]}
+            data_for_patch = {
+                "modifying_negative_feedback": 1,
+            }
+            await self.__patch_help_message(params, data_for_patch)
             self.negative_feedback = True
 
     async def send_problem_report(self, problem: str):
