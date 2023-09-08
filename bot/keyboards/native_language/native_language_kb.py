@@ -92,11 +92,11 @@ class ChooseNativeLanguageKeyboard(ContextInlineKeyboardGenerator, HelpConstruct
         help_message = [
             {
                 "front_name": "Telegram",
-                "state": "RegistrationForm.NATIVE_LANGUAGE_SELECTING",
+                "state": "RegistrationForm:NATIVE_LANGUAGE_SELECTING",
                 "language__name_short": "en",
-                "text": "Use the '⬆️/⬇️' and '⬇⏫️/⏬️' buttons to scroll, the '⬆️/⬇️' button scrolls one page at "
-                "a time, the '⏬️' button scrolls to the last page, the '⏫️' button scrolls to the first "
-                "page. Select your native language. After selecting press the 'APPROVE' button.",
+                "text": "Use the '⬆️/⬇️' and '⏫️/⏬️' to scroll. The '⬆️/⬇️' scrolls one page at "
+                "a time, the '⏬️' scrolls to the last page, the '⏫️' scrolls to the first "
+                "page. Select your native language. After selecting press the 'APPROVE'.",
                 "auto_translation": 1,
             }
         ]
