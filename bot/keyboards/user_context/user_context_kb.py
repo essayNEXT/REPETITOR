@@ -99,10 +99,10 @@ class ChooseContextKeyboard(ContextInlineKeyboardGenerator, HelpConstructor):
         help_message = [
             {
                 "front_name": "Telegram",
-                "state": "CreateContextStepsForm.CREATE_CUSTOMER_CONTEXT",
+                "state": "CreateContextStepsForm:CREATE_CUSTOMER_CONTEXT",
                 "language__name_short": "en",
-                "text": "Press the 'BASE' button before select your primary language. Use the '⬆️/⬇️'"
-                " and '⏫️/⏬️' buttons to scroll ud/down and fast up/down. Then press the 'TARGET'"
+                "text": "Press the 'BASE' before select your primary language. Use the '⬆️/⬇️'"
+                " and '⏫️/⏬️' to scroll up/down and fast up/down. Then press the 'TARGET'"
                 " and select the language you are learning. After selecting the languages, press the 'APPROVE'.",
                 "auto_translation": 1,
             }
