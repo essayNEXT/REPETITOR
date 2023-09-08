@@ -1,13 +1,11 @@
 from aiogram import Router, F
-from aiogram.filters import Command
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from utils.storages import TmpStorage
 from keyboards.user_context.user_context_kb import ChooseContextKeyboard
 from keyboards.inline_keyboard import KeyKeyboard
 from create_bot import bot
-from utils.db.customer_context import get_customer_context_by_user_id
 
 router = Router()
 
@@ -132,9 +130,3 @@ async def approve_customer_context(
             await kb.create_customer_context()
             await callback.message.edit_text(kb.messages[callback.data])
             await state.clear()
-
-
-@router.message(Command(commands="my_contexts"))
-async def my_user_contexts(message: Message):
-    result = await get_customer_context_by_user_id(message.from_user.id)
-    await message.answer(str(result))
