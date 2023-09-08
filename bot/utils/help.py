@@ -34,13 +34,6 @@ class HelpPublisher:
                 "text": "You can enter any words according to your language contexts for words translation.",
                 "auto_translation": 1,
             },
-            {
-                "front_name": "Telegram",
-                "state": "NoTelegramState",
-                "language__name_short": "en",
-                "text": "Now our feature is only word translation. Wait for another interesting possibilities.",
-                "auto_translation": 1,
-            },
         ]
 
         # Перебираємо список класів Клавіатури та витягуємо з них параметри help_messages
